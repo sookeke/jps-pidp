@@ -13,7 +13,7 @@ import { PortalSectionAction } from '../portal-section-action.model';
 import { PortalSectionKey } from '../portal-section-key.type';
 import { IPortalSection } from '../portal-section.model';
 
-export class DriverFitnessPortalSection implements IPortalSection {
+export class DigitalEvidencePortalSection implements IPortalSection {
   public readonly key: PortalSectionKey;
   public heading: string;
   public description: string;
@@ -22,15 +22,14 @@ export class DriverFitnessPortalSection implements IPortalSection {
     private profileStatus: ProfileStatus,
     private router: Router
   ) {
-    this.key = 'driverFitness';
-    this.heading = 'Driver Medical Fitness';
-    this.description = `Enrol here for access to Driver Medical Fitness Transformation Program.`;
+    this.key = 'digitalEvidence';
+    this.heading = 'Digital Evidence Management System';
+    this.description = `Enrol here for access to Digital Evidence Management System application.`;
   }
 
   public get hint(): string {
     return '1 min to complete';
   }
-
   /**
    * @description
    * Get the properties that define the action on the section.
@@ -38,15 +37,10 @@ export class DriverFitnessPortalSection implements IPortalSection {
   public get action(): PortalSectionAction {
     const demographicsStatusCode =
       this.profileStatus.status.demographics.statusCode;
-    const collegeCertStatusCode =
-      this.profileStatus.status.collegeCertification.statusCode;
     return {
       label: this.getStatusCode() === StatusCode.COMPLETED ? 'View' : 'Request',
-      route: AccessRoutes.routePath(AccessRoutes.DRIVER_FITNESS),
-      disabled: !(
-        demographicsStatusCode === StatusCode.COMPLETED &&
-        collegeCertStatusCode === StatusCode.COMPLETED
-      ),
+      route: AccessRoutes.routePath(AccessRoutes.DIGITAL_EVIDENCE),
+      disabled: demographicsStatusCode !== StatusCode.COMPLETED,
     };
   }
 
@@ -56,15 +50,18 @@ export class DriverFitnessPortalSection implements IPortalSection {
 
   public get status(): string {
     const statusCode = this.getStatusCode();
-    return statusCode === StatusCode.COMPLETED ? 'Completed' : 'Incomplete';
+    return statusCode === StatusCode.AVAILABLE
+      ? 'For existing users of DEMS only'
+      : statusCode === StatusCode.COMPLETED
+      ? 'Completed'
+      : 'Incomplete';
   }
 
-  public performAction(): Observable<void> | void {
+  public performAction(): void | Observable<void> {
     this.router.navigate([ShellRoutes.routePath(this.action.route)]);
   }
 
   private getStatusCode(): StatusCode {
-    // TODO remove null check once API exists
-    return this.profileStatus.status.driverFitness?.statusCode;
+    return this.profileStatus.status.digitalEvidence.statusCode;
   }
 }

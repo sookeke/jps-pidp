@@ -20,6 +20,7 @@ public static class ClaimValues
     public const string BCServicesCard = "bcsc";
     public const string Idir = "idir";
     public const string Phsa = "phsa";
+    public const string Bcps = "bcps";
 }
 
 public static class Policies
@@ -28,6 +29,8 @@ public static class Policies
     public const string IdirAuthentication = "idir-authentication-policy";
     public const string AnyPartyIdentityProvider = "party-idp-policy";
     public const string UserOwnsResource = "user-owns-resource-policy";
+    public const string AllDemsIdentityProvider = "dems-idp-plicy";
+    public const string BcpsAuthentication = "bcps-authentication-ppolicy";
 }
 
 public static class Resources

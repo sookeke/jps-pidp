@@ -22,6 +22,7 @@ public static class AuthenticationSetup
         {
             options.Authority = config.Keycloak.RealmUrl;
             options.Audience = Resources.PidpApi;
+            options.RequireHttpsMetadata = false;
             options.MetadataAddress = config.Keycloak.WellKnownConfig;
             options.Events = new JwtBearerEvents
             {
@@ -41,9 +42,17 @@ public static class AuthenticationSetup
                 .RequireAuthenticatedUser()
                 .RequireClaim(Claims.IdentityProvider, ClaimValues.Idir));
 
+            options.AddPolicy(Policies.BcpsAuthentication, policy => policy
+                  .RequireAuthenticatedUser()
+                  .RequireClaim(Claims.IdentityProvider, ClaimValues.Bcps));
+
             options.AddPolicy(Policies.AnyPartyIdentityProvider, policy => policy
                 .RequireAuthenticatedUser()
-                .RequireClaim(Claims.IdentityProvider, ClaimValues.BCServicesCard, ClaimValues.Idir, ClaimValues.Phsa));
+                .RequireClaim(Claims.IdentityProvider, ClaimValues.BCServicesCard, ClaimValues.Idir, ClaimValues.Phsa, ClaimValues.Bcps));
+
+            options.AddPolicy(Policies.AllDemsIdentityProvider, policy => policy
+                  .RequireAuthenticatedUser()
+                  .RequireClaim(Claims.IdentityProvider, ClaimValues.BCServicesCard, ClaimValues.Bcps, ClaimValues.Idir));
 
             options.AddPolicy(Policies.UserOwnsResource, policy => policy.Requirements.Add(new UserOwnsResourceRequirement()));
 

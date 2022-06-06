@@ -111,6 +111,20 @@ export class PortalDashboardComponent implements IDashboard {
           ),
         ]
       ),
+      ...ArrayUtils.insertResultIf<DashboardRouteMenuItem>(
+        this.permissionsService.hasRole([Role.ADMIN]),
+        () => [
+          new DashboardRouteMenuItem(
+            'Administration Panel',
+            {
+              commands: PortalRoutes.MODULE_PATH,
+              extras: { fragment: 'admin' },
+              linkActiveOptions,
+            },
+            'admin_panel_settings'
+          ),
+        ]
+      ),
       new DashboardRouteMenuItem(
         'History',
         {

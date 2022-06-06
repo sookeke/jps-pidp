@@ -9,7 +9,8 @@ public enum AccessType
     SAEforms = 1,
     HcimAccountTransfer,
     HcimEnrolment,
-    DriverFitness
+    DriverFitness,
+    DigitalEvidence
 }
 
 [Table(nameof(AccessRequest))]
@@ -40,4 +41,9 @@ public class HcimEnrolment : AccessRequest
     public bool ModifiesPhns { get; set; }
     public bool RecordsNewborns { get; set; }
     public bool SearchesIdentifiers { get; set; }
+}
+[Table(nameof(DigitalEvidence))]
+public class DigitalEvidence : AccessRequest
+{
+    public string UserType { get; set; } = string.Empty;
 }

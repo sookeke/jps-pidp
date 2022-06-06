@@ -42,16 +42,16 @@ export class GetSupportComponent implements OnInit {
   private setupSupport(): void {
     this.providedSupport = [
       {
-        name: 'Provider Identity Portal',
+        name: 'JPS Provider Identity Portal',
         email: this.config.emails.providerIdentitySupport,
       },
       {
-        name: 'Special Authority eForms',
-        email: this.config.emails.specialAuthorityEformsSupport,
+        name: 'Digital Evidence Management System',
+        email: this.config.emails.digitalEvidenceSupport,
       },
       {
-        name: 'HCIMWeb Account Transfer',
-        email: this.config.emails.hcimAccountTransferSupport,
+        name: 'Driver Medical Fitness Transformation Program',
+        email: this.config.emails.driverFitnessSupport,
       },
       ...ArrayUtils.insertIf<SupportProps>(
         this.permissionsService.hasRole(Role.FEATURE_PIDP_DEMO),

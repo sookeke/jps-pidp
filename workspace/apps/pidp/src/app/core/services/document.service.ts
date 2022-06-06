@@ -7,6 +7,7 @@ export enum DocumentType {
   PIDP_COLLECTION_NOTICE = 'pidp-collection-notice',
   SA_EFORMS_COLLECTION_NOTICE = 'sa-eforms-collection-notice',
   DRIVER_FITNESS_COLLECTION_NOTICE = 'driver-fitness-collection-notice',
+  DIGITAL_EVIDENCE_COLLECTION_NOTICE = 'digital-evidence-collection-notice',
   USER_ACCESS_AGREEMENT = 'user-access-agreement',
 }
 
@@ -42,6 +43,10 @@ export class DocumentService {
         title: 'Driver Medical Fitness Collection Notice',
       },
       {
+        type: DocumentType.DIGITAL_EVIDENCE_COLLECTION_NOTICE,
+        title: 'Digital Evidance Management System Collection Notice',
+      },
+      {
         type: DocumentType.USER_ACCESS_AGREEMENT,
         title: 'Access Harmonization User Access Agreement',
       },
@@ -69,6 +74,11 @@ export class DocumentService {
           ...this.getDocumentMetaData(documentType),
           content: this.getDriverFitnessCollectionNotice(),
         };
+      case DocumentType.DIGITAL_EVIDENCE_COLLECTION_NOTICE:
+        return {
+          ...this.getDocumentMetaData(documentType),
+          content: this.getDigitalEvidenceCollectionNotice(),
+        };
       case DocumentType.USER_ACCESS_AGREEMENT:
         return {
           ...this.getDocumentMetaData(documentType),
@@ -81,8 +91,8 @@ export class DocumentService {
 
   public getPIdPCollectionNotice(): string {
     return `
-      The Provider Identity Portal collects personal information for the purposes of verification and access
-      to participating health systems. This is collected by the Ministry of Health under sections 26(c) and
+      The JPS Provider Identity Portal collects personal information for the purposes of verification and access
+      to participating court systems. This is collected by the Ministry of Attorney General under sections 26(c) and
       27(1)(b) of the Freedom of Information and Protection of Privacy Act. Should you have any questions
       about the collection of this personal information, contact
       <a href="mailto:${this.config.emails.providerIdentitySupport}">${this.config.emails.providerIdentitySupport}</a>.
@@ -92,7 +102,7 @@ export class DocumentService {
   public getSAeFormsCollectionNotice(): string {
     return `
       The personal information you provide to enrol for access to the Special Authority eForms application
-      is collected by the British Columbia Ministry of Health under the authority of s. 26(a) and 26(c) of
+      is collected by the British Columbia Justice Sector and Public Safety under the authority of s. 26(a) and 26(c) of
       the Freedom of Information and Protection of Privacy Act (FOIPPA) and s. 22(1)(b) of the Pharmaceutical
       Services Act for the purpose of managing your access to, and use of, the Special Authority eForms
       application. If you have any questions about the collection or use of this information, contact
@@ -106,6 +116,13 @@ export class DocumentService {
       consectetur adipisicing elit. Velit quaerat, beatae libero, ullam consequuntur laudantium aliquid voluptatum
       fugit pariatur dolore repudiandae ad fuga sed, ducimus voluptates quisquam quasi perferendis possimus, contact
       <a href="mailto:${this.config.emails.driverFitnessSupport}">${this.config.emails.driverFitnessSupport}</a>.
+    `;
+  }
+  public getDigitalEvidenceCollectionNotice(): string {
+    return `
+      The personal information you provide to enrol for access to Digital Evidence Management System is collected by the British Columbia Justice Sector and Public Safety under the authority of s. 26(a) and 26(c) of
+      the Freedom of Information and Protection of Privacy Act (FOIPPA) for the purpose of managing your access to, and use of, the Digital Evidence Management System. If you have any questions about the collection or use of this information, contact
+      <a href="mailto:${this.config.emails.digitalEvidenceSupport}">${this.config.emails.digitalEvidenceSupport}</a>.
     `;
   }
 

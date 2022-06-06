@@ -43,9 +43,9 @@
           </div>
 
           <p>
-            A portal for healthcare professionals in
+            A portal for court associates in
             <strong>British Columbia</strong> to enrol for access to
-            participating health systems
+            participating court systems
           </p>
         </div>
 
@@ -58,7 +58,7 @@
             mat-stroked-button
             color="primary"
             (click)="onScrollToAnchor()">
-            View available health systems
+            View available court systems
           </button>
         </div>
 
@@ -74,28 +74,35 @@
               heading="Systems Available"></ui-page-section-subheader>
 
             <ui-page-section>
-              <h3>Special Authority eForms</h3>
+              <h3>Digital Evidence Management System</h3>
               <p>
-                B.C. healthcare professionals can enrol for access to
-                PharmaCare's Special Authority eForms application.
+                B.C. court associates, lawyers, police and Out of Custody users
+                can enrol for access to Digital Evidence Management System.
               </p>
               <p>
                 You need to set up the
                 <a uiAnchor [attr.href]="bcscMobileSetupUrl">
                   BC Services Card app
                 </a>
-                to enrol. You will use the app each time you access the eForms
-                application. If you are not eligible for the BC Services Card,
-                or cannot set up the app, you can
-                <a uiAnchor [attr.href]="specialAuthorityUrl">
-                  submit SA requests by fax</a
-                >.
+                to enrol. You will use the app each time you access the DEMS
+                application.
               </p>
             </ui-page-section>
 
             <ui-page-section>
-              <h3>HCIMWeb Account Transfer</h3>
-              <p>For existing users of the HCIMWeb Application.</p>
+              <h3>Driver Medical Fitness Transformation Program</h3>
+              <p>
+                B.C. drivers can enrol for access to the Driver Medical Fitness
+                Application Portal.
+              </p>
+              <p>
+                You need to set up the
+                <a uiAnchor [attr.href]="bcscMobileSetupUrl">
+                  BC Services Card app
+                </a>
+                to enrol. You will use the app each time you access the DMFT
+                Drivers Portal.
+              </p>
             </ui-page-section>
           </ui-page-section>
         </div>
@@ -118,8 +125,8 @@
           <a uiAnchor [attr.href]="bcscMobileSetupUrl">Set up</a>
         </small>
 
-        <button mat-stroked-button (click)="onLogin(IdentityProvider.PHSA)">
-          Login with your Health Authority ID
+        <button mat-stroked-button (click)="onLogin(IdentityProvider.BCPS)">
+          Login with your BCPS Ikey
         </button>
 
         <button mat-stroked-button (click)="onLogin(IdentityProvider.IDIR)">

@@ -8,6 +8,7 @@ export enum AccessType {
   HcimAccountTransfer,
   HcimEnrolment,
   DriverFitness,
+  DigitalEvidence,
 }
 
 export const AccessTypeMap: { [AccessType: number]: string } = {
@@ -15,6 +16,7 @@ export const AccessTypeMap: { [AccessType: number]: string } = {
   [AccessType.HcimAccountTransfer]: 'HCIMWeb Account Transfer',
   [AccessType.HcimEnrolment]: 'HCIMWeb Enrolment',
   [AccessType.DriverFitness]: 'Driver Medical Fitness',
+  [AccessType.DigitalEvidence]: 'Digital Evidence',
 };
 
 export interface AccessRequest {

@@ -7,11 +7,13 @@ import { Role } from '@app/shared/enums/roles.enum';
 
 import { StatusCode } from '../enums/status-code.enum';
 import { ProfileStatus } from '../models/profile-status.model';
+import { DigitalEvidencePortalSection } from './access/digital-evidence-portal-section.class';
 import { DriverFitnessPortalSection } from './access/driver-fitness-portal-section.class';
 import { HcimAccountTransferPortalSection } from './access/hcim-account-transfer-portal-section.class';
 import { HcimEnrolmentPortalSection } from './access/hcim-enrolment-portal-section.class';
 import { SaEformsPortalSection } from './access/sa-eforms-portal-section.class';
 import { SitePrivacySecurityPortalSection } from './access/site-privacy-security-checklist-portal-section.class';
+import { AdministratorPortalSection } from './admin/admin-panel-portal-section.class';
 import { SignedAcceptedDocumentsPortalSection } from './history/signed-accepted-documents-portal-section.class';
 import { TransactionsPortalSection } from './history/transactions-portal-section.class';
 import { AdministratorInfoPortalSection } from './organization/administrator-information-portal-section';
@@ -34,6 +36,7 @@ export const portalStateGroupKeys = [
   'access',
   'organization',
   'training',
+  'admin',
   'history',
 ] as const;
 
@@ -60,8 +63,17 @@ export class PortalStateBuilder {
       access: this.createAccessGroup(profileStatus),
       organization: this.createOrganizationGroup(profileStatus),
       training: this.createTrainingGroup(profileStatus),
+      admin: this.createAdminGroup(profileStatus),
       history: this.createHistoryGroup(),
     };
+  }
+  private createAdminGroup(profileStatus: ProfileStatus): IPortalSection[] {
+    return [
+      ...ArrayUtils.insertResultIf<IPortalSection>(
+        this.permissionsService.hasRole([Role.ADMIN]),
+        () => [new AdministratorPortalSection(profileStatus, this.router)]
+      ),
+    ];
   }
 
   // TODO see where the next few enrolments lead and then drop these methods
@@ -123,11 +135,13 @@ export class PortalStateBuilder {
   private createAccessGroup(profileStatus: ProfileStatus): IPortalSection[] {
     return [
       ...ArrayUtils.insertResultIf<IPortalSection>(
-        this.insertSection('saEforms', profileStatus),
+        this.insertSection('saEforms', profileStatus) &&
+          this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]),
         () => [new SaEformsPortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
-        this.insertSection('hcimAccountTransfer', profileStatus),
+        this.insertSection('hcimAccountTransfer', profileStatus) &&
+          this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]),
         () => [new HcimAccountTransferPortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
@@ -145,9 +159,12 @@ export class PortalStateBuilder {
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
         // TODO remove permissions when ready for production
-        this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) &&
-          this.insertSection('driverFitness', profileStatus),
+        this.insertSection('driverFitness', profileStatus),
         () => [new DriverFitnessPortalSection(profileStatus, this.router)]
+      ),
+      ...ArrayUtils.insertResultIf<IPortalSection>(
+        this.insertSection('digitalEvidence', profileStatus),
+        () => [new DigitalEvidencePortalSection(profileStatus, this.router)]
       ),
     ];
   }

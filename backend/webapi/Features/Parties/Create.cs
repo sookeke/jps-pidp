@@ -34,6 +34,7 @@ public class Create
             {
                 ClaimValues.BCServicesCard => new BcscValidator(user),
                 ClaimValues.Phsa => new PhsaValidator(),
+                ClaimValues.Bcps => new BcpsValidator(user),
                 ClaimValues.Idir => new IdirValidator(),
                 _ => throw new NotImplementedException("Given Identity Provider is not supported")
             });
@@ -43,6 +44,16 @@ public class Create
         {
             public BcscValidator(ClaimsPrincipal? user)
             {
+                this.RuleFor(x => x.Hpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
+                this.RuleFor(x => x.Birthdate).NotEmpty().Equal(user?.GetBirthdate()).WithMessage($"Must match the \"birthdate\" Claim on the current User");
+            }
+        }
+        private class BcpsValidator : AbstractValidator<Command>
+        {
+            public BcpsValidator(ClaimsPrincipal? user)
+            {
+                //this.RuleFor(x => x.Hpdid).Empty();
+                //this.RuleFor(x => x.Birthdate).Empty();
                 this.RuleFor(x => x.Hpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
                 this.RuleFor(x => x.Birthdate).NotEmpty().Equal(user?.GetBirthdate()).WithMessage($"Must match the \"birthdate\" Claim on the current User");
             }

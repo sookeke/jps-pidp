@@ -34,6 +34,16 @@ public class AccessRequestsController : PidpControllerBase
         => await this.AuthorizePartyBeforeHandleAsync(command.PartyId, handler, command)
             .ToActionResult();
 
+    [HttpPost("digital-evidence")]
+    [Authorize(Policy = Policies.AllDemsIdentityProvider)]
+    //[Authorize(Policy = Policies.BcpsAuthentication)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateDigitalEvidenceEnrolment([FromServices] ICommandHandler<DigitalEvidence.Command, IDomainResult> handler,
+                                                              [FromBody] DigitalEvidence.Command command)
+    => await this.AuthorizePartyBeforeHandleAsync(command.PartyId, handler, command)
+        .ToActionResult();
+
     [HttpPost("hcim-account-transfer")]
     [Authorize(Policy = Policies.AnyPartyIdentityProvider)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

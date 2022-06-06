@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DriverFitnessPage } from './driver-fitness.page';
-import { DriverFitnessResolver } from './driver-fitness.resolver';
+import { DigitalEvidencePage } from './digital-evidence.page';
+import { DigitalEvidenceResolver } from './digital-evidence.resolver';
 
 const routes: Routes = [
   {
     path: '',
-    component: DriverFitnessPage,
+    component: DigitalEvidencePage,
     resolve: {
-      driverFitnessStatusCode: DriverFitnessResolver,
+      digitalEvidenceStatusCode: DigitalEvidenceResolver,
     },
     data: {
       title: 'JPS Provider Identity Portal',
@@ -24,4 +24,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DriverFitnessRoutingModule {}
+export class DigitalEvidenceRoutingModule {}

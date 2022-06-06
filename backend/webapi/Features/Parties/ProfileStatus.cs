@@ -115,7 +115,8 @@ public partial class ProfileStatus
                     new Model.DriverFitness(profile),
                     new Model.SAEforms(profile),
                     new Model.HcimAccountTransfer(profile),
-                    new Model.HcimEnrolment(profile)
+                    new Model.HcimEnrolment(profile),
+                    new Model.DigitalEvidence(profile)
                 }
                 .ToDictionary(section => section.SectionName, section => section)
             };
@@ -163,5 +164,7 @@ public partial class ProfileStatus
         public bool CollegeCertificationEntered => this.CollegeCode.HasValue && this.LicenceNumber != null;
         public bool UserIsBcServicesCard => this.User.GetIdentityProvider() == ClaimValues.BCServicesCard;
         public bool UserIsPhsa => this.User.GetIdentityProvider() == ClaimValues.Phsa;
+        public bool UserIsBcps => this.User.GetIdentityProvider() == ClaimValues.Bcps;
+        public bool UserIsIdir => this.User.GetIdentityProvider() == ClaimValues.Idir;
     }
 }

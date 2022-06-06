@@ -110,6 +110,8 @@ describe('PortalPage', () => {
         facilityDetails: { statusCode: StatusCode.AVAILABLE },
         userAccessAgreement: { statusCode: StatusCode.AVAILABLE },
         saEforms: { statusCode: StatusCode.AVAILABLE },
+        digitalEvidence: { statusCode: StatusCode.AVAILABLE },
+        driverFitness: { statusCode: StatusCode.AVAILABLE },
         hcimAccountTransfer: { statusCode: StatusCode.AVAILABLE },
         hcimEnrolment: { statusCode: StatusCode.AVAILABLE },
         sitePrivacySecurityChecklist: { statusCode: StatusCode.AVAILABLE },

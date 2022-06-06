@@ -128,6 +128,39 @@ public partial class ProfileStatus
             }
         }
 
+        public class DigitalEvidence : ProfileSection
+        {
+            internal override string SectionName => "digitalEvidence";
+
+            public DigitalEvidence(ProfileStatusDto profile) : base(profile) { }
+
+            protected override void SetAlertsAndStatus(ProfileStatusDto profile)
+            {
+                if (!(profile.UserIsBcServicesCard || profile.UserIsBcps || profile.UserIsIdir))
+                {
+                    this.StatusCode = StatusCode.Hidden;
+                    return;
+                }
+
+                if (profile.CompletedEnrolments.Contains(AccessType.DigitalEvidence))
+                {
+                    this.StatusCode = StatusCode.Complete;
+                    return;
+                }
+
+                if (!profile.DemographicsEntered
+                    || !profile.CollegeCertificationEntered
+                    || profile.PlrRecordStatus == null
+                    || !profile.PlrRecordStatus.IsGoodStanding())
+                {
+                    this.StatusCode = StatusCode.Locked;
+                    return;
+                }
+
+                this.StatusCode = StatusCode.Incomplete;
+            }
+        }
+
         public class DriverFitness : ProfileSection
         {
             internal override string SectionName => "driverFitness";

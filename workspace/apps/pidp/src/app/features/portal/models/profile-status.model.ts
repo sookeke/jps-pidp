@@ -1,5 +1,6 @@
 import { AlertCode } from '../enums/alert-code.enum';
 import { AccessGroup } from '../state/access/access-group.model';
+import { AdminGroup } from '../state/admin/admin-panel-group.model';
 import { OrganizationGroup } from '../state/organization/organization-group.model';
 import { ProfileGroup } from '../state/profile/profile-group.model';
 import { TrainingGroup } from '../state/training/training-group.model';
@@ -16,5 +17,9 @@ import { TrainingGroup } from '../state/training/training-group.model';
  */
 export interface ProfileStatus {
   alerts: AlertCode[];
-  status: ProfileGroup & AccessGroup & OrganizationGroup & TrainingGroup;
+  status: ProfileGroup &
+    AccessGroup &
+    OrganizationGroup &
+    TrainingGroup &
+    AdminGroup;
 }

@@ -115,6 +115,31 @@
         </ui-card-summary>
       </ui-page-section>
 
+      <ui-page-section *permittedRoles="[Role.ADMIN]">
+        <ui-scroll-target targetId="admin"></ui-scroll-target>
+        <ui-page-section-subheader
+          icon="admin_panel_settings"
+          heading="Admin Panel">
+          <ng-container uiPageSectionSubheaderDesc>
+            Manage Access request for approval.
+          </ng-container>
+        </ui-page-section-subheader>
+
+        <ui-card-summary
+          *ngFor="let section of (state$ | async)?.admin"
+          [heading]="section.heading"
+          [statusType]="section.statusType"
+          [status]="section.status"
+          [actionLabel]="section.action.label"
+          [actionDisabled]="section.action.disabled"
+          (action)="onCardAction(section)">
+          <ng-container uiCardSummaryHint>{{ section.hint }}</ng-container>
+          <ng-container uiCardSummaryContent>
+            {{ section.description }}
+          </ng-container>
+        </ui-card-summary>
+      </ui-page-section>
+
       <ui-page-section *permittedRoles="[Role.FEATURE_PIDP_DEMO]">
         <ui-scroll-target targetId="training"></ui-scroll-target>
         <ui-page-section-subheader icon="school" heading="Training">

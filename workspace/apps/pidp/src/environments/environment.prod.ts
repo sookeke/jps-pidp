@@ -1,3 +1,4 @@
+import { digitalEvidenceSupportEmail } from '@app/features/access/pages/digital-evidence/digital-evidence.constants';
 import { driverFitnessSupportEmail } from '@app/features/access/pages/driver-fitness/driver-fitness.constants';
 import { hcimWebAccountTransferSupport } from '@app/features/access/pages/hcim-account-transfer/hcim-account-transfer-constants';
 import { hcimWebEnrolmentSupport } from '@app/features/access/pages/hcim-enrolment/hcim-enrolment-constants';
@@ -20,15 +21,16 @@ import { AppEnvironment, EnvironmentName } from './environment.model';
  */
 export const environment: AppEnvironment = {
   production: true,
-  apiEndpoint: 'http://localhost:5000',
+  apiEndpoint: 'http://localhost:5050',
   environmentName: EnvironmentName.LOCAL,
   applicationUrl: 'http://localhost:4200',
   emails: {
-    providerIdentitySupport: 'provideridentityportal@gov.bc.ca',
+    providerIdentitySupport: 'jpsprovideridentityportal@gov.bc.ca',
     specialAuthorityEformsSupport: specialAuthorityEformsSupportEmail,
     hcimAccountTransferSupport: hcimWebAccountTransferSupport,
     hcimEnrolmentSupport: hcimWebEnrolmentSupport,
     driverFitnessSupport: driverFitnessSupportEmail,
+    digitalEvidenceSupport: digitalEvidenceSupportEmail,
   },
   urls: {
     bcscSupport: `https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp/help`,
@@ -37,8 +39,8 @@ export const environment: AppEnvironment = {
   },
   keycloakConfig: {
     config: {
-      url: 'https://common-logon-dev.hlth.gov.bc.ca/auth',
-      realm: 'moh_applications',
+      url: 'https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth',
+      realm: 'DEMSPOC',
       clientId: 'PIDP-WEBAPP',
     },
     initOptions: {

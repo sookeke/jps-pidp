@@ -17,15 +17,15 @@
         <span *ngIf="(identityProvider$ | async) === IdentityProvider.BCSC">
           This information comes from the BC Services Card.
         </span>
-        If you use a different name in your college licence, select "My name is
-        different on my college licence".
+        If you prefered to use a different name, select "My name is different
+        from captured".
       </ng-container>
     </ui-page-section-subheader>
 
     <app-user-info [user]="user$ | async"></app-user-info>
 
     <ui-toggle-content
-      label="My name is different on my college licence"
+      label="My name is different from the above captured"
       [checked]="hasPreferredName"
       (toggle)="onPreferredNameToggle($event)">
       <ui-page-section-subheader heading="Preferred Name">
