@@ -12,6 +12,7 @@ using Pidp.Infrastructure.HttpClients.Mail;
 using Pidp.Infrastructure.HttpClients.Plr;
 using Pidp.Infrastructure.Services;
 using Pidp.Models;
+using Pidp.Models.Lookups;
 
 public class DigitalEvidence
 {
@@ -70,7 +71,7 @@ public class DigitalEvidence
                 .Where(party => party.Id == command.PartyId)
                 .Select(party => new
                 {
-                    AlreadyEnroled = party.AccessRequests.Any(request => request.AccessType == AccessType.DigitalEvidence),
+                    AlreadyEnroled = party.AccessRequests.Any(request => request.AccessTypeCode == AccessTypeCode.DigitalEvidence),
                     party.PartyCertification!.Ipc,
                     party.Hpdid,
                     party.UserId,
@@ -80,7 +81,7 @@ public class DigitalEvidence
 
             if (dto.AlreadyEnroled
                 || dto.Email == null
-                || dto.Hpdid == null
+                //|| dto.Hpdid == null
                /* || (await this.plrClient.GetRecordStatus(dto.Ipc))?.IsGoodStanding() != true*/)
             {
                 this.logger.LogDigitalEvidenceAccessRequestDenied();
@@ -117,7 +118,7 @@ public class DigitalEvidence
             {
                 PartyId = command.PartyId,
                 UserType = command.UserType.ToString(),
-                AccessType = AccessType.DigitalEvidence,
+                AccessTypeCode = AccessTypeCode.DigitalEvidence,
                 RequestedOn = this.clock.GetCurrentInstant()
             });
 

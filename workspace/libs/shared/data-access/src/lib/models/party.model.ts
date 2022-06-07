@@ -3,7 +3,7 @@ import { Facility } from './facility.model';
 import { PartyCertification } from './party-certification.model';
 import { User } from './user.model';
 
-export enum AccessType {
+export enum AccessTypeCode {
   SAEforms = 1,
   HcimAccountTransfer,
   HcimEnrolment,
@@ -11,19 +11,20 @@ export enum AccessType {
   DigitalEvidence,
 }
 
-export const AccessTypeMap: { [AccessType: number]: string } = {
-  [AccessType.SAEforms]: 'Special Authority eForms',
-  [AccessType.HcimAccountTransfer]: 'HCIMWeb Account Transfer',
-  [AccessType.HcimEnrolment]: 'HCIMWeb Enrolment',
-  [AccessType.DriverFitness]: 'Driver Medical Fitness',
-  [AccessType.DigitalEvidence]: 'Digital Evidence',
+// TODO use lookups
+export const AccessTypeMap: { [AccessTypeCode: number]: string } = {
+  [AccessTypeCode.SAEforms]: 'Special Authority eForms',
+  [AccessTypeCode.HcimAccountTransfer]: 'HCIMWeb Account Transfer',
+  [AccessTypeCode.HcimEnrolment]: 'HCIMWeb Enrolment',
+  [AccessTypeCode.DriverFitness]: 'Driver Medical Fitness',
+  [AccessTypeCode.DigitalEvidence]: 'Digital Evidence Management',
 };
 
 export interface AccessRequest {
   id: number;
   partyId: number;
   requestedOn: string;
-  accessType: AccessType;
+  accessTypeCode: AccessTypeCode;
 }
 
 export interface Party extends User {
