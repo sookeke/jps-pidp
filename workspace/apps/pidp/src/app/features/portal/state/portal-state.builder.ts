@@ -112,29 +112,26 @@ export class PortalStateBuilder {
       ...ArrayUtils.insertResultIf<IPortalSection>(
         // TODO remove permissions when API exists and ready for production, or
         // TODO replace || with && to keep it flagged when API exists
-        this.insertSection('organizationDetails', profileStatus) ||
-          this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]),
+        this.insertSection('organizationDetails', profileStatus),
         () => [new OrganizationDetailsPortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
         // TODO remove permissions when API exists and ready for production, or
         // TODO replace || with && to keep it flagged when API exists
-        this.insertSection('facilityDetails', profileStatus) ||
-          this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]),
+        this.insertSection('facilityDetails', profileStatus),
         () => [new FacilityDetailsPortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
         // TODO remove permissions when API exists and ready for production, or
         // TODO replace || with && to keep it flagged when API exists
-        this.insertSection('administratorInfo', profileStatus) ||
-          this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]),
+        this.insertSection('administratorInfo', profileStatus),
         () => [new AdministratorInfoPortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
         // TODO remove permissions when API exists and ready for production, or
         // TODO replace || with && to keep it flagged when API exists
-        this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
-          this.insertSection('endorsement', profileStatus),
+        //this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
+        this.insertSection('endorsement', profileStatus),
         () => [new EndorsementPortalSection(profileStatus, this.router)]
       ),
     ];

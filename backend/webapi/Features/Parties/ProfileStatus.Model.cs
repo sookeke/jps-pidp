@@ -18,7 +18,7 @@ public partial class ProfileStatus
 
             protected override void SetAlertsAndStatus(ProfileStatusDto profile)
             {
-                if (!profile.UserIsPhsa)
+                if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard))
                 {
                     this.StatusCode = StatusCode.Hidden;
                     return;
@@ -110,7 +110,7 @@ public partial class ProfileStatus
 
             protected override void SetAlertsAndStatus(ProfileStatusDto profile)
             {
-                if (!profile.UserIsPhsa)
+                if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard || profile.UserIsBcps))
                 {
                     this.StatusCode = StatusCode.Hidden;
                     return;
@@ -150,6 +150,7 @@ public partial class ProfileStatus
 
                 if (!profile.DemographicsEntered
                     || !profile.CollegeCertificationEntered
+                    || !profile.OrganizationDetailEntered
                     || profile.PlrRecordStatus == null
                     || !profile.PlrRecordStatus.IsGoodStanding())
                 {

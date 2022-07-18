@@ -6,12 +6,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { EMPTY, catchError, of, tap } from 'rxjs';
 
-import { NoContent, OrganizationCode } from '@bcgov/shared/data-access';
+import {
+  CorrectionServiceCode,
+  JusticeSectorCode,
+  NoContent,
+  OrganizationCode,
+} from '@bcgov/shared/data-access';
 
 import { AbstractFormPage } from '@app/core/classes/abstract-form-page.class';
 import { PartyService } from '@app/core/party/party.service';
 import { FormUtilsService } from '@app/core/services/form-utils.service';
 import { LoggerService } from '@app/core/services/logger.service';
+import { IdentityProvider } from '@app/features/auth/enums/identity-provider.enum';
+import { AuthorizedUserService } from '@app/features/auth/services/authorized-user.service';
 import { LookupService } from '@app/modules/lookup/lookup.service';
 import { Lookup } from '@app/modules/lookup/lookup.types';
 
@@ -32,6 +39,12 @@ export class OrganizationDetailsPage
   public formState: OrganizationDetailsFormState;
   public organizations: (Lookup & { disabled: boolean })[];
   public healthAuthorities: Lookup[];
+  public lawEnforcements: Lookup[];
+  public justiceSectors: Lookup[];
+  public correctionServices: Lookup[];
+  public lawSocieties: Lookup[];
+  public IdentityProvider = IdentityProvider;
+  public selectedOption = 0;
 
   public constructor(
     protected dialog: MatDialog,
@@ -41,6 +54,7 @@ export class OrganizationDetailsPage
     private partyService: PartyService,
     private resource: OrganizationDetailsResource,
     private logger: LoggerService,
+    private authorizedUserService: AuthorizedUserService,
     private lookupService: LookupService,
     fb: FormBuilder
   ) {
@@ -49,17 +63,62 @@ export class OrganizationDetailsPage
     const routeData = this.route.snapshot.data;
     this.title = routeData.title;
     this.formState = new OrganizationDetailsFormState(fb);
+
+    this.authorizedUserService.identityProvider$.subscribe((val) => {
+      //console.log(val);
+      if (val === IdentityProvider.BCPS) {
+        this.organizations = this.lookupService.organizations.map(
+          (organization) => ({
+            ...organization,
+            disabled: !(
+              (organization.code === OrganizationCode.JusticeSector)
+              //organization.code === OrganizationCode.correctionService
+            ),
+          })
+        );
+      } else if (val === IdentityProvider.BCSC) {
+        this.organizations = this.lookupService.organizations.map(
+          (organization) => ({
+            ...organization,
+            disabled: !(
+              organization.code === OrganizationCode.correctionService ||
+              organization.code === OrganizationCode.LawSociety
+            ),
+          })
+        );
+      }
+    });
+    // if (idp == IdentityProvider.BCPS) {
+    //   console.log(idp);
+    // }
+
     this.organizations = this.lookupService.organizations.map(
       (organization) => ({
         ...organization,
-        disabled: organization.code !== OrganizationCode.HealthAuthority,
+        disabled: organization.code === null,
       })
     );
     this.healthAuthorities = this.lookupService.healthAuthorities;
+    this.justiceSectors = this.lookupService.justiceSectors;
+    this.lawEnforcements = this.lookupService.lawEnforcements;
+    this.correctionServices = this.lookupService.correctionServices;
+    this.lawSocieties = this.lookupService.lawSocieties;
   }
 
   public onBack(): void {
     this.navigateToRoot();
+  }
+
+  public onChange(data: number): void {
+    this.selectedOption = data;
+    this.formState.justiceSectorCode.clearValidators();
+    this.formState.justiceSectorCode.reset();
+    this.formState.healthAuthorityCode.clearValidators();
+    this.formState.healthAuthorityCode.reset();
+    this.formState.lawEnforcementCode.clearValidators();
+    this.formState.lawEnforcementCode.reset();
+    this.formState.correctionServiceCode.clearValidators();
+    this.formState.correctionServiceCode.reset();
   }
 
   public ngOnInit(): void {

@@ -4,6 +4,10 @@ export const lookupConfigKeys = [
   'provinces',
   'organizations',
   'healthAuthorities',
+  'justiceSectors',
+  'lawEnforcements',
+  'correctionServices',
+  'lawSocieties',
 ] as const;
 
 export type LookupConfigKey = typeof lookupConfigKeys[number];
@@ -18,6 +22,10 @@ export interface LookupConfig extends ILookupConfig {
   provinces: ProvinceLookup[];
   organizations: Lookup[];
   healthAuthorities: Lookup[];
+  justiceSectors: Lookup[];
+  lawEnforcements: Lookup[];
+  correctionServices: Lookup[];
+  lawSocieties: Lookup[];
 }
 
 export interface Lookup<T extends number | string = number> {

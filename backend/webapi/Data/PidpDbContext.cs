@@ -23,7 +23,8 @@ public class PidpDbContext : DbContext
     public DbSet<PartyAccessAdministrator> PartyAccessAdministrators { get; set; } = default!;
     public DbSet<PartyCertification> PartyCertifications { get; set; } = default!;
     public DbSet<PartyOrgainizationDetail> PartyOrgainizationDetails { get; set; } = default!;
-
+    public DbSet<JusticeSectorDetail> JusticeSectorDetails { get; set; } = default!;
+    public DbSet<CorrectionServiceDetail> CorrectionServiceDetails { get; set; } = default!;
     public override int SaveChanges()
     {
         this.ApplyAudits();

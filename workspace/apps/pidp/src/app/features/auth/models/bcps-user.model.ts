@@ -4,29 +4,30 @@ import { IUserResolver, User } from './user.model';
 
 export class BcpsUser implements User {
   public readonly identityProvider: IdentityProvider;
-  public hpdid: string;
+  //public hpdid: string;
   public userId: string;
   public firstName: string;
   public lastName: string;
-  public birthdate: string;
+  public idir: string;
 
   public constructor({ accessTokenParsed, brokerProfile }: UserIdentity) {
     const {
       firstName,
       lastName,
-      username: hpdid,
-      attributes: {
-        birthdate: [birthdate],
-      },
+      //username: hpdid,
     } = brokerProfile;
-    const { identity_provider, sub: userId } = accessTokenParsed;
+    const {
+      identity_provider,
+      sub: userId,
+      preferred_username: idir,
+    } = accessTokenParsed;
 
     this.identityProvider = identity_provider;
-    this.hpdid = hpdid;
+    //this.hpdid = hpdid;
     this.userId = userId;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.birthdate = birthdate;
+    this.idir = idir;
   }
 }
 

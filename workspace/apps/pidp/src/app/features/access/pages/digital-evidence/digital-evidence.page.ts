@@ -122,6 +122,17 @@ export class DigitalEvidencePage
   }
   protected performSubmission(): Observable<void> {
     const partyId = this.partyService.partyId;
+    console.log('Submiting');
+    console.log(this.formState.ikeyCertCode.value);
+    if (this.selectedOption == 1) {
+      return partyId && this.formState.json
+        ? this.resource.requestAccess(
+            partyId,
+            this.formState.userType.value,
+            this.formState.ikeyCertCode.value
+          )
+        : EMPTY;
+    }
 
     return partyId && this.formState.json
       ? this.resource.requestAccess(
@@ -150,6 +161,9 @@ export class DigitalEvidencePage
     this.formState.ikeyCertCode.reset();
     if (this.selectedOption == 1) {
       this.formState.ikeyCertCode.setValidators([Validators.required]);
+      console.log(this.formState.ikeyCertCode.value);
+      //this.formState.pidNumber = this.formState.ikeyCertCode;
+      console.log(this.formState.pidNumber.value);
     }
     if (this.selectedOption == 2) {
       this.formState.pidNumber.setValidators([Validators.required]);
@@ -168,23 +182,45 @@ export class DigitalEvidencePage
   //   console.log(this.form.value);
   // }
   public onRequestAccess(): void {
-    this.resource
-      .requestAccess(
-        this.partyService.partyId,
-        this.formState.userType.value,
-        this.formState.pidNumber.value
-      )
-      .pipe(
-        tap(() => (this.completed = true)),
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === HttpStatusCode.NotFound) {
-            this.navigateToRoot();
-          }
-          this.accessRequestFailed = true;
-          return of(noop());
-        })
-      )
-      .subscribe();
+    console.log('Submiting');
+    console.log(this.formState.ikeyCertCode.value);
+    if (this.selectedOption == 1) {
+      this.resource
+        .requestAccess(
+          this.partyService.partyId,
+          this.formState.userType.value,
+          this.formState.ikeyCertCode.value
+        )
+        .pipe(
+          tap(() => (this.completed = true)),
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === HttpStatusCode.NotFound) {
+              this.navigateToRoot();
+            }
+            this.accessRequestFailed = true;
+            return of(noop());
+          })
+        )
+        .subscribe();
+    } else {
+      this.resource
+        .requestAccess(
+          this.partyService.partyId,
+          this.formState.userType.value,
+          this.formState.pidNumber.value
+        )
+        .pipe(
+          tap(() => (this.completed = true)),
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === HttpStatusCode.NotFound) {
+              this.navigateToRoot();
+            }
+            this.accessRequestFailed = true;
+            return of(noop());
+          })
+        )
+        .subscribe();
+    }
   }
 
   public ngOnInit(): void {

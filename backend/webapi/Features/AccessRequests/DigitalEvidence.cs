@@ -25,8 +25,8 @@ public class DigitalEvidence
     public enum UserType
     {
         BCPS = 1,
-        Police,
         OutOfCustody,
+        Police,
         Lawyer,
         None
     }
@@ -118,8 +118,10 @@ public class DigitalEvidence
             {
                 PartyId = command.PartyId,
                 UserType = command.UserType.ToString(),
+                ParticipantId = command.PidNumber,
                 AccessTypeCode = AccessTypeCode.DigitalEvidence,
                 RequestedOn = this.clock.GetCurrentInstant()
+
             });
 
             await this.context.SaveChangesAsync();

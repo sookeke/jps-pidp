@@ -50,10 +50,11 @@ export class EndorsementPortalSection implements IPortalSection {
           ? OrganizationInfoRoutes.ENDORSEMENT_REQUESTS_RECEIVED
           : OrganizationInfoRoutes.ENDORSEMENT_REQUEST
       ),
-      disabled: !(
-        this.profileStatus.status.demographics.statusCode ===
-        StatusCode.COMPLETED
-      ),
+      disabled:
+        this.profileStatus.status.demographics.statusCode !==
+        StatusCode.COMPLETED,
+
+        // disabled: demographicsStatusCode !== StatusCode.COMPLETED,
     };
   }
 

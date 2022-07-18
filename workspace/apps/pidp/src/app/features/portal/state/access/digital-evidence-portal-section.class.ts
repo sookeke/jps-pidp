@@ -37,10 +37,15 @@ export class DigitalEvidencePortalSection implements IPortalSection {
   public get action(): PortalSectionAction {
     const demographicsStatusCode =
       this.profileStatus.status.demographics.statusCode;
+    const organizationStatusCode =
+      this.profileStatus.status.organizationDetails.statusCode;
     return {
       label: this.getStatusCode() === StatusCode.COMPLETED ? 'View' : 'Request',
       route: AccessRoutes.routePath(AccessRoutes.DIGITAL_EVIDENCE),
-      disabled: demographicsStatusCode !== StatusCode.COMPLETED,
+      disabled: !(
+        demographicsStatusCode === StatusCode.COMPLETED &&
+        organizationStatusCode === StatusCode.COMPLETED
+      ),
     };
   }
 

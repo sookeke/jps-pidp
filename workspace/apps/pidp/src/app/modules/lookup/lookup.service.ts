@@ -51,6 +51,19 @@ export class LookupService implements ILookupService {
   public get healthAuthorities(): Lookup[] {
     return this.copyAndSortByKey(this.lookupConfig?.healthAuthorities);
   }
+  public get justiceSectors(): Lookup[] {
+    return this.copyAndSortByKey(this.lookupConfig?.justiceSectors);
+  }
+  public get lawEnforcements(): Lookup[] {
+    return this.copyAndSortByKey(this.lookupConfig?.lawEnforcements);
+  }
+
+  public get correctionServices(): Lookup[] {
+    return this.copyAndSortByKey(this.lookupConfig?.correctionServices);
+  }
+  public get lawSocieties(): Lookup[] {
+    return this.copyAndSortByKey(this.lookupConfig?.lawSocieties);
+  }
 
   /**
    * @description

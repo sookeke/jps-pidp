@@ -18,6 +18,10 @@ public class Index
         public List<Province> Provinces { get; set; } = new();
         public List<Organization> Organizations { get; set; } = new();
         public List<HealthAuthority> HealthAuthorities { get; set; } = new();
+        public List<JusticeSector> JusticeSectors { get; set; } = new();
+        public List<LawEnforcement> LawEnforcements { get; set; } = new();
+        public List<CorrectionService> CorrectionServices { get; set; } = new();
+        public List<LawSociety> LawSocieties { get; set; } = new();
     }
 
     public class QueryHandler : IQueryHandler<Query, Model>
@@ -39,7 +43,16 @@ public class Index
                 Organizations = await this.context.Set<Organization>()
                     .ToListAsync(),
                 HealthAuthorities = await this.context.Set<HealthAuthority>()
+                    .ToListAsync(),
+                JusticeSectors = await this.context.Set<JusticeSector>()
+                    .ToListAsync(),
+                LawEnforcements = await this.context.Set<LawEnforcement>()
+                    .ToListAsync(),
+                CorrectionServices = await this.context.Set<CorrectionService>()
+                    .ToListAsync(),
+                LawSocieties = await this.context.Set<LawSociety>()
                     .ToListAsync()
+
             };
         }
     }

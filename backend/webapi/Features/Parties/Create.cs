@@ -52,10 +52,10 @@ public class Create
         {
             public BcpsValidator(ClaimsPrincipal? user)
             {
-                //this.RuleFor(x => x.Hpdid).Empty();
-                //this.RuleFor(x => x.Birthdate).Empty();
-                this.RuleFor(x => x.Hpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
-                this.RuleFor(x => x.Birthdate).NotEmpty().Equal(user?.GetBirthdate()).WithMessage($"Must match the \"birthdate\" Claim on the current User");
+                this.RuleFor(x => x.Hpdid).Empty();
+                this.RuleFor(x => x.Birthdate).Empty();
+                //this.RuleFor(x => x.Hpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
+                //this.RuleFor(x => x.Birthdate).NotEmpty().Equal(user?.GetBirthdate()).WithMessage($"Must match the \"birthdate\" Claim on the current User");
             }
         }
 

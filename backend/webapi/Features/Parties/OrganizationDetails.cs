@@ -24,7 +24,9 @@ public class OrganizationDetails
         public int PartyId { get; set; }
 
         public OrganizationCode OrganizationCode { get; set; }
-        public HealthAuthorityCode HealthAuthorityCode { get; set; }
+        public HealthAuthorityCode? HealthAuthorityCode { get; set; }
+        public JusticeSectorCode? JusticeSectorCode { get; set; }
+        public CorrectionServiceCode? CorrectionServiceCode { get; set; }
         public string EmployeeIdentifier { get; set; } = string.Empty;
     }
 
@@ -39,7 +41,7 @@ public class OrganizationDetails
         {
             this.RuleFor(x => x.PartyId).GreaterThan(0);
             this.RuleFor(x => x.OrganizationCode).IsInEnum();
-            this.RuleFor(x => x.HealthAuthorityCode).IsInEnum();
+            //this.RuleFor(x => x.HealthAuthorityCode).IsInEnum();
             this.RuleFor(x => x.EmployeeIdentifier).NotEmpty();
         }
     }
@@ -61,6 +63,32 @@ public class OrganizationDetails
                 .Where(detail => detail.PartyId == query.PartyId)
                 .ProjectTo<Command>(this.mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
+            var org = await this.context.PartyOrgainizationDetails
+                .Where(detail => detail.PartyId == query.PartyId)
+                //.ProjectTo<Command>(this.mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+            if (org != null  && org.OrganizationCode == OrganizationCode.JusticeSector)
+            {
+                var details = await this.context.JusticeSectorDetails
+                    .Where(detail => detail.OrgainizationDetail == org)
+                    .Include(n => n.OrgainizationDetail)
+                    .SingleOrDefaultAsync();
+
+                orgDetails.JusticeSectorCode = details.JusticeSectorCode;
+                orgDetails.EmployeeIdentifier = details.JustinUserId;
+                orgDetails.OrganizationCode = org.OrganizationCode;
+            }
+            if (org != null && org.OrganizationCode == OrganizationCode.CorrectionService)
+            {
+                var details = await this.context.CorrectionServiceDetails
+                    .Where(detail => detail.OrgainizationDetail == org)
+                    .Include(n => n.OrgainizationDetail)
+                    .SingleOrDefaultAsync();
+
+                orgDetails.CorrectionServiceCode = details.CorrectionServiceCode;
+                orgDetails.EmployeeIdentifier = details.PeronalId;
+                orgDetails.OrganizationCode = org.OrganizationCode;
+            }
 
             return orgDetails ?? new Command { PartyId = query.PartyId };
         }
@@ -77,7 +105,44 @@ public class OrganizationDetails
             var org = await this.context.PartyOrgainizationDetails
                 .SingleOrDefaultAsync(detail => detail.PartyId == command.PartyId);
 
-            if (org == null)
+            var jpsDetail = await this.context.JusticeSectorDetails
+               .SingleOrDefaultAsync(detail => detail.OrgainizationDetail == org);
+
+
+            if (org == null && command.OrganizationCode == OrganizationCode.JusticeSector)
+            {
+                org = new Models.PartyOrgainizationDetail
+                {
+                    PartyId = command.PartyId
+                };
+                jpsDetail = new Models.JusticeSectorDetail
+                {
+                    OrgainizationDetail = org,
+                    JustinUserId = command.EmployeeIdentifier,
+                    JusticeSectorCode = (JusticeSectorCode)command.JusticeSectorCode
+                };
+                this.context.PartyOrgainizationDetails.Add(org);
+                this.context.JusticeSectorDetails.Add(jpsDetail);
+            }
+            else if (org == null && command.OrganizationCode == OrganizationCode.CorrectionService)
+            {
+                var corDetail = await this.context.CorrectionServiceDetails
+                                    .SingleOrDefaultAsync(detail => detail.OrgainizationDetail == org);
+
+                org = new Models.PartyOrgainizationDetail
+                {
+                    PartyId = command.PartyId
+                };
+                corDetail = new Models.CorrectionServiceDetail
+                {
+                    OrgainizationDetail = org,
+                    PeronalId = command.EmployeeIdentifier,
+                    CorrectionServiceCode = (CorrectionServiceCode)command.CorrectionServiceCode
+                };
+                this.context.PartyOrgainizationDetails.Add(org);
+                this.context.CorrectionServiceDetails.Add(corDetail);
+            }
+            else
             {
                 org = new Models.PartyOrgainizationDetail
                 {
@@ -87,8 +152,8 @@ public class OrganizationDetails
             }
 
             org.OrganizationCode = command.OrganizationCode;
-            org.HealthAuthorityCode = command.HealthAuthorityCode;
-            org.EmployeeIdentifier = command.EmployeeIdentifier;
+            //org.HealthAuthorityCode = command.HealthAuthorityCode;
+            //org.EmployeeIdentifier = command.EmployeeIdentifier;
 
             await this.context.SaveChangesAsync();
         }

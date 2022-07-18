@@ -131,6 +131,31 @@ namespace Pidp.Data.Migrations
                     b.ToTable("ClientLog");
                 });
 
+            modelBuilder.Entity("Pidp.Models.CorrectionServiceDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CorrectionServiceCode")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrgainizationDetailId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PeronalId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrgainizationDetailId");
+
+                    b.ToTable("CorrectionServiceDetails");
+                });
+
             modelBuilder.Entity("Pidp.Models.EmailLog", b =>
                 {
                     b.Property<int>("Id")
@@ -260,6 +285,31 @@ namespace Pidp.Data.Migrations
                     b.ToTable("Facility");
                 });
 
+            modelBuilder.Entity("Pidp.Models.JusticeSectorDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("JusticeSectorCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("JustinUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OrgainizationDetailId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrgainizationDetailId");
+
+                    b.ToTable("JusticeSectorDetail");
+                });
+
             modelBuilder.Entity("Pidp.Models.Lookups.AccessType", b =>
                 {
                     b.Property<int>("Code")
@@ -293,6 +343,11 @@ namespace Pidp.Data.Migrations
                         {
                             Code = 4,
                             Name = "Driver Medical Fitness"
+                        },
+                        new
+                        {
+                            Code = 5,
+                            Name = "Digital Evidence Management"
                         });
                 });
 
@@ -349,6 +404,37 @@ namespace Pidp.Data.Migrations
                             Code = 6,
                             Acronym = "COBC",
                             Name = "College of Optometrists of British Columbia"
+                        });
+                });
+
+            modelBuilder.Entity("Pidp.Models.Lookups.CorrectionService", b =>
+                {
+                    b.Property<int>("Code")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("CorrectionServiceLookup");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = 1,
+                            Name = "In Custody"
+                        },
+                        new
+                        {
+                            Code = 2,
+                            Name = "Out Of Custody"
+                        },
+                        new
+                        {
+                            Code = 3,
+                            Name = "In and Out Of Custody"
                         });
                 });
 
@@ -429,6 +515,89 @@ namespace Pidp.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Pidp.Models.Lookups.JusticeSector", b =>
+                {
+                    b.Property<int>("Code")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("JusticeSectorLookup");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = 1,
+                            Name = "BC Prosecution Service"
+                        },
+                        new
+                        {
+                            Code = 2,
+                            Name = "Road Safety BC"
+                        });
+                });
+
+            modelBuilder.Entity("Pidp.Models.Lookups.LawEnforcement", b =>
+                {
+                    b.Property<int>("Code")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("LawEnforcementLookup");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = 1,
+                            Name = "Royal Canadian Mounted Police"
+                        },
+                        new
+                        {
+                            Code = 2,
+                            Name = "Victoria Police Department"
+                        },
+                        new
+                        {
+                            Code = 3,
+                            Name = "Sannich Police Department"
+                        },
+                        new
+                        {
+                            Code = 4,
+                            Name = "Delta Police Departmemt"
+                        });
+                });
+
+            modelBuilder.Entity("Pidp.Models.Lookups.LawSociety", b =>
+                {
+                    b.Property<int>("Code")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("LawSocietyLookup");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = 1,
+                            Name = "BC Law Society"
+                        });
+                });
+
             modelBuilder.Entity("Pidp.Models.Lookups.Organization", b =>
                 {
                     b.Property<int>("Code")
@@ -446,26 +615,41 @@ namespace Pidp.Data.Migrations
                         new
                         {
                             Code = 1,
-                            Name = "Health Authority"
+                            Name = "Justice Sector"
                         },
                         new
                         {
                             Code = 2,
-                            Name = "BC Government Ministry"
+                            Name = "BC Law Enforcement"
                         },
                         new
                         {
                             Code = 3,
-                            Name = "Maximus"
+                            Name = "BC Law Society"
                         },
                         new
                         {
                             Code = 4,
-                            Name = "ICBC"
+                            Name = "BC Corrections Service"
                         },
                         new
                         {
                             Code = 5,
+                            Name = "Health Authority"
+                        },
+                        new
+                        {
+                            Code = 6,
+                            Name = "BC Government Ministry"
+                        },
+                        new
+                        {
+                            Code = 7,
+                            Name = "ICBC"
+                        },
+                        new
+                        {
+                            Code = 8,
                             Name = "Other"
                         });
                 });
@@ -1047,13 +1231,6 @@ namespace Pidp.Data.Migrations
                     b.Property<Instant>("Created")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("EmployeeIdentifier")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("HealthAuthorityCode")
-                        .HasColumnType("integer");
-
                     b.Property<Instant>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -1074,6 +1251,10 @@ namespace Pidp.Data.Migrations
             modelBuilder.Entity("Pidp.Models.DigitalEvidence", b =>
                 {
                     b.HasBaseType("Pidp.Models.AccessRequest");
+
+                    b.Property<string>("ParticipantId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("UserType")
                         .IsRequired()
@@ -1157,6 +1338,17 @@ namespace Pidp.Data.Migrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("Pidp.Models.CorrectionServiceDetail", b =>
+                {
+                    b.HasOne("Pidp.Models.PartyOrgainizationDetail", "OrgainizationDetail")
+                        .WithMany()
+                        .HasForeignKey("OrgainizationDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrgainizationDetail");
+                });
+
             modelBuilder.Entity("Pidp.Models.EndorsementRequest", b =>
                 {
                     b.HasOne("Pidp.Models.Party", "EndorsingParty")
@@ -1183,6 +1375,17 @@ namespace Pidp.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Party");
+                });
+
+            modelBuilder.Entity("Pidp.Models.JusticeSectorDetail", b =>
+                {
+                    b.HasOne("Pidp.Models.PartyOrgainizationDetail", "OrgainizationDetail")
+                        .WithMany()
+                        .HasForeignKey("OrgainizationDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrgainizationDetail");
                 });
 
             modelBuilder.Entity("Pidp.Models.PartyAccessAdministrator", b =>

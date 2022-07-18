@@ -15,6 +15,18 @@ export class OrganizationDetailsFormState extends AbstractFormState<Organization
     return this.formInstance.get('organizationCode') as FormControl;
   }
 
+  public get justiceSectorCode(): FormControl {
+    return this.formInstance.get('justiceSectorCode') as FormControl;
+  }
+  public get healthAuthorityCode(): FormControl {
+    return this.formInstance.get('healthAuthorityCode') as FormControl;
+  }
+  public get lawEnforcementCode(): FormControl {
+    return this.formInstance.get('lawEnforcementCode') as FormControl;
+  }
+  public get correctionServiceCode(): FormControl {
+    return this.formInstance.get('correctionServiceCode') as FormControl;
+  }
   public get json(): OrganizationDetails | undefined {
     if (!this.formInstance) {
       return;
@@ -33,8 +45,26 @@ export class OrganizationDetailsFormState extends AbstractFormState<Organization
 
   public buildForm(): void {
     this.formInstance = this.fb.group({
-      organizationCode: [0, [Validators.required, FormControlValidators.requiredIndex]],
-      healthAuthorityCode: [0, [Validators.required, FormControlValidators.requiredIndex]],
+      organizationCode: [
+        0,
+        [Validators.required, FormControlValidators.requiredIndex],
+      ],
+      healthAuthorityCode: [
+        0,
+        [Validators.required, FormControlValidators.requiredIndex],
+      ],
+      justiceSectorCode: [
+        0,
+        [Validators.required, FormControlValidators.requiredIndex],
+      ],
+      lawEnforcementCode: [
+        0,
+        [Validators.required, FormControlValidators.requiredIndex],
+      ],
+      correctionServiceCode: [
+        0,
+        [Validators.required, FormControlValidators.requiredIndex],
+      ],
       employeeIdentifier: ['', [Validators.required]],
     });
   }

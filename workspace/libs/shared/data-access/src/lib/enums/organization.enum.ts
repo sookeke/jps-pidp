@@ -1,7 +1,10 @@
 export enum OrganizationCode {
-  HealthAuthority = 1,
+  JusticeSector = 1,
+  LawEnforcement,
+  LawSociety,
+  correctionService,
+  HealthAuthority,
   BcGovernmentMinistry,
-  Maximus,
   ICBC,
   Other,
 }

@@ -14,11 +14,15 @@
       <section>
         <ui-page-subheader>Organization Type</ui-page-subheader>
         <p>Select your organization type.</p>
+        <!-- <span *ngIf="(identityProvider$ | async) === IdentityProvider.BCSC">
+          This information comes from the BC Services Card.
+        </span> -->
 
         <mat-form-field class="w-100">
           <mat-select
             placeholder="Organization Type"
-            formControlName="organizationCode">
+            formControlName="organizationCode"
+            (selectionChange)="onChange($event.value)">
             <mat-option
               *ngFor="let organization of organizations"
               [value]="organization.code"
@@ -30,7 +34,7 @@
         </mat-form-field>
       </section>
 
-      <ng-container *ngIf="formState.organizationCode.value">
+      <ng-container *ngIf="formState.organizationCode.value === 5">
         <section>
           <ui-page-subheader>Health Authority</ui-page-subheader>
           <p>Select what Health Authority you work in.</p>
@@ -61,6 +65,107 @@
             <mat-error>Required</mat-error>
           </mat-form-field>
         </section>
+      </ng-container>
+
+      <ng-container *ngIf="formState.organizationCode.value === 2">
+        <section>
+          <ui-page-subheader>BC Law Enforcement</ui-page-subheader>
+          <p>Select which law enforcement you work in.</p>
+
+          <mat-form-field class="w-100">
+            <mat-select
+              placeholder="Law Enforcement"
+              formControlName="lawEnforcementCode">
+              <mat-option
+                *ngFor="let lawEnforcement of lawEnforcements"
+                [value]="lawEnforcement.code">
+                {{ lawEnforcement.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Required</mat-error>
+          </mat-form-field>
+        </section>
+
+        <section>
+          <ui-page-subheader>Law Enforcement Employee ID</ui-page-subheader>
+          <p>Provide your Law Enforecment employee ID.</p>
+
+          <mat-form-field class="w-100">
+            <input
+              matInput
+              placeholder="Law Enforcement Employee ID"
+              formControlName="employeeIdentifier" />
+            <mat-error>Required</mat-error>
+          </mat-form-field>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="formState.organizationCode.value === 4">
+        <section>
+          <ui-page-subheader>BC Correction Service</ui-page-subheader>
+          <p>Select which correction service best describes you.</p>
+
+          <mat-form-field class="w-100">
+            <mat-select
+              placeholder="Corrections Service"
+              formControlName="correctionServiceCode">
+              <mat-option
+                *ngFor="let correctionService of correctionServices"
+                [value]="correctionService.code">
+                {{ correctionService.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Required</mat-error>
+          </mat-form-field>
+        </section>
+
+        <section *ngIf="formState.correctionServiceCode.value === 2">
+          <ui-page-subheader>Out of Custody Personal ID</ui-page-subheader>
+          <p>Provide your Out of Custody Personal Identification Number.</p>
+
+          <mat-form-field class="w-100">
+            <input
+              matInput
+              placeholder="Out of Custody Personal ID"
+              formControlName="employeeIdentifier" />
+            <mat-error>Required</mat-error>
+          </mat-form-field>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="formState.organizationCode.value === 1">
+        <section>
+          <ui-page-subheader>Justic Sector</ui-page-subheader>
+          <p>Select what JPSS Department you work in.</p>
+
+          <mat-form-field class="w-100">
+            <mat-select
+              placeholder="Justice Sector"
+              formControlName="justiceSectorCode">
+              <mat-option
+                *ngFor="let justiceSector of justiceSectors"
+                [value]="justiceSector.code">
+                {{ justiceSector.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Required</mat-error>
+          </mat-form-field>
+        </section>
+
+        <ng-container *ngIf="formState.justiceSectorCode.value === 1">
+          <section>
+            <ui-page-subheader>BCPS Justin User ID</ui-page-subheader>
+            <p>Provide your BCPS Justin Username</p>
+
+            <mat-form-field class="w-100">
+              <input
+                matInput
+                placeholder="Justin BCPS user ID"
+                formControlName="employeeIdentifier" />
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+          </section>
+        </ng-container>
       </ng-container>
     </ng-container>
   </ui-page-section>

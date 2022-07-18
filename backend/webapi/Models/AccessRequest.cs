@@ -39,4 +39,5 @@ public class HcimEnrolment : AccessRequest
 public class DigitalEvidence : AccessRequest
 {
     public string UserType { get; set; } = string.Empty;
+    public string ParticipantId { get; set; } = string.Empty;
 }
