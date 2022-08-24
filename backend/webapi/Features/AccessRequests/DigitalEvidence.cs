@@ -109,6 +109,7 @@ public class DigitalEvidence
                 return DomainResult.Failed();
             }
 
+            //sample
             //this.context.AccessRequests.Add(new AccessRequest
             //{
             //    PartyId = command.PartyId,
