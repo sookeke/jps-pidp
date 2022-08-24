@@ -19,9 +19,9 @@ public class PidpDbContext : DbContext
     public DbSet<HcimAccountTransfer> HcimAccountTransfers { get; set; } = default!;
     public DbSet<HcimEnrolment> HcimEnrolments { get; set; } = default!;
     public DbSet<DigitalEvidence> DigitalEvidences { get; set; } = default!;
+    public DbSet<PartyLicenceDeclaration> PartyLicenceDeclarations { get; set; } = default!;
     public DbSet<Party> Parties { get; set; } = default!;
     public DbSet<PartyAccessAdministrator> PartyAccessAdministrators { get; set; } = default!;
-    public DbSet<PartyCertification> PartyCertifications { get; set; } = default!;
     public DbSet<PartyOrgainizationDetail> PartyOrgainizationDetails { get; set; } = default!;
     public DbSet<JusticeSectorDetail> JusticeSectorDetails { get; set; } = default!;
     public DbSet<CorrectionServiceDetail> CorrectionServiceDetails { get; set; } = default!;

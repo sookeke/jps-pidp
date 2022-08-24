@@ -11,9 +11,11 @@ import { DigitalEvidencePortalSection } from './access/digital-evidence-portal-s
 import { DriverFitnessPortalSection } from './access/driver-fitness-portal-section.class';
 import { HcimAccountTransferPortalSection } from './access/hcim-account-transfer-portal-section.class';
 import { HcimEnrolmentPortalSection } from './access/hcim-enrolment-portal-section.class';
+import { MsTeamsPortalSection } from './access/ms-teams-portal-section.class';
 import { SaEformsPortalSection } from './access/sa-eforms-portal-section.class';
 import { SitePrivacySecurityPortalSection } from './access/site-privacy-security-checklist-portal-section.class';
 import { AdministratorPortalSection } from './admin/admin-panel-portal-section.class';
+import { UciPortalSection } from './access/uci-portal-section.class';
 import { SignedAcceptedDocumentsPortalSection } from './history/signed-accepted-documents-portal-section.class';
 import { TransactionsPortalSection } from './history/transactions-portal-section.class';
 import { AdministratorInfoPortalSection } from './organization/administrator-information-portal-section';
@@ -170,6 +172,16 @@ export class PortalStateBuilder {
       ...ArrayUtils.insertResultIf<IPortalSection>(
         this.insertSection('digitalEvidence', profileStatus),
         () => [new DigitalEvidencePortalSection(profileStatus, this.router)]
+        // TODO remove permissions when ready for production
+        this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) &&
+          this.insertSection('msTeams', profileStatus),
+        () => [new MsTeamsPortalSection(profileStatus, this.router)]
+      ),
+      ...ArrayUtils.insertResultIf<IPortalSection>(
+        // TODO remove permissions when ready for production
+        this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) &&
+          this.insertSection('uci', profileStatus),
+        () => [new UciPortalSection(profileStatus, this.router)]
       ),
     ];
   }

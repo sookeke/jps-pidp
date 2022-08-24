@@ -34,7 +34,9 @@ public class Party : BaseAuditable, IOwnedResource
 
     public PartyAccessAdministrator? AccessAdministrator { get; set; }
 
-    public PartyCertification? PartyCertification { get; set; }
+    public string? Cpn { get; set; }
+
+    public PartyLicenceDeclaration? LicenceDeclaration { get; set; }
 
     public string? JobTitle { get; set; }
 

@@ -73,7 +73,7 @@ public class DigitalEvidence
                 .Select(party => new
                 {
                     AlreadyEnroled = party.AccessRequests.Any(request => request.AccessTypeCode == AccessTypeCode.DigitalEvidence),
-                    party.PartyCertification!.Ipc,
+                    party.Cpn,
                     party.Hpdid,
                     party.UserId,
                     party.Email
@@ -83,7 +83,7 @@ public class DigitalEvidence
             if (dto.AlreadyEnroled
                 || dto.Email == null
                 //|| dto.Hpdid == null
-               /* || (await this.plrClient.GetRecordStatus(dto.Ipc))?.IsGoodStanding() != true*/)
+               /* || (await this.plrClient.GetRecordStatus(dto.Ipc))?.IsGoodStanding() != true*/) //check justin api for user standing
             {
                 this.logger.LogDigitalEvidenceAccessRequestDenied();
                 return DomainResult.Failed();
@@ -104,7 +104,7 @@ public class DigitalEvidence
                 default:
                     break;
             }
-            if (!await this.keycloakClient.AssignClientRole(dto.UserId, Resources.PidpApi, Roles.User))
+            if (!await this.keycloakClient.AssignClientRole(dto.UserId, Clients.PidpApi, Roles.User))
             {
                 return DomainResult.Failed();
             }

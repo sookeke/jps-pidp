@@ -9,9 +9,11 @@ import { DigitalEvidenceModule } from './pages/digital-evidence/digital-evidence
 import { DriverFitnessModule } from './pages/driver-fitness/driver-fitness.module';
 import { HcimAccountTransferModule } from './pages/hcim-account-transfer/hcim-account-transfer.module';
 import { HcimEnrolmentModule } from './pages/hcim-enrolment/hcim-enrolment.module';
+import { MsTeamsModule } from './pages/ms-teams/ms-teams.module';
 import { PharmanetModule } from './pages/pharmanet/pharmanet.module';
 import { SaEformsModule } from './pages/sa-eforms/sa-eforms.module';
 import { SitePrivacySecurityChecklistModule } from './pages/site-privacy-security-checklist/site-privacy-security-checklist.module';
+import { UciModule } from './pages/uci/uci.module';
 
 const routes: Routes = [
   {
@@ -82,6 +84,22 @@ const routes: Routes = [
       import('./pages/digital-evidence/digital-evidence.module').then(
         (m) => m.DigitalEvidenceModule
       ),
+    path: AccessRoutes.UCI,
+    canActivate: [PermissionsGuard],
+    data: {
+      roles: [Role.FEATURE_PIDP_DEMO],
+    },
+    loadChildren: (): Promise<UciModule> =>
+      import('./pages/uci/uci.module').then((m) => m.UciModule),
+  },
+  {
+    path: AccessRoutes.MS_TEAMS,
+    canActivate: [PermissionsGuard],
+    data: {
+      roles: [Role.FEATURE_PIDP_DEMO],
+    },
+    loadChildren: (): Promise<MsTeamsModule> =>
+      import('./pages/ms-teams/ms-teams.module').then((m) => m.MsTeamsModule),
   },
 ];
 

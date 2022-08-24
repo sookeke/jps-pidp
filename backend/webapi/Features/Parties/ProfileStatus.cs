@@ -14,10 +14,10 @@ using Pidp.Extensions;
 using Pidp.Infrastructure;
 using Pidp.Infrastructure.Auth;
 using Pidp.Infrastructure.HttpClients.Plr;
-using Pidp.Models;
 using Pidp.Models.Lookups;
 using Pidp.Infrastructure.HttpClients.Jum;
-
+using Pidp.Models;
+using static Pidp.Features.Parties.ProfileStatus.ProfileStatusDto;
 public partial class ProfileStatus
 {
     public class Command : ICommand<Model>
@@ -116,10 +116,12 @@ public partial class ProfileStatus
                 .FirstOrDefaultAsync()
                 : null;
 
-            if (profile.CollegeCertificationEntered && profile.Ipc == null)
+            //if (profile.CollegeCertificationEntered && profile.Ipc == null)
+            if (profile.HasDeclaredLicence
+                && string.IsNullOrWhiteSpace(profile.Cpn))
             {
-                // Cert has been entered but no IPC found, likely due to a transient error or delay in PLR record updates. Retry once.
-                profile.Ipc = await this.RecheckIpc(command.Id, profile.CollegeCode.Value, profile.LicenceNumber, profile.Birthdate!.Value);
+                // Cert has been entered but no CPN found, likely due to a transient error or delay in PLR record updates. Retry once.
+                profile.Cpn = await this.RecheckCpn(command.Id, profile.LicenceDeclaration, profile.Birthdate);
             }
 
             if (profile.OrganizationDetailEntered && profile.OrganizationCode == OrganizationCode.CorrectionService && orgCorrectionDetail != null)
@@ -156,22 +158,25 @@ public partial class ProfileStatus
                 });
             }
 
-            profile.PlrRecordStatus = await this.client.GetRecordStatus(profile.Ipc);
+            //profile.PlrRecordStatus = await this.client.GetRecordStatus(profile.Ipc);
+            profile.PlrStanding = await this.client.GetStandingsDigestAsync(profile.Cpn);
             profile.User = command.User;
 
             var profileStatus = new Model
             {
                 Status = new List<Model.ProfileSection>
                 {
-                    new Model.Demographics(profile),
-                    new Model.CollegeCertification(profile),
                     new Model.AccessAdministrator(profile),
+                    new Model.CollegeCertification(profile),
                     new Model.OrganizationDetails(profile),
+                    new Model.Demographics(profile),
                     new Model.DriverFitness(profile),
-                    new Model.SAEforms(profile),
                     new Model.HcimAccountTransfer(profile),
                     new Model.HcimEnrolment(profile),
-                    new Model.DigitalEvidence(profile)
+                    new Model.DigitalEvidence(profile),
+                    new Model.MSTeams(profile),
+                    new Model.SAEforms(profile),
+                    new Model.Uci(profile)
                 }
                 .ToDictionary(section => section.SectionName, section => section)
             };
@@ -179,18 +184,24 @@ public partial class ProfileStatus
             return profileStatus;
         }
 
-        private async Task<string?> RecheckIpc(int partyId, CollegeCode collegeCode, string licenceNumber, LocalDate birthdate)
+        private async Task<string?> RecheckCpn(int partyId, LicenceDeclarationDto declaration, LocalDate? birthdate)
         {
-            var newIpc = await this.client.GetPlrRecord(collegeCode, licenceNumber, birthdate);
-            if (newIpc != null)
+            if (declaration.HasNoLicence
+                || birthdate == null)
             {
-                var cert = await this.context.PartyCertifications
-                    .SingleAsync(cert => cert.PartyId == partyId);
-                cert.Ipc = newIpc;
+                return null;
+            }
+
+            var newCpn = await this.client.FindCpnAsync(declaration.CollegeCode.Value, declaration.LicenceNumber, birthdate.Value);
+            if (newCpn != null)
+            {
+                var party = await this.context.Parties
+                    .SingleAsync(party => party.Id == partyId);
+                party.Cpn = newCpn;
                 await this.context.SaveChangesAsync();
             }
 
-            return newIpc;
+            return newCpn;
         }
         private async Task<JustinUser?> RecheckJustinUser(OrganizationCode organizationCode, string personalId)
         {
@@ -217,6 +228,8 @@ public partial class ProfileStatus
         public string? Email { get; set; }
         public string? Gender { get; set; }
         public string? Phone { get; set; }
+        public string? Cpn { get; set; }
+        public LicenceDeclarationDto? LicenceDeclaration { get; set; }
         public string? AccessAdministratorEmail { get; set; }
         public CollegeCode? CollegeCode { get; set; }
         public string? LicenceNumber { get; set; }
@@ -229,10 +242,11 @@ public partial class ProfileStatus
         public JusticeSectorCode? JusticeSectorCode { get; set; }
         public string? JusticeSectorService { get; set; }
         public string? EmployeeIdentifier { get; set; }
+        //public bool OrganizationDetailEntered { get; set; }
         public IEnumerable<AccessTypeCode> CompletedEnrolments { get; set; } = Enumerable.Empty<AccessTypeCode>();
 
         // Resolved after projection
-        public PlrRecordStatus? PlrRecordStatus { get; set; }
+        public PlrStandingsDigest PlrStanding { get; set; } = default!;
         public ClaimsPrincipal? User { get; set; }
 
         public JustinUser? JustinUser { get; set; }
@@ -251,5 +265,16 @@ public partial class ProfileStatus
         public bool UserIsPhsa => this.User.GetIdentityProvider() == ClaimValues.Phsa;
         public bool UserIsBcps => this.User.GetIdentityProvider() == ClaimValues.Bcps;
         public bool UserIsIdir => this.User.GetIdentityProvider() == ClaimValues.Idir;
+        [MemberNotNullWhen(true, nameof(LicenceDeclaration))]
+        public bool HasDeclaredLicence => this.LicenceDeclaration?.HasNoLicence == false;
+
+        public class LicenceDeclarationDto
+        {
+            public CollegeCode? CollegeCode { get; set; }
+            public string? LicenceNumber { get; set; }
+
+            [MemberNotNullWhen(false, nameof(CollegeCode), nameof(LicenceNumber))]
+            public bool HasNoLicence => this.CollegeCode == null || this.LicenceNumber == null;
+        }
     }
 }

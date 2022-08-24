@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
 using Pidp.Data;
-using Pidp.Infrastructure.Auth;
-using Pidp.Infrastructure.HttpClients.Keycloak;
+// using Pidp.Infrastructure.Auth;
+// using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Mail;
 using Pidp.Infrastructure.HttpClients.Plr;
 using Pidp.Infrastructure.Services;
@@ -30,7 +30,7 @@ public class DriverFitness
     {
         private readonly IClock clock;
         private readonly IEmailService emailService;
-        private readonly IKeycloakAdministrationClient keycloakClient;
+        // private readonly IKeycloakAdministrationClient keycloakClient;
         private readonly ILogger logger;
         private readonly IPlrClient plrClient;
         private readonly PidpDbContext context;
@@ -38,14 +38,14 @@ public class DriverFitness
         public CommandHandler(
             IClock clock,
             IEmailService emailService,
-            IKeycloakAdministrationClient keycloakClient,
+            // IKeycloakAdministrationClient keycloakClient,
             ILogger<CommandHandler> logger,
             IPlrClient plrClient,
             PidpDbContext context)
         {
             this.clock = clock;
             this.emailService = emailService;
-            this.keycloakClient = keycloakClient;
+            // this.keycloakClient = keycloakClient;
             this.logger = logger;
             this.plrClient = plrClient;
             this.context = context;
@@ -58,22 +58,21 @@ public class DriverFitness
                 .Select(party => new
                 {
                     AlreadyEnroled = party.AccessRequests.Any(request => request.AccessTypeCode == AccessTypeCode.DriverFitness),
-                    party.PartyCertification!.Ipc,
+                    party.Cpn,
                     party.Email
                 })
                 .SingleAsync();
 
             if (dto.AlreadyEnroled
                 || dto.Email == null
-                || dto.Ipc == null
-                || (await this.plrClient.GetRecordStatus(dto.Ipc))?.IsGoodStanding() != true)
+                || !await this.plrClient.GetStandingAsync(dto.Cpn))
             {
                 this.logger.LogDriverFitnessAccessRequestDenied();
                 return DomainResult.Failed();
             }
 
             // TODO assign role
-            // if (!await this.keycloakClient.AssignClientRole(dto.UserId, Resources.SAEforms, Roles.SAEforms))
+            // if (!await this.keycloakClient.AssignClientRole(dto.UserId, ?, ?))
             // {
             //     return DomainResult.Failed();
             // }
