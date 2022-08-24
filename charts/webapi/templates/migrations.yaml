@@ -24,28 +24,25 @@ spec:
         command: ['./efbundle', '--connection', '$(ConnectionStrings__PidpDatabase)']
         env:
           - name: DB_HOST
-            valueFrom:
-              configMapKeyRef:
-                name: database-cm
-                key: database-host
+            value:postgresql
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ ternary $ocEnv $release $isPR }}-patroni-secret
-                key: app-db-password
+                name: postgresql
+                key: database-password
           - name: POSTGRESQL_USER
             valueFrom:
               secretKeyRef:
-                name: {{ ternary $ocEnv $release $isPR }}-patroni-secret
-                key: app-db-username
+                name: postgresql
+                key: database-user
           - name: POSTGRESQL_DATABASE
             {{- if $isPR }}
             value: pidp_{{ $drn }}
             {{ else }}
             valueFrom:
               secretKeyRef:
-                name: {{ ternary $ocEnv $release $isPR }}-patroni-secret
-                key: app-db-name
+                name: postgresql
+                key: database-name
             {{- end }}
           - name: DOTNET_BUNDLE_EXTRACT_BASE_DIR
             value: /tmp

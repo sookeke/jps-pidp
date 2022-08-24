@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 
 using Pidp.Data;
 using Pidp.Models.Lookups;
+using Pidp.Infrastructure.HttpClients.Jum;
 
 public class OrganizationDetails
 {
@@ -67,15 +68,19 @@ public class OrganizationDetails
                 .Where(detail => detail.PartyId == query.PartyId)
                 //.ProjectTo<Command>(this.mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
-            if (org != null  && org.OrganizationCode == OrganizationCode.JusticeSector)
+            if (org != null && org.OrganizationCode == OrganizationCode.JusticeSector)
             {
                 var details = await this.context.JusticeSectorDetails
                     .Where(detail => detail.OrgainizationDetail == org)
                     .Include(n => n.OrgainizationDetail)
                     .SingleOrDefaultAsync();
 
-                orgDetails.JusticeSectorCode = details.JusticeSectorCode;
-                orgDetails.EmployeeIdentifier = details.JustinUserId;
+                if (details != null && orgDetails != null)
+                {
+                    orgDetails.JusticeSectorCode = details.JusticeSectorCode;
+                    orgDetails.EmployeeIdentifier = details.JustinUserId;
+                }
+
                 orgDetails.OrganizationCode = org.OrganizationCode;
             }
             if (org != null && org.OrganizationCode == OrganizationCode.CorrectionService)
@@ -85,9 +90,13 @@ public class OrganizationDetails
                     .Include(n => n.OrgainizationDetail)
                     .SingleOrDefaultAsync();
 
-                orgDetails.CorrectionServiceCode = details.CorrectionServiceCode;
-                orgDetails.EmployeeIdentifier = details.PeronalId;
-                orgDetails.OrganizationCode = org.OrganizationCode;
+                if (details != null)
+                {
+                    orgDetails!.CorrectionServiceCode = details.CorrectionServiceCode;
+                    orgDetails.EmployeeIdentifier = details.PeronalId;
+                }
+
+                orgDetails!.OrganizationCode = org.OrganizationCode;
             }
 
             return orgDetails ?? new Command { PartyId = query.PartyId };
@@ -97,50 +106,110 @@ public class OrganizationDetails
     public class CommandHandler : ICommandHandler<Command>
     {
         private readonly PidpDbContext context;
+        private readonly IJumClient jumClient;
+        private readonly ILogger logger;
 
-        public CommandHandler(PidpDbContext context) => this.context = context;
+        public CommandHandler(PidpDbContext context, IJumClient jumClient, ILogger<CommandHandler> logger)
+        {
+            this.context = context;
+            this.jumClient = jumClient;
+            this.logger = logger;
+        }
 
         public async Task HandleAsync(Command command)
         {
+            var dto = await this.context.Parties
+                .Where(party => party.Id == command.PartyId)
+                .SingleAsync();
+
+            //var justinUser = new JustinUser();
+
+            var justinUser = command.OrganizationCode switch
+            {
+                OrganizationCode.CorrectionService => await this.jumClient.GetJumUserByPartIdAsync(partId: long.Parse(command.EmployeeIdentifier)),
+                OrganizationCode.JusticeSector => await this.jumClient.GetJumUserAsync(command.EmployeeIdentifier),
+                OrganizationCode.LawEnforcement => throw new NotImplementedException(),
+                OrganizationCode.LawSociety => throw new NotImplementedException(),
+                OrganizationCode.HealthAuthority => throw new NotImplementedException(),
+                OrganizationCode.BcGovernmentMinistry => throw new NotImplementedException(),
+                OrganizationCode.ICBC => throw new NotImplementedException(),
+                OrganizationCode.Other => throw new NotImplementedException(),
+                _ => null
+            };
+
+            if (justinUser == null
+                || dto.Email == null
+                || !await this.jumClient.IsJumUser(justinUser, dto))
+            {
+                this.logger.LogInvalidJustinUser();
+                //throw new ArgumentException("User not a valid Justin User.");
+            }
+
             var org = await this.context.PartyOrgainizationDetails
                 .SingleOrDefaultAsync(detail => detail.PartyId == command.PartyId);
 
-            var jpsDetail = await this.context.JusticeSectorDetails
-               .SingleOrDefaultAsync(detail => detail.OrgainizationDetail == org);
-
-
-            if (org == null && command.OrganizationCode == OrganizationCode.JusticeSector)
+            if (org == null)
             {
                 org = new Models.PartyOrgainizationDetail
                 {
                     PartyId = command.PartyId
                 };
-                jpsDetail = new Models.JusticeSectorDetail
-                {
-                    OrgainizationDetail = org,
-                    JustinUserId = command.EmployeeIdentifier,
-                    JusticeSectorCode = (JusticeSectorCode)command.JusticeSectorCode
-                };
                 this.context.PartyOrgainizationDetails.Add(org);
-                this.context.JusticeSectorDetails.Add(jpsDetail);
             }
-            else if (org == null && command.OrganizationCode == OrganizationCode.CorrectionService)
+
+            if (command.OrganizationCode == OrganizationCode.JusticeSector
+                /*&& await this.jumClient.IsJumUser(justinUser, dto)*/)
+            {
+                var jpsDetail = await this.context.JusticeSectorDetails
+               .SingleOrDefaultAsync(detail => detail.OrgainizationDetail == org);
+
+                if (jpsDetail == null)
+                {
+                    jpsDetail = new Models.JusticeSectorDetail
+                    {
+                        OrgainizationDetail = org,
+                        JustinUserId = command.EmployeeIdentifier,
+                        JusticeSectorCode = (JusticeSectorCode)command.JusticeSectorCode
+                    };
+                    this.context.JusticeSectorDetails.Add(jpsDetail);
+                }
+                else
+                {
+                    jpsDetail.OrgainizationDetail = org;
+                    jpsDetail.JustinUserId = command.EmployeeIdentifier;
+                    jpsDetail.JusticeSectorCode = (JusticeSectorCode)command.JusticeSectorCode;
+                    this.context.JusticeSectorDetails.Update(jpsDetail);
+                }
+
+                org.OrganizationCode = command.OrganizationCode;
+                await this.context.SaveChangesAsync();
+            }
+            else if (command.OrganizationCode == OrganizationCode.CorrectionService
+                /*&& await this.jumClient.IsJumUser(justinUser, dto)*/)
             {
                 var corDetail = await this.context.CorrectionServiceDetails
                                     .SingleOrDefaultAsync(detail => detail.OrgainizationDetail == org);
 
-                org = new Models.PartyOrgainizationDetail
+                if (corDetail == null)
                 {
-                    PartyId = command.PartyId
-                };
-                corDetail = new Models.CorrectionServiceDetail
+                    corDetail = new Models.CorrectionServiceDetail
+                    {
+                        OrgainizationDetail = org,
+                        PeronalId = command.EmployeeIdentifier,
+                        CorrectionServiceCode = (CorrectionServiceCode)command.CorrectionServiceCode
+                    };
+                    this.context.CorrectionServiceDetails.Add(corDetail);
+                }
+                else
                 {
-                    OrgainizationDetail = org,
-                    PeronalId = command.EmployeeIdentifier,
-                    CorrectionServiceCode = (CorrectionServiceCode)command.CorrectionServiceCode
-                };
-                this.context.PartyOrgainizationDetails.Add(org);
-                this.context.CorrectionServiceDetails.Add(corDetail);
+                    corDetail.OrgainizationDetail = org;
+                    corDetail.PeronalId = command.EmployeeIdentifier;
+                    corDetail.CorrectionServiceCode = (CorrectionServiceCode)command?.CorrectionServiceCode;
+                    this.context.CorrectionServiceDetails.Update(corDetail);
+                }
+
+                org.OrganizationCode = command.OrganizationCode;
+                await this.context.SaveChangesAsync();
             }
             else
             {
@@ -149,13 +218,15 @@ public class OrganizationDetails
                     PartyId = command.PartyId
                 };
                 this.context.PartyOrgainizationDetails.Add(org);
+
+                org.OrganizationCode = command.OrganizationCode;
+                await this.context.SaveChangesAsync();
             }
-
-            org.OrganizationCode = command.OrganizationCode;
-            //org.HealthAuthorityCode = command.HealthAuthorityCode;
-            //org.EmployeeIdentifier = command.EmployeeIdentifier;
-
-            await this.context.SaveChangesAsync();
         }
     }
+}
+public static partial class JustinUserLoggingExtensions
+{
+    [LoggerMessage(1, LogLevel.Error, "User not a valid Justin User or does not meeting all prerequisites.")]
+    public static partial void LogInvalidJustinUser(this ILogger logger);
 }

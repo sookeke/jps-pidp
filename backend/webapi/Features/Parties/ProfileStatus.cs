@@ -16,6 +16,7 @@ using Pidp.Infrastructure.Auth;
 using Pidp.Infrastructure.HttpClients.Plr;
 using Pidp.Models;
 using Pidp.Models.Lookups;
+using Pidp.Infrastructure.HttpClients.Jum;
 
 public partial class ProfileStatus
 {
@@ -54,7 +55,8 @@ public partial class ProfileStatus
         public enum Alert
         {
             TransientError = 1,
-            PlrBadStanding
+            PlrBadStanding,
+            JumValidationError
         }
 
         public enum StatusCode
@@ -76,16 +78,19 @@ public partial class ProfileStatus
     {
         private readonly IMapper mapper;
         private readonly IPlrClient client;
+        private readonly IJumClient jumClient;
         private readonly PidpDbContext context;
 
         public CommandHandler(
             IMapper mapper,
             IPlrClient client,
+            IJumClient jumClient,
             PidpDbContext context)
         {
             this.mapper = mapper;
             this.client = client;
             this.context = context;
+            this.jumClient = jumClient;
         }
 
         public async Task<Model> HandleAsync(Command command)
@@ -95,10 +100,60 @@ public partial class ProfileStatus
                .ProjectTo<ProfileStatusDto>(this.mapper.ConfigurationProvider)
                .SingleAsync();
 
+            var orgCorrectionDetail = profile.OrganizationCode == OrganizationCode.CorrectionService
+                ? await this.context.CorrectionServiceDetails
+                .Include(cor => cor.CorrectionService)
+                .Where(detail => detail.OrgainizationDetail.Id == profile.OrgDetailId)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync()
+                : null;
+
+            var orgJusticeSecDetail = profile.OrganizationCode == OrganizationCode.JusticeSector
+                ? await this.context.JusticeSectorDetails
+                .Include(jus => jus.JusticeSector)
+                .Where(detail => detail.OrgainizationDetail.Id == profile.OrgDetailId)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync()
+                : null;
+
             if (profile.CollegeCertificationEntered && profile.Ipc == null)
             {
                 // Cert has been entered but no IPC found, likely due to a transient error or delay in PLR record updates. Retry once.
                 profile.Ipc = await this.RecheckIpc(command.Id, profile.CollegeCode.Value, profile.LicenceNumber, profile.Birthdate!.Value);
+            }
+
+            if (profile.OrganizationDetailEntered && profile.OrganizationCode == OrganizationCode.CorrectionService && orgCorrectionDetail != null)
+            {
+                profile.EmployeeIdentifier = orgCorrectionDetail.PeronalId;
+                profile.CorrectionServiceCode = orgCorrectionDetail.CorrectionServiceCode;
+                profile.CorrectionService = orgCorrectionDetail.CorrectionService?.Name;
+                //profile.Organization = profile.or
+                profile.JustinUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(profile.EmployeeIdentifier));
+                profile.IsJumUser = await this.jumClient.IsJumUser(profile.JustinUser, new Party
+                {
+                    FirstName = profile.FirstName,
+                    LastName = profile.LastName,
+                    Email = profile.Email,
+                    Birthdate = profile.Birthdate,
+                    Gender = profile.Gender
+                });
+
+            }
+
+            if (profile.OrganizationDetailEntered && profile.OrganizationCode == OrganizationCode.JusticeSector && orgJusticeSecDetail != null)
+            {
+                profile.EmployeeIdentifier = orgJusticeSecDetail.JustinUserId;
+                profile.JusticeSectorCode = orgJusticeSecDetail.JusticeSectorCode;
+                profile.JusticeSectorService = orgJusticeSecDetail.JusticeSector?.Name;
+                profile.JustinUser = await this.jumClient.GetJumUserAsync(profile.EmployeeIdentifier);
+                profile.IsJumUser = await this.jumClient.IsJumUser(profile.JustinUser, new Party
+                {
+                    FirstName = profile.FirstName,
+                    LastName = profile.LastName,
+                    Email = profile.Email,
+                    Birthdate = profile.Birthdate,
+                    Gender = profile.Gender
+                });
             }
 
             profile.PlrRecordStatus = await this.client.GetRecordStatus(profile.Ipc);
@@ -137,7 +192,22 @@ public partial class ProfileStatus
 
             return newIpc;
         }
+        private async Task<JustinUser?> RecheckJustinUser(OrganizationCode organizationCode, string personalId)
+        {
+            var newUser = new JustinUser();
+            if (organizationCode == OrganizationCode.CorrectionService)
+            {
+                newUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(personalId));
+            }
+            else if (organizationCode == OrganizationCode.JusticeSector)
+            {
+                newUser = await this.jumClient.GetJumUserAsync(personalId);
+            }
+
+            return newUser;
+        }
     }
+
 
     public class ProfileStatusDto
     {
@@ -145,23 +215,38 @@ public partial class ProfileStatus
         public string LastName { get; set; } = string.Empty;
         public LocalDate? Birthdate { get; set; }
         public string? Email { get; set; }
+        public string? Gender { get; set; }
         public string? Phone { get; set; }
         public string? AccessAdministratorEmail { get; set; }
         public CollegeCode? CollegeCode { get; set; }
         public string? LicenceNumber { get; set; }
         public string? Ipc { get; set; }
-        public bool OrganizationDetailEntered { get; set; }
+        public int? OrgDetailId { get; set; }
+        public OrganizationCode? OrganizationCode { get; set; }
+        public Organization? Organization { get; set; }
+        public CorrectionServiceCode? CorrectionServiceCode { get; set; }
+        public string? CorrectionService { get; set; }
+        public JusticeSectorCode? JusticeSectorCode { get; set; }
+        public string? JusticeSectorService { get; set; }
+        public string? EmployeeIdentifier { get; set; }
         public IEnumerable<AccessTypeCode> CompletedEnrolments { get; set; } = Enumerable.Empty<AccessTypeCode>();
 
         // Resolved after projection
         public PlrRecordStatus? PlrRecordStatus { get; set; }
         public ClaimsPrincipal? User { get; set; }
 
+        public JustinUser? JustinUser { get; set; }
+        public bool IsJumUser { get; set; }
+
         // Computed Properties
         [MemberNotNullWhen(true, nameof(Email), nameof(Phone))]
         public bool DemographicsEntered => this.Email != null && this.Phone != null;
         [MemberNotNullWhen(true, nameof(CollegeCode), nameof(LicenceNumber))]
         public bool CollegeCertificationEntered => this.CollegeCode.HasValue && this.LicenceNumber != null;
+        [MemberNotNullWhen(true, nameof(OrganizationCode), nameof(EmployeeIdentifier))]
+        public bool OrganizationDetailEntered => this.OrganizationCode.HasValue || this.EmployeeIdentifier != null;
+        [MemberNotNullWhen(true, nameof(Organization))]
+        public string? OrgName => this.Organization?.Name;
         public bool UserIsBcServicesCard => this.User.GetIdentityProvider() == ClaimValues.BCServicesCard;
         public bool UserIsPhsa => this.User.GetIdentityProvider() == ClaimValues.Phsa;
         public bool UserIsBcps => this.User.GetIdentityProvider() == ClaimValues.Bcps;

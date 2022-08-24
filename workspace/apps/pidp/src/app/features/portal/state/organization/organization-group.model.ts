@@ -1,5 +1,8 @@
+import { OrganizationDetails } from '@app/features/organization-info/pages/organization-details/organization-details.model';
+
 import { Section } from '../section.model';
 import { AdministratorInfoSection } from './administrator-information-section.model';
+import { PartyOrganizationDetailsSection } from './organization-details-section.model';
 
 /**
  * @description
@@ -29,7 +32,7 @@ export type IOrganizationGroup = {
 };
 
 export interface OrganizationGroup extends IOrganizationGroup {
-  organizationDetails: Section;
+  organizationDetails: PartyOrganizationDetailsSection;
   facilityDetails: Section;
   administratorInfo: AdministratorInfoSection;
   endorsement: Section;

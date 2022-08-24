@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -111,6 +111,13 @@ export class OrganizationDetailsPage
 
   public onChange(data: number): void {
     this.selectedOption = data;
+
+    if (this.selectedOption == 4) {
+      this.formState.correctionServiceCode.setValidators([Validators.required]);
+    }
+  }
+
+  public ngOnInit(): void {
     this.formState.justiceSectorCode.clearValidators();
     this.formState.justiceSectorCode.reset();
     this.formState.healthAuthorityCode.clearValidators();
@@ -119,9 +126,7 @@ export class OrganizationDetailsPage
     this.formState.lawEnforcementCode.reset();
     this.formState.correctionServiceCode.clearValidators();
     this.formState.correctionServiceCode.reset();
-  }
 
-  public ngOnInit(): void {
     const partyId = this.partyService.partyId;
     if (!partyId) {
       this.logger.error('No party ID was provided');

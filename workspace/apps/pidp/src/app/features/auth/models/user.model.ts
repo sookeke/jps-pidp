@@ -9,6 +9,7 @@ export interface User extends BaseUser, KeycloakUser<IdentityProvider> {
   // in an attempt to normalize between users
   email?: string;
   birthdate?: string;
+  gender?: string;
 }
 
 export interface IUserResolver<T extends User> {

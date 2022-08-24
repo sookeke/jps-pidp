@@ -2,7 +2,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
   name: github-push
-  namespace: d8a8f9-tools
+  namespace: e27db1-tools
 spec:
   namespaceSelector: {}
   podTemplate: {}
@@ -27,7 +27,7 @@ spec:
     - kind: TriggerBinding
       ref: github-push-binding
     - name: release-namespace
-      value: d8a8f9-dev
+      value: e27db1-dev
     - name: release-name
       value: dev
     - name: values-file
@@ -37,7 +37,7 @@ spec:
     - cel:
         filter: >-
           header.match('X-GitHub-Event', 'push') &&
-          body.repository.full_name == 'bcgov/moh-pidp' &&
+          body.repository.full_name == 'sookeke/jps-pidp' &&
           body.ref == 'refs/heads/develop'
         overlays:
         - key: truncated_sha
@@ -50,7 +50,7 @@ spec:
     - kind: TriggerBinding
       ref: github-push-binding
     - name: release-namespace
-      value: d8a8f9-test
+      value: e27db1-test
     - name: release-name
       value: test
     - name: values-file
@@ -60,7 +60,7 @@ spec:
     - cel:
         filter: >-
           header.match('X-GitHub-Event', 'push') &&
-          body.repository.full_name == 'bcgov/moh-pidp' &&
+          body.repository.full_name == 'sookeke/jps-pidp' &&
           body.ref == 'refs/heads/test'
         overlays:
         - key: truncated_sha
@@ -73,7 +73,7 @@ spec:
     - kind: TriggerBinding
       ref: github-push-binding
     - name: release-namespace
-      value: d8a8f9-test
+      value: e27db1-test
     - name: release-name
       value: demo
     - name: values-file
@@ -83,7 +83,7 @@ spec:
     - cel:
         filter: >-
           header.match('X-GitHub-Event', 'push') &&
-          body.repository.full_name == 'bcgov/moh-pidp' &&
+          body.repository.full_name == 'sookeke/jps-pidp' &&
           body.ref == 'refs/heads/main'
         overlays:
         - key: truncated_sha
@@ -96,7 +96,7 @@ spec:
     - kind: TriggerBinding
       ref: github-push-binding
     - name: release-namespace
-      value: d8a8f9-prod
+      value: e27db1-prod
     - name: release-name
       value: prod
     - name: values-file
@@ -106,7 +106,7 @@ spec:
     - cel:
         filter: >-
           header.match('X-GitHub-Event', 'push') &&
-          body.repository.full_name == 'bcgov/moh-pidp' &&
+          body.repository.full_name == 'sookeke/jps-pidp' &&
           body.ref == 'refs/heads/main'
         overlays:
         - key: truncated_sha

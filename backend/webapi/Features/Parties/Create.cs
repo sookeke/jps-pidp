@@ -16,6 +16,7 @@ public class Create
         public Guid UserId { get; set; }
         public string? Hpdid { get; set; }
         public LocalDate? Birthdate { get; set; }
+        public string? Gender { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
     }
@@ -46,6 +47,7 @@ public class Create
             {
                 this.RuleFor(x => x.Hpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
                 this.RuleFor(x => x.Birthdate).NotEmpty().Equal(user?.GetBirthdate()).WithMessage($"Must match the \"birthdate\" Claim on the current User");
+                this.RuleFor(x => x.Gender).NotEmpty().Equal(user?.GetGender()).WithMessage($"Must match the \"gender\" Claim on the current User");
             }
         }
         private class BcpsValidator : AbstractValidator<Command>
@@ -90,6 +92,7 @@ public class Create
             {
                 UserId = command.UserId,
                 Hpdid = command.Hpdid,
+                Gender = command.Gender,
                 Birthdate = command.Birthdate,
                 FirstName = command.FirstName,
                 LastName = command.LastName,

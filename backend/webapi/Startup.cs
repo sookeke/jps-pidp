@@ -19,6 +19,8 @@ using Pidp.Infrastructure;
 using Pidp.Infrastructure.Auth;
 using Pidp.Infrastructure.HttpClients;
 using Pidp.Infrastructure.Services;
+using Pidp.Helpers.Middleware;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 public class Startup
 {
@@ -37,6 +39,8 @@ public class Startup
             .AddScoped<IEmailService, EmailService>()
             .AddScoped<IPidpAuthorizationService, PidpAuthorizationService>()
             .AddSingleton<IClock>(SystemClock.Instance);
+
+        services.AddSingleton<ProblemDetailsFactory, JpidpProblemDetailsFactory>();
 
         services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new KabobCaseParameterTransformer())))
             .AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<Startup>())
@@ -90,6 +94,16 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
         }
+
+
+        //app.UseMiddleware<ExceptionHandlerMiddleware>();
+        app.UseExceptionHandler(
+            new ExceptionHandlerOptions()
+            {
+                AllowStatusCode404Response = true,
+                ExceptionHandlingPath = "/error"
+            }
+            );// "/error");
 
         app.UseSwagger();
         app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "PIdP Web API"));

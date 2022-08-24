@@ -7,6 +7,7 @@ using NodaTime;
 
 using Pidp.Data;
 using Pidp.Infrastructure.Auth;
+using Pidp.Infrastructure.HttpClients.Jum;
 using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Mail;
 using Pidp.Infrastructure.HttpClients.Plr;
@@ -141,6 +142,10 @@ public class DigitalEvidence
                 body: $"Digital Evidence Management System Enrolment Confirmation"
             );
             await this.emailService.SendAsync(email);
+        }
+        private static async Task<bool> isValidJustinUser(JustinUser justinUser, Party party)
+        {
+            return false;
         }
     }
 }

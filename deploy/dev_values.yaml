@@ -1,6 +1,6 @@
 # PR Helm values
 global:
-  vanityURL: "healthprovideridentityportal.gov.bc.ca"
+  vanityURL: ""
   commit_sha: ""
   image:
     tag: develop
@@ -24,7 +24,7 @@ frontend:
   settings:
     environmentName: dev
     keycloak:
-      url: https://common-logon-dev.hlth.gov.bc.ca/auth
+      url: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
 
 webapi:
   replicaCount: 1

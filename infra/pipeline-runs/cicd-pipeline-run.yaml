@@ -8,7 +8,7 @@ spec:
   serviceAccountName: pipeline
   params:
     - name: git-url
-      value: git@github.com:bcgov/moh-pidp.git
+      value: git@github.com:sookeke/jps-pidp.git
     - name: git-revision
       value: $(tt.params.git-revision)
     - name: git-short-sha

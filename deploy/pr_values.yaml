@@ -1,6 +1,6 @@
 # PR Helm values
 global:
-  vanityURL: "healthprovideridentityportal.gov.bc.ca"
+  vanityURL: ""
   commit_sha: ""
   image:
     tag: dev

@@ -8,5 +8,6 @@ export interface BrokerProfile extends KeycloakProfile {
   email: string;
   attributes: {
     birthdate: string;
+    gender: string;
   };
 }

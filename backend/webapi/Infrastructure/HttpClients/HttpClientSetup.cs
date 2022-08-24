@@ -4,6 +4,7 @@ using IdentityModel.Client;
 
 using Pidp.Extensions;
 using Pidp.Infrastructure.HttpClients.AddressAutocomplete;
+using Pidp.Infrastructure.HttpClients.Jum;
 using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Ldap;
 using Pidp.Infrastructure.HttpClients.Mail;
@@ -26,6 +27,14 @@ public static class HttpClientSetup
             });
 
         services.AddHttpClientWithBaseAddress<ILdapClient, LdapClient>(config.LdapClient.Url);
+
+        services.AddHttpClientWithBaseAddress<IJumClient, JumClient>(config.JumClient.Url)
+            .WithBearerToken(new KeycloakAdministrationClientCredentials
+            {
+                Address = config.Keycloak.TokenUrl,
+                ClientId = config.Keycloak.AdministrationClientId,
+                ClientSecret = config.Keycloak.AdministrationClientSecret
+            });
 
         services.AddHttpClientWithBaseAddress<IKeycloakAdministrationClient, KeycloakAdministrationClient>(config.Keycloak.AdministrationUrl)
             .WithBearerToken(new KeycloakAdministrationClientCredentials

@@ -40,6 +40,19 @@ public static class ClaimsPrincipalExtensions
     }
 
     /// <summary>
+    /// Returns the Gender Claim of the User, parsed in ISO format (M/F)
+    /// </summary>
+    public static string? GetGender(this ClaimsPrincipal user)
+    {
+        var gender = user.FindFirstValue(Claims.Gender);
+
+        if (string.IsNullOrEmpty(gender))
+            return null;
+
+        return gender;
+    }
+
+    /// <summary>
     /// Returns the Identity Provider of the User, or null if User is null
     /// </summary>
     public static string? GetIdentityProvider(this ClaimsPrincipal? user) => user?.FindFirstValue(Claims.IdentityProvider);

@@ -2,7 +2,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
   name: github-pr
-  namespace: d8a8f9-tools
+  namespace: e27db1-tools
 spec:
   namespaceSelector: {}
   podTemplate: {}
@@ -32,7 +32,7 @@ spec:
         filter: >-
           (header.match('X-GitHub-Event', 'pull_request') &&
           body.action in ['opened', 'reopened', 'synchronize']) &&
-          body.pull_request.head.repo.full_name == 'bcgov/moh-pidp'
+          body.pull_request.head.repo.full_name == 'sookeke/jps-pidp'
         overlays:
         - key: truncated_sha
           expression: "body.pull_request.head.sha.truncate(7)"

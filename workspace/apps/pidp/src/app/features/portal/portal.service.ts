@@ -108,6 +108,11 @@ export class PortalService {
             heading: 'Having trouble verifying your college licence?',
             content: `Your licence may not be active yet. Try again in 24 hours. If this problem persists, contact your college. If you are a Nurse Practitioner, the validation of your license is currently not available. Check back later.`,
           };
+        case AlertCode.JUM_VALIDATION_ERROR:
+          return {
+            heading: 'Having trouble verifying your justin user identity?',
+            content: `You Personal Id may not match your digitial identity. Try again in 24 hours. If this problem persists, contact your Organization administrator.`,
+          };
       }
     });
   }

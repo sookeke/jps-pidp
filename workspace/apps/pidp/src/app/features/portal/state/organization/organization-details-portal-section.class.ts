@@ -2,6 +2,7 @@ import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
+import { OrganizationCode } from '@bcgov/shared/data-access';
 import { AlertType } from '@bcgov/shared/ui';
 
 import { OrganizationInfoRoutes } from '@app/features/organization-info/organization-info.routes';
@@ -11,7 +12,9 @@ import { StatusCode } from '../../enums/status-code.enum';
 import { ProfileStatus } from '../../models/profile-status.model';
 import { PortalSectionAction } from '../portal-section-action.model';
 import { PortalSectionKey } from '../portal-section-key.type';
+import { PortalSectionProperty } from '../portal-section-property.model';
 import { IPortalSection } from '../portal-section.model';
+import { PartyOrganizationDetailsSection } from './organization-details-section.model';
 
 export class OrganizationDetailsPortalSection implements IPortalSection {
   public readonly key: PortalSectionKey;
@@ -39,6 +42,48 @@ export class OrganizationDetailsPortalSection implements IPortalSection {
    * @description
    * Get the properties that define the action on the section.
    */
+  public get properties(): PortalSectionProperty[] {
+    const statusCode = this.getStatusCode();
+    const demographicsStatusCode =
+      this.profileStatus.status.demographics.statusCode;
+    const {
+      employeeIdentifier,
+      orgName,
+      correctionService,
+      justiceSectorService,
+    } = this.getSectionStatus();
+    return [StatusCode.ERROR, StatusCode.COMPLETED].includes(statusCode)
+      ? [
+          {
+            key: 'orgName',
+            value: orgName,
+            label: 'Organization: ',
+          },
+          {
+            key: 'employeeIdentifier',
+            value: employeeIdentifier,
+            label: 'Identity Verification:',
+          },
+          {
+            key: 'status',
+            value:
+              statusCode !== StatusCode.ERROR &&
+              demographicsStatusCode === StatusCode.COMPLETED
+                ? 'Verified'
+                : 'Not Verified',
+            label: 'Justin User Status:',
+          },
+          {
+            key: 'CorrectionService',
+            value: correctionService,
+          },
+          {
+            key: 'JusticSectorService',
+            value: justiceSectorService,
+          },
+        ]
+      : [];
+  }
   public get action(): PortalSectionAction {
     const demographicsStatusCode =
       this.profileStatus.status.demographics.statusCode;
@@ -67,6 +112,10 @@ export class OrganizationDetailsPortalSection implements IPortalSection {
 
   public performAction(): void | Observable<void> {
     this.router.navigate([ShellRoutes.routePath(this.action.route)]);
+  }
+
+  private getSectionStatus(): PartyOrganizationDetailsSection {
+    return this.profileStatus.status.organizationDetails;
   }
 
   private getStatusCode(): StatusCode {

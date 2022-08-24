@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,10 @@ using Pidp.Data;
 namespace Pidp.Data.Migrations
 {
     [DbContext(typeof(PidpDbContext))]
-    partial class PidpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220725002732_PartyOrganization")]
+    partial class PartyOrganization
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,8 +152,6 @@ namespace Pidp.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CorrectionServiceCode");
 
                     b.HasIndex("OrgainizationDetailId");
 
@@ -306,8 +306,6 @@ namespace Pidp.Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("JusticeSectorCode");
 
                     b.HasIndex("OrgainizationDetailId");
 
@@ -1349,19 +1347,11 @@ namespace Pidp.Data.Migrations
 
             modelBuilder.Entity("Pidp.Models.CorrectionServiceDetail", b =>
                 {
-                    b.HasOne("Pidp.Models.Lookups.CorrectionService", "CorrectionService")
-                        .WithMany()
-                        .HasForeignKey("CorrectionServiceCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Pidp.Models.PartyOrgainizationDetail", "OrgainizationDetail")
                         .WithMany()
                         .HasForeignKey("OrgainizationDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CorrectionService");
 
                     b.Navigation("OrgainizationDetail");
                 });
@@ -1396,19 +1386,11 @@ namespace Pidp.Data.Migrations
 
             modelBuilder.Entity("Pidp.Models.JusticeSectorDetail", b =>
                 {
-                    b.HasOne("Pidp.Models.Lookups.JusticeSector", "JusticeSector")
-                        .WithMany()
-                        .HasForeignKey("JusticeSectorCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Pidp.Models.PartyOrgainizationDetail", "OrgainizationDetail")
                         .WithMany()
                         .HasForeignKey("OrgainizationDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("JusticeSector");
 
                     b.Navigation("OrgainizationDetail");
                 });

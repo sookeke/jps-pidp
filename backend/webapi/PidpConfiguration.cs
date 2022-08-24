@@ -17,6 +17,7 @@ public class PidpConfiguration
     public LdapClientConfiguration LdapClient { get; set; } = new();
     public MailServerConfiguration MailServer { get; set; } = new();
     public PlrClientConfiguration PlrClient { get; set; } = new();
+    public JumClientConfiguration JumClient { get; set; } = new();
 
     // ------- Configuration Objects -------
 
@@ -55,7 +56,15 @@ public class PidpConfiguration
     {
         public string Url { get; set; } = string.Empty;
     }
-
+    public class JumClientConfiguration
+    {
+        public string Url { get; set; } = string.Empty;
+        public string RealmUrl { get; set; } = string.Empty;
+        public string TokenUrl => KeycloakUrls.Token(this.RealmUrl);
+        public string AdministrationUrl { get; set; } = string.Empty;
+        public string AdministrationClientId { get; set; } = string.Empty;
+        public string AdministrationClientSecret { get; set; } = string.Empty;
+    }
     public class MailServerConfiguration
     {
         public string Url { get; set; } = string.Empty;

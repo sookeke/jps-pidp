@@ -16,6 +16,8 @@ public class Party : BaseAuditable, IOwnedResource
 
     public LocalDate? Birthdate { get; set; }
 
+    public string? Gender { get; set; }
+
     public string FirstName { get; set; } = string.Empty;
 
     public string LastName { get; set; } = string.Empty;
@@ -39,6 +41,8 @@ public class Party : BaseAuditable, IOwnedResource
     public Facility? Facility { get; set; }
 
     public PartyOrgainizationDetail? OrgainizationDetail { get; set; }
+
+    //public CorrectionServiceDetail? CorrectionServiceDetail { get; set; }
 
     public ICollection<AccessRequest> AccessRequests { get; set; } = new List<AccessRequest>();
 }

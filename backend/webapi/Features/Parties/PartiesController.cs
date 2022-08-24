@@ -95,6 +95,7 @@ public class PartiesController : PidpControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
     public async Task<IActionResult> UpdateOrganizationDetails([FromServices] ICommandHandler<OrganizationDetails.Command> handler,
                                                                [FromHybrid] OrganizationDetails.Command command)
         => await this.AuthorizePartyBeforeHandleAsync(command.PartyId, handler, command)

@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: cicd-pipeline
-  namespace: d8a8f9-tools
+  namespace: e27db1-tools
 spec:
   params:
     - name: git-url
@@ -10,13 +10,13 @@ spec:
       default: develop
     - name: git-short-sha
     - name: image-registry
-      default: image-registry.openshift-image-registry.svc:5000/d8a8f9-tools
+      default: image-registry.openshift-image-registry.svc:5000/e27db1-tools
     - name: image-tag
       default: develop
     - name: release_name
       default: dev
     - name: release_namespace
-      default: d8a8f9-dev
+      default: e27db1-dev
     - name: release_version
       default: "v0.1.0"
     - name: values_file
@@ -38,7 +38,7 @@ spec:
         - name: sslVerify
           value: 'true'
         - name: subdirectory
-          value: moh-pidp
+          value: jps-pidp
         - name: deleteExisting
           value: 'true'
         - name: verbose
@@ -60,7 +60,7 @@ spec:
         name: build-frontend
       params:
         - name: PATH_CONTEXT
-          value: moh-pidp/workspace/
+          value: jps-pidp/workspace/
       runAfter: 
         - git-clone
     - name: build-frontend-image
@@ -74,9 +74,9 @@ spec:
         - name: IMAGE
           value: $(params.image-registry)/pidp-frontend:$(params.image-tag)
         - name: CONTEXT
-          value: moh-pidp/workspace/
+          value: jps-pidp/workspace/
         - name: DOCKERFILE
-          value: moh-pidp/workspace/Dockerfile
+          value: jps-pidp/workspace/Dockerfile
         - name: EXTRA_ARGS
           value: 
             - --skip-tls-verify
@@ -93,9 +93,9 @@ spec:
         - name: IMAGE
           value: $(params.image-registry)/pidp-webapi:$(params.image-tag)
         - name: CONTEXT
-          value: moh-pidp/backend/webapi/
+          value: jps-pidp/backend/webapi/
         - name: DOCKERFILE
-          value: moh-pidp/backend/webapi/Dockerfile
+          value: jps-pidp/backend/webapi/Dockerfile
         - name: EXTRA_ARGS
           value: 
             - --skip-tls-verify
@@ -112,9 +112,9 @@ spec:
         - name: IMAGE
           value: $(params.image-registry)/pidp-plr-intake:$(params.image-tag)
         - name: CONTEXT
-          value: moh-pidp/backend/services.plr-intake/
+          value: jps-pidp/backend/services.plr-intake/
         - name: DOCKERFILE
-          value: moh-pidp/backend/services.plr-intake/Dockerfile
+          value: jps-pidp/backend/services.plr-intake/Dockerfile
         - name: EXTRA_ARGS
           value: 
             - --skip-tls-verify
@@ -126,7 +126,7 @@ spec:
           workspace: source
       params:
       - name: charts_dir
-        value: ./moh-pidp/charts/pidp
+        value: ./jps-pidp/charts/pidp
       - name: release_version
         value: $(params.release_version)
       - name: release_name
@@ -136,7 +136,7 @@ spec:
       - name: overwrite_values
         value: global.image.tag=$(params.image-tag),global.commit_sha=$(params.git-short-sha)
       - name: values_file
-        value: moh-pidp/$(params.values_file)
+        value: jps-pidp/$(params.values_file)
       taskRef:
         name: helm-upgrade-from-source
       runAfter: 

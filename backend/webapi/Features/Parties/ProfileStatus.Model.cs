@@ -105,8 +105,23 @@ public partial class ProfileStatus
         public class OrganizationDetails : ProfileSection
         {
             internal override string SectionName => "organizationDetails";
+            public OrganizationCode? OrganizationCode { get; set; }
+            public HealthAuthorityCode? HealthAuthorityCode { get; set; }
+            public JusticeSectorCode? JusticeSectorCode { get; set; }
+            public CorrectionServiceCode? CorrectionServiceCode { get; set; }
+            public string? EmployeeIdentifier { get; set; }
+            public string? orgName { get; set; }
+            public string? CorrectionService { get; set; }
 
-            public OrganizationDetails(ProfileStatusDto profile) : base(profile) { }
+            public OrganizationDetails(ProfileStatusDto profile) : base(profile)
+            {
+                this.OrganizationCode = profile.OrganizationCode;
+                this.EmployeeIdentifier = profile.EmployeeIdentifier;
+                this.JusticeSectorCode = profile.JusticeSectorCode;
+                this.CorrectionServiceCode = profile.CorrectionServiceCode;
+                this.orgName = profile.OrgName;
+                this.CorrectionService = profile.CorrectionService;
+            }
 
             protected override void SetAlertsAndStatus(ProfileStatusDto profile)
             {
@@ -121,10 +136,19 @@ public partial class ProfileStatus
                     this.StatusCode = StatusCode.Locked;
                     return;
                 }
+                if (!profile.OrganizationDetailEntered)
+                {
+                    this.StatusCode = StatusCode.Incomplete;
+                    return;
+                }
+                if (!profile.IsJumUser)
+                {
+                    this.Alerts.Add(Alert.JumValidationError);
+                    this.StatusCode = StatusCode.Error;
+                    return;
+                }
 
-                this.StatusCode = profile.OrganizationDetailEntered
-                    ? StatusCode.Complete
-                    : StatusCode.Incomplete;
+                this.StatusCode = StatusCode.Complete;
             }
         }
 

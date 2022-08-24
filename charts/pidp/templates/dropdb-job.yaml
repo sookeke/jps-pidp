@@ -28,27 +28,26 @@ spec:
             dropdb $(PGDATABASE)
         env:
           - name: PGHOST
-            valueFrom:
-              configMapKeyRef:
-                name: database-cm
-                key: database-host
+            value:postgresql
           - name: PGUSER
             valueFrom:
               secretKeyRef:
-                name: {{ $ocEnv }}-patroni-secret
-                key: superuser-username
+                name: postgresql
+                key: database-user
           - name: APPUSER
             valueFrom:
               secretKeyRef:
-                name: {{ $ocEnv }}-patroni-secret
-                key: app-db-username
+                name: postgresql
+                key: database-user
           - name: PGPASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ $ocEnv }}-patroni-secret
-                key: superuser-password
+                name: postgresql
+                key: database-password
           - name: PGDATABASE
-            value: "pidp_{{ $drn }}"
+              secretKeyRef:
+                name: postgresql
+                key: database-name
       restartPolicy: Never
   backoffLimit: 3
 {{- end }}

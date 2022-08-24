@@ -5,6 +5,7 @@ public static class Claims
     public const string Address = "address";
     public const string AssuranceLevel = "identity_assurance_level";
     public const string Birthdate = "birthdate";
+    public const string Gender = "gender";
     public const string Email = "email";
     public const string FamilyName = "family_name";
     public const string GivenName = "given_name";

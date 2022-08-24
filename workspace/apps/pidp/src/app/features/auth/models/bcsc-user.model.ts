@@ -9,6 +9,7 @@ export class BcscUser implements User {
   public firstName: string;
   public lastName: string;
   public birthdate: string;
+  public gender: string;
 
   public constructor({ accessTokenParsed, brokerProfile }: UserIdentity) {
     const {
@@ -17,6 +18,7 @@ export class BcscUser implements User {
       username: hpdid,
       attributes: {
         birthdate: [birthdate],
+        gender: [gender]
       },
     } = brokerProfile;
     const { identity_provider, sub: userId } = accessTokenParsed;
@@ -27,6 +29,7 @@ export class BcscUser implements User {
     this.firstName = firstName;
     this.lastName = lastName;
     this.birthdate = birthdate;
+    this.gender = gender;
   }
 }
 

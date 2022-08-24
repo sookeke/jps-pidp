@@ -10,6 +10,7 @@ public class JusticeSectorDetail
     [Key]
     public int Id { get; set; }
     public JusticeSectorCode JusticeSectorCode { get; set; }
+    public JusticeSector? JusticeSector { get; set; }
     public string JustinUserId { get; set; } = string.Empty;
     public PartyOrgainizationDetail OrgainizationDetail { get; set; } = new PartyOrgainizationDetail(); 
 
