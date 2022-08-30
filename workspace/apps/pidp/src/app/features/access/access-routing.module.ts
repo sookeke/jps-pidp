@@ -84,6 +84,8 @@ const routes: Routes = [
       import('./pages/digital-evidence/digital-evidence.module').then(
         (m) => m.DigitalEvidenceModule
       ),
+  },
+  {
     path: AccessRoutes.UCI,
     canActivate: [PermissionsGuard],
     data: {
