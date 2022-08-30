@@ -32,7 +32,7 @@ spec:
         serviceAccountName: pipeline
         params:
           - name: git-url
-            value: it@github.com:sookeke/jps-pidp.git
+            value: git@github.com:sookeke/jps-pidp.git
           - name: git-revision
             value: $(tt.params.git-revision)
           - name: git-short-sha

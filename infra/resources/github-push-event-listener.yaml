@@ -5,7 +5,6 @@ metadata:
   namespace: e27db1-tools
 spec:
   namespaceSelector: {}
-  podTemplate: {}
   resources:
     kubernetesResource:
       spec:

@@ -5,7 +5,6 @@ metadata:
   namespace: e27db1-tools
 spec:
   namespaceSelector: {}
-  podTemplate: {}
   resources:
     kubernetesResource:
       spec:
@@ -51,7 +50,7 @@ spec:
         filter: >-
           (header.match('X-GitHub-Event', 'pull_request') &&
           body.action in ['closed', 'deleted']) &&
-          body.pull_request.head.repo.full_name == 'bcgov/moh-pidp'
+          body.pull_request.head.repo.full_name == 'sookeke/jps-pidp'
         overlays:
         - key: pr_number
           expression: "body.number"
