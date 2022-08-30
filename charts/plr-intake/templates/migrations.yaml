@@ -24,7 +24,7 @@ spec:
         command: ['./efbundle', '--connection', '$(ConnectionStrings__PlrDatabase)']
         env:
           - name: DB_HOST
-            value:postgresql
+            value: postgresql
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:

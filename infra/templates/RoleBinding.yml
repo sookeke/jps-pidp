@@ -1,0 +1,63 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: pods-secret-reader
+  annotations:
+    openshift.io/display-name: Pod reader rolebinding
+    description: Allow default user to read pod's log.
+    tags: pims-logging
+parameters:
+  - name: NAMESPACE
+    description: Target namespace
+    displayName: Target Namespace
+    required: true
+    value: "e27db1-tools"
+objects:
+  - kind: Role
+    apiVersion: rbac.authorization.k8s.io/v1
+    metadata:
+      name: pods-secret-reader
+      namespace: e27db1-dev
+    rules:
+      - apiGroups: [""]
+        resources: ["secrets", "services", "configmaps"]
+        verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["pods"]
+        verbs: ["get", "update", "patch", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["persistentvolumeclaims"]
+        verbs: ["get", "update", "patch", "delete", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["events"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["pods/exec"]
+        verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
+      - apiGroups: ["apps"]
+        resources: ["statefulsets", "deployments"]
+        verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
+      - apiGroups: ["batch"]
+        resources: ["jobs"]
+        verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
+      - apiGroups:  ["policy"]
+        resources: ["poddisruptionbudgets"]
+        verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
+      - apiGroups: ["networking.k8s.io"]
+        resources: ["networkpolicies", "ingresses/status", "ingresses"]
+        verbs: ["get", "list", "watch"]
+        
+
+  - kind: RoleBinding
+    apiVersion: rbac.authorization.k8s.io/v1
+    metadata:
+      name: pods-secret-reader
+      namespace: e27db1-dev
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: pods-secret-reader
+    subjects:
+      - kind: ServiceAccount
+        name: pipeline
+        namespace: ${NAMESPACE}
