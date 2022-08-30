@@ -315,7 +315,7 @@ objects:
   - kind: ServiceAccount
     name: ${NAME}-${INSTANCE}
 parameters:
-- description: The name of the application for labelling all artifacts.
+- description: The name of the application for labelling and all artifacts.
   displayName: Application Name
   name: NAME
   required: true
