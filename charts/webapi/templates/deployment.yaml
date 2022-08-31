@@ -69,7 +69,10 @@ spec:
                   key: database-name
               {{- end }}
             - name: ConnectionStrings__PidpDatabase
-              value: "Host=$(DB_HOST);Port=5432;Database=$(POSTGRESQL_DATABASE);Username=$(POSTGRESQL_USER);Password=$(POSTGRESQL_PASSWORD)"
+              valueFrom:
+                configMapKeyRef:
+                  name: pidp-api-database
+                  key: CONNECTION_STRINGS_PIDP
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
           envFrom:
