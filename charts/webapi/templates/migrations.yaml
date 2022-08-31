@@ -47,7 +47,10 @@ spec:
           - name: DOTNET_BUNDLE_EXTRACT_BASE_DIR
             value: /tmp
           - name: ConnectionStrings__PidpDatabase
-            value: "Host=${DB_HOST};Port=5432;Database=${POSTGRESQL_DATABASE};Username=${POSTGRESQL_USER};Password=${POSTGRESQL_PASSWORD}"
+            valueFrom:
+                configMapKeyRef:
+                  name: pidp-api-database-name
+                  key: CONNECTION_STRINGS_PIDP
       restartPolicy: Never
   backoffLimit: 3
 {{- end }}
