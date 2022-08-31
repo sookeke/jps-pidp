@@ -11,7 +11,7 @@ namespace Pidp.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AccessTypeLookup",
                 columns: new[] { "Code", "Name" },
-                values: new object[] { 5, "Fraser Health UCI" });
+                values: new object[] { 6, "Fraser Health UCI" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

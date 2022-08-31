@@ -11,7 +11,7 @@ namespace Pidp.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AccessTypeLookup",
                 columns: new[] { "Code", "Name" },
-                values: new object[] { 6, "MS Teams for Clinical Use" });
+                values: new object[] { 7, "MS Teams for Clinical Use" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
