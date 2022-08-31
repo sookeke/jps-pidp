@@ -49,7 +49,7 @@ spec:
           - name: ConnectionStrings__PidpDatabase
             valueFrom:
                 configMapKeyRef:
-                  name: pidp-api-database-name
+                  name: pidp-api-database
                   key: CONNECTION_STRINGS_PIDP
       restartPolicy: Never
   backoffLimit: 3

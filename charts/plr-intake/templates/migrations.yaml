@@ -46,11 +46,11 @@ spec:
             {{- end }}
           - name: DOTNET_BUNDLE_EXTRACT_BASE_DIR
             value: /tmp
-          - name: ConnectionStrings__PidpDatabase
+          - name: ConnectionStrings__PlrDatabase
             valueFrom:
                 configMapKeyRef:
-                  name: pidp-api-database-name
-                  key: CONNECTION_STRINGS_PIDP
+                  name: pidp-plr-database
+                  key: CONNECTION_STRINGS_PLR
       restartPolicy: Never
   backoffLimit: 3
 {{- end }}
