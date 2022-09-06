@@ -20,7 +20,7 @@ objects:
       namespace: e27db1-dev
     rules:
       - apiGroups: [""]
-        resources: ["secrets", "services", "configmaps"]
+        resources: ["secrets", "services","serviceaccounts", "configmaps"]
         verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
       - apiGroups: [""]
         resources: ["pods"]
@@ -35,7 +35,7 @@ objects:
         resources: ["pods/exec"]
         verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
       - apiGroups: ["apps"]
-        resources: ["statefulsets", "deployments"]
+        resources: ["statefulsets", "deployments", "replicasets"]
         verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
       - apiGroups: ["batch"]
         resources: ["jobs"]
@@ -46,6 +46,9 @@ objects:
       - apiGroups: ["networking.k8s.io"]
         resources: ["networkpolicies", "ingresses/status", "ingresses"]
         verbs: ["get", "list", "watch"]
+      - apiGroups: ["networking.k8s.io"]
+        resources: ["ingresses"]
+        verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
         
 
   - kind: RoleBinding

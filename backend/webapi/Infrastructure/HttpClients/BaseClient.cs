@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 
 using Pidp.Extensions;
+using System.Net.Http.Headers;
 
 public enum PropertySerialization
 {
@@ -50,6 +51,7 @@ public class BaseClient
 
     protected async Task<IDomainResult<T>> GetAsync<T>(string url) => await this.SendCoreAsync<T>(HttpMethod.Get, url, null, default);
 
+    protected async Task<IDomainResult<T>> GetAsync<T>(string url, string accessToken) => await this.SendCoreAsync<T>(HttpMethod.Get, url, accessToken, null, default);
     /// <summary>
     /// Performs a GET to the supplied Url with name/value pairs as query values parsed from a values object.
     /// </summary>
@@ -107,6 +109,8 @@ public class BaseClient
     /// <param name="content"></param>
     /// <param name="cancellationToken"></param>
     protected async Task<IDomainResult<T>> SendCoreAsync<T>(HttpMethod method, string url, HttpContent? content, CancellationToken cancellationToken) => await this.SendCoreInternalAsync<T>(method, url, content, false, cancellationToken);
+    private async Task<IDomainResult<T>> SendCoreAsync<T>(HttpMethod method, string url, string accessToken, HttpContent? content, CancellationToken cancellationToken) => await this.SendCoreInternalAsync<T>(method, url, accessToken, content, false, cancellationToken);
+
 
     private async Task<IDomainResult<T>> SendCoreInternalAsync<T>(HttpMethod method, string url, HttpContent? content, bool ignoreResponseContent, CancellationToken cancellationToken)
     {
@@ -116,6 +120,81 @@ public class BaseClient
             {
                 Content = content
             };
+            using var response = await this.client.SendAsync(request, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // TODO: retryable status codes?
+                // if (RetryableStatusCodes.Contains(response.StatusCode))
+                // {
+                //     ???
+                // }
+
+                var responseMessage = response.Content != null
+                    ? await response.Content.ReadAsStringAsync(cancellationToken)
+                    : "";
+
+                this.Logger.LogNonSuccessStatusCode(response.StatusCode, responseMessage);
+                return DomainResult.Failed<T>(response.StatusCode == HttpStatusCode.NotFound
+                    ? $"The URL {url} was not found"
+                    : "Did not receive a successful status code");
+            }
+
+            if (ignoreResponseContent)
+            {
+                return DomainResult.Success<T>(default!);
+            }
+
+            if (response.Content == null)
+            {
+                this.Logger.LogNullResponseContent();
+                return DomainResult.Failed<T>("Response content was null");
+            }
+
+            var deserializationResult = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+            if (deserializationResult == null)
+            {
+                this.Logger.LogNullResponseContent();
+                return DomainResult.Failed<T>("Response content was null");
+            }
+
+            return DomainResult.Success(deserializationResult);
+        }
+        catch (HttpRequestException exception)
+        {
+            this.Logger.LogBaseClientException(exception);
+            return DomainResult.Failed<T>("HttpRequestException during call to API");
+        }
+        catch (TimeoutException exception)
+        {
+            this.Logger.LogBaseClientException(exception);
+            return DomainResult.Failed<T>("TimeoutException during call to API");
+        }
+        catch (OperationCanceledException exception)
+        {
+            this.Logger.LogBaseClientException(exception);
+            return DomainResult.Failed<T>("Task was canceled during call to API");
+        }
+        catch (JsonException exception)
+        {
+            this.Logger.LogBaseClientException(exception);
+            return DomainResult.Failed<T>("Could not deserialize API response");
+        }
+        catch (Exception exception)
+        {
+            this.Logger.LogBaseClientException(exception);
+            return DomainResult.Failed<T>("Unhandled exception when calling the API");
+        }
+    }
+    private async Task<IDomainResult<T>> SendCoreInternalAsync<T>(HttpMethod method, string url, string accessToken, HttpContent? content, bool ignoreResponseContent, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var request = new HttpRequestMessage(method, url)
+            {
+                Content = content
+            };
+            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             using var response = await this.client.SendAsync(request, cancellationToken);
 
             if (!response.IsSuccessStatusCode)

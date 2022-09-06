@@ -47,6 +47,8 @@ spec:
           env:
             - name: PlrClient__Url
               value: http://{{ $release }}-plr-intake:8080/api
+            - name: JumClient__Url
+              value: https://jum-api-e27db1-dev.apps.gold.devops.gov.bc.ca/api
             - name: DB_HOST
               value: postgresql
             - name: POSTGRESQL_PASSWORD

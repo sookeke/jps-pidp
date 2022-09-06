@@ -1,5 +1,6 @@
 namespace Pidp.Infrastructure.HttpClients.Jum;
 
+using System.Globalization;
 using System.Threading.Tasks;
 using NodaTime;
 using Pidp.Models;
@@ -7,6 +8,28 @@ using Pidp.Models;
 public class JumClient : BaseClient, IJumClient
 {
     public JumClient(HttpClient httpClient, ILogger<JumClient> logger) : base(httpClient, logger) { }
+
+    public async Task<Participant?> GetJumUserAsync(string username, string accessToken)
+    {
+        var result = await this.GetAsync<Participant>($"users/{username}", accessToken);
+
+        if (!result.IsSuccess)
+        {
+            return null;
+        }
+        var user = result.Value;
+        if (user == null)
+        {
+            this.Logger.LogNoUserFound(username);
+            return null;
+        }
+        if (user.participantDetails.Count == 0)
+        {
+            this.Logger.LogDisabledUserFound(username);
+            return null;
+        }
+        return user;
+    }
 
     public async Task<JustinUser?> GetJumUserAsync(string username)
     {
@@ -51,22 +74,48 @@ public class JumClient : BaseClient, IJumClient
         }
         return user;
     }
-
-    public Task<bool> IsJumUser(JustinUser? justinUser, Party party)
+    public async Task<Participant?> GetJumUserByPartIdAsync(decimal partId, string accessToken)
     {
-        if (justinUser == null
+        var result = await this.GetAsync<Participant>($"participant/{partId}", accessToken);
+
+        if (!result.IsSuccess)
+        {
+            return null;
+        }
+        var participant = result.Value;
+        if (participant.participantDetails.Count == 0)
+        {
+            this.Logger.LogNoUserWithPartIdFound(partId);
+            return null;
+        }
+        if (participant.participantDetails.Count > 1)
+        {
+            this.Logger.LogMatchMultipleRecord(partId);
+            return null;
+        }
+        if (participant.participantDetails[0].assignedAgencies.Count == 0)
+        {
+            this.Logger.LogDisabledPartIdFound(partId);
+            return null;
+        }
+        return participant;
+    }
+    public Task<bool> IsJumUser(Participant? justinUser, Party party)
+    {
+        if (justinUser?.participantDetails.Count == 0
             || party == null)
         {
             this.Logger.LogJustinUserNotFound();
             return Task.FromResult(false);
         }
 
-        if (justinUser.person.FirstName == party.FirstName
-            && justinUser.person.Surname == party.LastName
-            && justinUser.person.Email == party.Email
-            && !justinUser.IsDisable
-            && LocalDate.FromDateTime(justinUser.person.BirthDate) == party.Birthdate
-            && justinUser.person.Gender == party.Gender)
+        if (justinUser?.participantDetails?.FirstOrDefault()?.firstGivenNm == party.FirstName
+            && justinUser?.participantDetails?.FirstOrDefault()?.surname == party.LastName
+            && justinUser?.participantDetails?.FirstOrDefault()?.emailAddress == party.Email
+            //&& !justinUser.IsDisabled
+            //&& LocalDate.FromDateTime(justinUser.person.BirthDate) == party.Birthdate
+            && LocalDate.FromDateTime(Convert.ToDateTime(justinUser?.participantDetails?.FirstOrDefault()?.birthDate, CultureInfo.CurrentCulture)) == party.Birthdate)
+        //&& justinUser?.participantDetails?.FirstOrDefault()?.Gender == party.Gender)
         {
             return Task.FromResult(true);
         }
@@ -85,4 +134,10 @@ public static partial class JumClientLoggingExtensions
     public static partial void LogDisabledPartIdFound(this ILogger logger, long partId);
     [LoggerMessage(5, LogLevel.Error, "Justin user not found.")]
     public static partial void LogJustinUserNotFound(this ILogger logger);
+    [LoggerMessage(6, LogLevel.Warning, "No User found in JUM with PartId = {partId}.")]
+    public static partial void LogNoUserWithPartIdFound(this ILogger logger, decimal partId);
+    [LoggerMessage(7, LogLevel.Warning, "User found but disabled in JUM with PartId = {partId}.")]
+    public static partial void LogDisabledPartIdFound(this ILogger logger, decimal partId);
+    [LoggerMessage(8, LogLevel.Warning, "Mutiple User Record Found with PartId = {partId}.")]
+    public static partial void LogMatchMultipleRecord(this ILogger logger, decimal partId);
 }

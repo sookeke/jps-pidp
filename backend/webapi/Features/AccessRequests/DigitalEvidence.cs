@@ -144,10 +144,7 @@ public class DigitalEvidence
             );
             await this.emailService.SendAsync(email);
         }
-        private static async Task<bool> isValidJustinUser(JustinUser justinUser, Party party)
-        {
-            return false;
-        }
+        private static bool IsValidJustinUser(JustinUser justinUser, Party party) => false;
     }
 }
 

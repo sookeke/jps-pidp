@@ -57,6 +57,8 @@ public class Startup
             .AsImplementedInterfaces()
             .WithTransientLifetime());
 
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
         services.AddHealthChecks();
 
         services.AddSwaggerGen(options =>

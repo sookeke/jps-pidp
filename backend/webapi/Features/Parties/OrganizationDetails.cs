@@ -10,6 +10,8 @@ using System.Text.Json.Serialization;
 using Pidp.Data;
 using Pidp.Models.Lookups;
 using Pidp.Infrastructure.HttpClients.Jum;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 
 public class OrganizationDetails
 {
@@ -108,16 +110,19 @@ public class OrganizationDetails
         private readonly PidpDbContext context;
         private readonly IJumClient jumClient;
         private readonly ILogger logger;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public CommandHandler(PidpDbContext context, IJumClient jumClient, ILogger<CommandHandler> logger)
+        public CommandHandler(PidpDbContext context, IJumClient jumClient, ILogger<CommandHandler> logger, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
             this.jumClient = jumClient;
             this.logger = logger;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task HandleAsync(Command command)
         {
+            var accessToken = await this.httpContextAccessor.HttpContext.GetTokenAsync("access_token");
             var dto = await this.context.Parties
                 .Where(party => party.Id == command.PartyId)
                 .SingleAsync();
@@ -126,8 +131,8 @@ public class OrganizationDetails
 
             var justinUser = command.OrganizationCode switch
             {
-                OrganizationCode.CorrectionService => await this.jumClient.GetJumUserByPartIdAsync(partId: long.Parse(command.EmployeeIdentifier)),
-                OrganizationCode.JusticeSector => await this.jumClient.GetJumUserAsync(command.EmployeeIdentifier),
+                OrganizationCode.CorrectionService => await this.jumClient.GetJumUserByPartIdAsync(partId: long.Parse(command.EmployeeIdentifier), accessToken),
+                OrganizationCode.JusticeSector => await this.jumClient.GetJumUserAsync(command.EmployeeIdentifier,accessToken),
                 OrganizationCode.LawEnforcement => throw new NotImplementedException(),
                 OrganizationCode.LawSociety => throw new NotImplementedException(),
                 OrganizationCode.HealthAuthority => throw new NotImplementedException(),

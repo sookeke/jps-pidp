@@ -1,7 +1,6 @@
 namespace Pidp.Infrastructure.HttpClients;
 
 using IdentityModel.Client;
-
 using Pidp.Extensions;
 using Pidp.Infrastructure.HttpClients.AddressAutocomplete;
 using Pidp.Infrastructure.HttpClients.Jum;
@@ -28,13 +27,13 @@ public static class HttpClientSetup
 
         services.AddHttpClientWithBaseAddress<ILdapClient, LdapClient>(config.LdapClient.Url);
 
-        services.AddHttpClientWithBaseAddress<IJumClient, JumClient>(config.JumClient.Url)
-            .WithBearerToken(new KeycloakAdministrationClientCredentials
-            {
-                Address = config.Keycloak.TokenUrl,
-                ClientId = config.Keycloak.AdministrationClientId,
-                ClientSecret = config.Keycloak.AdministrationClientSecret
-            });
+        services.AddHttpClientWithBaseAddress<IJumClient, JumClient>(config.JumClient.Url);
+            //.WithBearerToken(new KeycloakAdministrationClientCredentials
+            //{
+            //    Address = config.Keycloak.TokenUrl,
+            //    ClientId = config.Keycloak.AdministrationClientId,
+            //    ClientSecret = config.Keycloak.AdministrationClientSecret
+            //});
 
         services.AddHttpClientWithBaseAddress<IKeycloakAdministrationClient, KeycloakAdministrationClient>(config.Keycloak.AdministrationUrl)
             .WithBearerToken(new KeycloakAdministrationClientCredentials
@@ -43,6 +42,11 @@ public static class HttpClientSetup
                 ClientId = config.Keycloak.AdministrationClientId,
                 ClientSecret = config.Keycloak.AdministrationClientSecret
             });
+
+        //services.AddHttpClient("JUM API", client =>
+        //{
+        //    client.BaseAddress = new Uri(config.JumClient.Url);
+        //}).AddHttpMessageHandler(handler => handler.GetRequiredService<AuthorizationMessageHandler>());
 
         services.AddHttpClientWithBaseAddress<IPlrClient, PlrClient>(config.PlrClient.Url);
 

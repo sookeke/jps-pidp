@@ -23,7 +23,7 @@ version: 0.1.0
 # It is recommended to use it with quotes.
 appVersion: "0.0.1"
 
-icon: https://svgshare.com/i/_6C.svg
+icon: https://drive.google.com/uc?export=view&id=1fc37O4LI_ciUI87_Y00lFgO8CaUv_7ci
 
 dependencies:
   - name: frontend

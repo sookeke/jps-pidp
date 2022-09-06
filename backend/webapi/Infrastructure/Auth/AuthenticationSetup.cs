@@ -30,7 +30,6 @@ public static class AuthenticationSetup
                 OnTokenValidated = async context => await OnTokenValidatedAsync(context)
             };
         });
-
         services.AddScoped<IAuthorizationHandler, UserOwnsResourceHandler>();
 
         services.AddAuthorization(options =>

@@ -18,6 +18,9 @@ using Pidp.Models.Lookups;
 using Pidp.Infrastructure.HttpClients.Jum;
 using Pidp.Models;
 using static Pidp.Features.Parties.ProfileStatus.ProfileStatusDto;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+
 public partial class ProfileStatus
 {
     public class Command : ICommand<Model>
@@ -80,17 +83,20 @@ public partial class ProfileStatus
         private readonly IPlrClient client;
         private readonly IJumClient jumClient;
         private readonly PidpDbContext context;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public CommandHandler(
             IMapper mapper,
             IPlrClient client,
             IJumClient jumClient,
-            PidpDbContext context)
+            PidpDbContext context,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.mapper = mapper;
             this.client = client;
             this.context = context;
             this.jumClient = jumClient;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Model> HandleAsync(Command command)
@@ -126,11 +132,13 @@ public partial class ProfileStatus
 
             if (profile.OrganizationDetailEntered && profile.OrganizationCode == OrganizationCode.CorrectionService && orgCorrectionDetail != null)
             {
+                //get user token
+                var accessToken = await this.httpContextAccessor.HttpContext.GetTokenAsync("access_token");
                 profile.EmployeeIdentifier = orgCorrectionDetail.PeronalId;
                 profile.CorrectionServiceCode = orgCorrectionDetail.CorrectionServiceCode;
                 profile.CorrectionService = orgCorrectionDetail.CorrectionService?.Name;
                 //profile.Organization = profile.or
-                profile.JustinUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(profile.EmployeeIdentifier));
+                profile.JustinUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(profile.EmployeeIdentifier), accessToken);
                 profile.IsJumUser = await this.jumClient.IsJumUser(profile.JustinUser, new Party
                 {
                     FirstName = profile.FirstName,
@@ -144,10 +152,11 @@ public partial class ProfileStatus
 
             if (profile.OrganizationDetailEntered && profile.OrganizationCode == OrganizationCode.JusticeSector && orgJusticeSecDetail != null)
             {
+                var accessToken = await this.httpContextAccessor.HttpContext.GetTokenAsync("access_token");
                 profile.EmployeeIdentifier = orgJusticeSecDetail.JustinUserId;
                 profile.JusticeSectorCode = orgJusticeSecDetail.JusticeSectorCode;
                 profile.JusticeSectorService = orgJusticeSecDetail.JusticeSector?.Name;
-                profile.JustinUser = await this.jumClient.GetJumUserAsync(profile.EmployeeIdentifier);
+                profile.JustinUser = await this.jumClient.GetJumUserAsync(profile.EmployeeIdentifier, accessToken);
                 profile.IsJumUser = await this.jumClient.IsJumUser(profile.JustinUser, new Party
                 {
                     FirstName = profile.FirstName,
