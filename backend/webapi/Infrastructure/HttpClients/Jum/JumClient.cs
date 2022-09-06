@@ -11,7 +11,7 @@ public class JumClient : BaseClient, IJumClient
 
     public async Task<Participant?> GetJumUserAsync(string username, string accessToken)
     {
-        var result = await this.GetAsync<Participant>($"users/{username}", accessToken);
+        var result = await this.GetAsync<Participant>($"participant?username={username}", accessToken);
 
         if (!result.IsSuccess)
         {
@@ -85,7 +85,7 @@ public class JumClient : BaseClient, IJumClient
         var participant = result.Value;
         if (participant.participantDetails.Count == 0)
         {
-            this.Logger.LogNoUserWithPartIdFound(partId);
+            this.Logger.LogDisabledPartyIdFound(partId);
             return null;
         }
         if (participant.participantDetails.Count > 1)
@@ -95,7 +95,7 @@ public class JumClient : BaseClient, IJumClient
         }
         if (participant.participantDetails[0].assignedAgencies.Count == 0)
         {
-            this.Logger.LogDisabledPartIdFound(partId);
+            this.Logger.LogDisabledPartyIdFound(partId);
             return null;
         }
         return participant;
@@ -134,10 +134,8 @@ public static partial class JumClientLoggingExtensions
     public static partial void LogDisabledPartIdFound(this ILogger logger, long partId);
     [LoggerMessage(5, LogLevel.Error, "Justin user not found.")]
     public static partial void LogJustinUserNotFound(this ILogger logger);
-    [LoggerMessage(6, LogLevel.Warning, "No User found in JUM with PartId = {partId}.")]
-    public static partial void LogNoUserWithPartIdFound(this ILogger logger, decimal partId);
     [LoggerMessage(7, LogLevel.Warning, "User found but disabled in JUM with PartId = {partId}.")]
-    public static partial void LogDisabledPartIdFound(this ILogger logger, decimal partId);
+    public static partial void LogDisabledPartyIdFound(this ILogger logger, decimal partId);
     [LoggerMessage(8, LogLevel.Warning, "Mutiple User Record Found with PartId = {partId}.")]
     public static partial void LogMatchMultipleRecord(this ILogger logger, decimal partId);
 }

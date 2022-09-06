@@ -156,7 +156,7 @@ public partial class ProfileStatus
                 profile.EmployeeIdentifier = orgJusticeSecDetail.JustinUserId;
                 profile.JusticeSectorCode = orgJusticeSecDetail.JusticeSectorCode;
                 profile.JusticeSectorService = orgJusticeSecDetail.JusticeSector?.Name;
-                profile.JustinUser = await this.jumClient.GetJumUserAsync(profile.EmployeeIdentifier, accessToken);
+                profile.JustinUser = await this.jumClient.GetJumUserAsync(profile.EmployeeIdentifier, accessToken: accessToken!.ToString());
                 profile.IsJumUser = await this.jumClient.IsJumUser(profile.JustinUser, new Party
                 {
                     FirstName = profile.FirstName,
@@ -258,7 +258,7 @@ public partial class ProfileStatus
         public PlrStandingsDigest PlrStanding { get; set; } = default!;
         public ClaimsPrincipal? User { get; set; }
 
-        public JustinUser? JustinUser { get; set; }
+        public Participant? JustinUser { get; set; }
         public bool IsJumUser { get; set; }
 
         // Computed Properties
