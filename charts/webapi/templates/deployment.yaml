@@ -47,8 +47,13 @@ spec:
           env:
             - name: PlrClient__Url
               value: http://{{ $release }}-plr-intake:8080/api
+<<<<<<< HEAD
             - name: JumClient__Url
               value: https://jum-api-e27db1-dev.apps.gold.devops.gov.bc.ca/api
+=======
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.aspnetcore.environment }}
+>>>>>>> 0ea55b7bc9442b95d386d00c7f5d470021b1b323
             - name: DB_HOST
               value: postgresql
             - name: POSTGRESQL_PASSWORD

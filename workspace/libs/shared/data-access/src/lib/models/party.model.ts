@@ -9,6 +9,8 @@ export enum AccessTypeCode {
   HcimEnrolment,
   DriverFitness,
   DigitalEvidence,
+  Uci,
+  MSTeams,
 }
 
 // TODO use lookups

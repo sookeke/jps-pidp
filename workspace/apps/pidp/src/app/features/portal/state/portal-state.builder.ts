@@ -133,7 +133,8 @@ export class PortalStateBuilder {
         // TODO remove permissions when API exists and ready for production, or
         // TODO replace || with && to keep it flagged when API exists
         //this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
-        this.insertSection('endorsements', profileStatus),
+        this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
+          this.insertSection('endorsements', profileStatus),
         () => [new EndorsementsPortalSection(profileStatus, this.router)]
       ),
     ];
@@ -209,8 +210,6 @@ export class PortalStateBuilder {
     profileStatus: ProfileStatus
   ): boolean {
     const statusCode = profileStatus.status[portalSectionKey]?.statusCode;
-    const res = statusCode && statusCode !== StatusCode.HIDDEN;
-    console.log(res);
     return statusCode && statusCode !== StatusCode.HIDDEN;
   }
 }

@@ -212,6 +212,60 @@ namespace Pidp.Data.Migrations
                     b.ToTable("EmailLog");
                 });
 
+            modelBuilder.Entity("Pidp.Models.Endorsement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean");
+
+                    b.Property<Instant>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Instant>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Instant>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Endorsement");
+                });
+
+            modelBuilder.Entity("Pidp.Models.EndorsementRelationship", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Instant>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EndorsementId")
+                        .HasColumnType("integer");
+
+                    b.Property<Instant>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PartyId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EndorsementId");
+
+                    b.HasIndex("PartyId");
+
+                    b.ToTable("EndorsementRelationship");
+                });
+
             modelBuilder.Entity("Pidp.Models.EndorsementRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -220,24 +274,17 @@ namespace Pidp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<Instant?>("AdjudicatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool?>("Approved")
-                        .HasColumnType("boolean");
+                    b.Property<string>("AdditionalInformation")
+                        .HasColumnType("text");
 
                     b.Property<Instant>("Created")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("EndorsingPartyId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<Instant>("Modified")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ReceivingPartyId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("RecipientEmail")
                         .IsRequired()
@@ -246,12 +293,18 @@ namespace Pidp.Data.Migrations
                     b.Property<int>("RequestingPartyId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Instant>("StatusDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("Token")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EndorsingPartyId");
+                    b.HasIndex("ReceivingPartyId");
 
                     b.HasIndex("RequestingPartyId");
 
@@ -1386,6 +1439,7 @@ namespace Pidp.Data.Migrations
                     b.Navigation("Province");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Pidp.Models.CorrectionServiceDetail", b =>
                 {
                     b.HasOne("Pidp.Models.Lookups.CorrectionService", "CorrectionService")
@@ -1405,11 +1459,50 @@ namespace Pidp.Data.Migrations
                     b.Navigation("OrgainizationDetail");
                 });
 
+            modelBuilder.Entity("Pidp.Models.EndorsementRelationship", b =>
+                {
+                    b.HasOne("Pidp.Models.Endorsement", "Endorsement")
+                        .WithMany("EndorsementRelationships")
+                        .HasForeignKey("EndorsementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pidp.Models.Party", "Party")
+                        .WithMany()
+                        .HasForeignKey("PartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Endorsement");
+
+                    b.Navigation("Party");
+                });
+
+            modelBuilder.Entity("Pidp.Models.EndorsementRequest", b =>
+            {
+                b.HasOne("Pidp.Models.Party", "ReceivingParty")
+                    .WithMany()
+                    .HasForeignKey("ReceivingPartyId")
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasOne("Pidp.Models.Party", "RequestingParty")
+                    .WithMany()
+                    .HasForeignKey("RequestingPartyId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("ReceivingParty");
+
+                b.Navigation("RequestingParty");
+            });
+
+
             modelBuilder.Entity("Pidp.Models.EndorsementRequest", b =>
                 {
-                    b.HasOne("Pidp.Models.Party", "EndorsingParty")
+                    b.HasOne("Pidp.Models.Party", "ReceivingParty")
                         .WithMany()
-                        .HasForeignKey("EndorsingPartyId");
+                        .HasForeignKey("ReceivingPartyId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Pidp.Models.Party", "RequestingParty")
                         .WithMany()
@@ -1417,7 +1510,7 @@ namespace Pidp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("EndorsingParty");
+                    b.Navigation("ReceivingParty");
 
                     b.Navigation("RequestingParty");
                 });
@@ -1535,6 +1628,11 @@ namespace Pidp.Data.Migrations
                         .HasForeignKey("Pidp.Models.HcimEnrolment", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Pidp.Models.Endorsement", b =>
+                {
+                    b.Navigation("EndorsementRelationships");
                 });
 
             modelBuilder.Entity("Pidp.Models.Facility", b =>
