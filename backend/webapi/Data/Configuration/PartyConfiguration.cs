@@ -12,7 +12,7 @@ public class PartyConfiguration : IEntityTypeConfiguration<Party>
         builder.HasIndex(x => x.UserId)
             .IsUnique();
 
-        builder.HasIndex(x => x.Hpdid)
+        builder.HasIndex(x => x.Jpdid)
             .IsUnique();
     }
 }

@@ -13,6 +13,7 @@ public class PidpConfiguration
     public AddressAutocompleteClientConfiguration AddressAutocompleteClient { get; set; } = new();
     public ConnectionStringConfiguration ConnectionStrings { get; set; } = new();
     public ChesClientConfiguration ChesClient { get; set; } = new();
+    public KafkaClusterConfiguration KafkaCluster { get; set; } = new();
     public KeycloakConfiguration Keycloak { get; set; } = new();
     public LdapClientConfiguration LdapClient { get; set; } = new();
     public MailServerConfiguration MailServer { get; set; } = new();
@@ -55,6 +56,15 @@ public class PidpConfiguration
     public class LdapClientConfiguration
     {
         public string Url { get; set; } = string.Empty;
+    }
+    public class KafkaClusterConfiguration
+    {
+        public string Url { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+        public string ClientSecret { get; set; } = string.Empty;
+        public string BoostrapServers { get; set; } = string.Empty;
+        public string ConsumerTopicName { get; set; } = string.Empty;
+        public string ProducerTopicName { get; set; } = string.Empty;
     }
     public class JumClientConfiguration
     {

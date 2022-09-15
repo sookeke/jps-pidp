@@ -14,10 +14,11 @@ public class Create
     public class Command : ICommand<int>
     {
         public Guid UserId { get; set; }
-        public string? Hpdid { get; set; }
+        public string? Jpdid { get; set; }
         public LocalDate? Birthdate { get; set; }
         public string? Gender { get; set; }
         public string FirstName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
     }
 
@@ -36,7 +37,7 @@ public class Create
                 ClaimValues.BCServicesCard => new BcscValidator(user),
                 ClaimValues.Phsa => new PhsaValidator(),
                 ClaimValues.Bcps => new BcpsValidator(user),
-                ClaimValues.Idir => new IdirValidator(),
+                ClaimValues.Idir => new IdirValidator(user),
                 _ => throw new NotImplementedException("Given Identity Provider is not supported")
             });
         }
@@ -45,7 +46,7 @@ public class Create
         {
             public BcscValidator(ClaimsPrincipal? user)
             {
-                this.RuleFor(x => x.Hpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
+                this.RuleFor(x => x.Jpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
                 this.RuleFor(x => x.Birthdate).NotEmpty().Equal(user?.GetBirthdate()).WithMessage($"Must match the \"birthdate\" Claim on the current User");
                 this.RuleFor(x => x.Gender).NotEmpty().Equal(user?.GetGender()).WithMessage($"Must match the \"gender\" Claim on the current User");
             }
@@ -54,9 +55,10 @@ public class Create
         {
             public BcpsValidator(ClaimsPrincipal? user)
             {
-                this.RuleFor(x => x.Hpdid).Empty();
+                //this.RuleFor(x => x.Hpdid).Empty();
                 this.RuleFor(x => x.Birthdate).Empty();
-                //this.RuleFor(x => x.Hpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
+                this.RuleFor(x => x.Jpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
+                //this.RuleFor(x => x.Email).NotEmpty().Equal(user?.Claims.)
                 //this.RuleFor(x => x.Birthdate).NotEmpty().Equal(user?.GetBirthdate()).WithMessage($"Must match the \"birthdate\" Claim on the current User");
             }
         }
@@ -65,16 +67,16 @@ public class Create
         {
             public PhsaValidator()
             {
-                this.RuleFor(x => x.Hpdid).Empty();
+                this.RuleFor(x => x.Jpdid).Empty();
                 this.RuleFor(x => x.Birthdate).Empty();
             }
         }
 
         private class IdirValidator : AbstractValidator<Command>
         {
-            public IdirValidator()
+            public IdirValidator(ClaimsPrincipal? user)
             {
-                this.RuleFor(x => x.Hpdid).Empty();
+                this.RuleFor(x => x.Jpdid).NotEmpty().MatchesUserClaim(user, Claims.PreferredUsername);
                 this.RuleFor(x => x.Birthdate).Empty();
             }
         }
@@ -91,11 +93,12 @@ public class Create
             var party = new Party
             {
                 UserId = command.UserId,
-                Hpdid = command.Hpdid,
+                Jpdid = command.Jpdid,
                 Gender = command.Gender,
                 Birthdate = command.Birthdate,
                 FirstName = command.FirstName,
                 LastName = command.LastName,
+                Email = command.Email
             };
 
             this.context.Parties.Add(party);

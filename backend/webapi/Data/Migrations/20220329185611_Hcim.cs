@@ -27,7 +27,7 @@ namespace Pidp.Data.Migrations
                 newName: "IX_AccessRequest_PartyId");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Hpdid",
+                name: "Jpdid",
                 table: "Party",
                 type: "text",
                 nullable: true,
@@ -97,7 +97,7 @@ namespace Pidp.Data.Migrations
                 newName: "IX_AccessRequests_PartyId");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Hpdid",
+                name: "Jpdid",
                 table: "Party",
                 type: "text",
                 nullable: false,

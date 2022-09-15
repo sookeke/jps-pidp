@@ -12,7 +12,7 @@ public class Party : BaseAuditable, IOwnedResource
 
     public Guid UserId { get; set; }
 
-    public string? Hpdid { get; set; }
+    public string? Jpdid { get; set; }
 
     public LocalDate? Birthdate { get; set; }
 

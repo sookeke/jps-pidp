@@ -41,7 +41,7 @@ public static class AParty
 
         if (identityProvider == ClaimValues.BCServicesCard)
         {
-            party.Hpdid = "HPDID";
+            party.Jpdid = "JPDID";
             party.Birthdate = LocalDate.FromDateTime(DateTime.Today);
         }
 

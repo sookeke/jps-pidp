@@ -1,4 +1,5 @@
 export interface DemsAccount {
-  userType: string;
-  pidNumber: string;
+  organizationType: string;
+  organizationName: string;
+  participantId: string;
 }

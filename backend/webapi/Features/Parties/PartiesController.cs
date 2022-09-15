@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Pidp.Infrastructure.Auth;
 using Pidp.Infrastructure.Services;
+using Pidp.Models;
 
 [Route("api/[controller]")]
 [Authorize(Policy = Policies.AnyPartyIdentityProvider)]
@@ -100,6 +101,15 @@ public class PartiesController : PidpControllerBase
                                                                                         [FromRoute] OrganizationDetails.Query query)
         => await this.AuthorizePartyBeforeHandleAsync(query.PartyId, handler, query)
             .ToActionResultOfT();
+
+    [HttpGet("{partyId}/user-type")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserTypeModel?>> GetUserType([FromServices] IQueryHandler<UserType.Query, UserTypeModel?> handler,
+                                                                                    [FromRoute] UserType.Query query)
+    => await this.AuthorizePartyBeforeHandleAsync(query.PartyId, handler, query)
+        .ToActionResultOfT();
 
     [HttpPut("{partyId}/organization-details")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

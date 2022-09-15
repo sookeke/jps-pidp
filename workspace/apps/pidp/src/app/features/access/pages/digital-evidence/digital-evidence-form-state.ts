@@ -11,18 +11,16 @@ export class DigitalEvidenceFormState extends AbstractFormState<DemsAccount> {
     this.buildForm();
   }
 
-  public get userType(): FormControl {
-    return this.formInstance.get('userType') as FormControl;
+  public get OrganizationType(): FormControl {
+    return this.formInstance.get('OrganizationType') as FormControl;
   }
-  public get agency(): FormControl {
-    return this.formInstance.get('agency') as FormControl;
+  public get OrganizationName(): FormControl {
+    return this.formInstance.get('OrganizationName') as FormControl;
   }
-  public get pidNumber(): FormControl {
-    return this.formInstance.get('pidNumber') as FormControl;
+  public get ParticipantId(): FormControl {
+    return this.formInstance.get('ParticipantId') as FormControl;
   }
-  public get ikeyCertCode(): FormControl {
-    return this.formInstance.get('ikeyCertCode') as FormControl;
-  }
+
   public get json(): DemsAccount | undefined {
     if (!this.formInstance) {
       return;
@@ -41,10 +39,9 @@ export class DigitalEvidenceFormState extends AbstractFormState<DemsAccount> {
 
   public buildForm(): void {
     this.formInstance = this.fb.group({
-      userType: ['', [Validators.required]],
-      ikeyCertCode: [''],
-      pidNumber: [''],
-      agency: ['', [Validators.required]],
+      OrganizationType: ['', [Validators.required]],
+      OrganizationName: ['', [Validators.required]],
+      ParticipantId: ['', [Validators.required]],
     });
   }
 }

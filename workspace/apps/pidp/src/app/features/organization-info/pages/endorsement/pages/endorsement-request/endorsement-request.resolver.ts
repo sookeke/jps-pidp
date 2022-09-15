@@ -29,7 +29,7 @@ export class EndorsementRequestResolver implements Resolve<StatusCode | null> {
           return null;
         }
 
-        return profileStatus.status.endorsement.statusCode;
+        return profileStatus.status.endorsements.statusCode;
       }),
       catchError(() => of(null))
     );

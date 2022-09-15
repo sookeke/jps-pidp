@@ -21,6 +21,7 @@ using Pidp.Infrastructure.HttpClients;
 using Pidp.Infrastructure.Services;
 using Pidp.Helpers.Middleware;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Pidp.Features.Organization.UserTypeService;
 
 public class Startup
 {
@@ -58,6 +59,8 @@ public class Startup
             .WithTransientLifetime());
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        services.AddScoped<IUserTypeService, UserTypeService>();
 
         services.AddHealthChecks();
 

@@ -26,14 +26,16 @@ export class DigitalEvidenceResource {
 
   public requestAccess(
     partyId: number,
-    userType: DemsAccount,
-    pidNumber: DemsAccount
+    organizationType: DemsAccount,
+    organizationName: DemsAccount,
+    participantId: DemsAccount
   ): NoContent {
     return this.apiResource
       .post<NoContent>('access-requests/digital-evidence', {
         partyId,
-        userType,
-        pidNumber,
+        organizationType,
+        organizationName,
+        participantId,
       })
       .pipe(
         NoContentResponse,

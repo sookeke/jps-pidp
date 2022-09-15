@@ -1,9 +1,11 @@
 namespace Pidp.Data;
 
+using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
 using Pidp.Models;
+using Pidp.Models.OutBoxEvent;
 
 public class PidpDbContext : DbContext
 {
@@ -21,6 +23,7 @@ public class PidpDbContext : DbContext
     public DbSet<DigitalEvidence> DigitalEvidences { get; set; } = default!;
     public DbSet<PartyLicenceDeclaration> PartyLicenceDeclarations { get; set; } = default!;
     public DbSet<Party> Parties { get; set; } = default!;
+    public DbSet<ExportedEvent> ExportedEvents { get; set; } = default!;
     public DbSet<PartyAccessAdministrator> PartyAccessAdministrators { get; set; } = default!;
     public DbSet<PartyOrgainizationDetail> PartyOrgainizationDetails { get; set; } = default!;
     public DbSet<JusticeSectorDetail> JusticeSectorDetails { get; set; } = default!;
@@ -42,6 +45,14 @@ public class PidpDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<ExportedEvent>()
+             .ToTable("OutBoxedExportedEvent")
+             .Property(x => x.JsonEventPayload).HasColumnName("EventPayload");
+
+        modelBuilder.Entity<ExportedEvent>()
+            .ToTable("OutBoxedExportedEvent")
+            .HasKey(x => new { x.EventId, x.AggregateId });
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PidpDbContext).Assembly);
     }

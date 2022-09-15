@@ -12,6 +12,8 @@ using Pidp.Models.Lookups;
 using Pidp.Infrastructure.HttpClients.Jum;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using System.Globalization;
+using Pidp.Extensions;
 
 public class OrganizationDetails
 {
@@ -122,7 +124,12 @@ public class OrganizationDetails
 
         public async Task HandleAsync(Command command)
         {
-            var accessToken = await this.httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+            var httpContext = this.httpContextAccessor.HttpContext;
+            var accessToken = await httpContext!.GetTokenAsync("access_token");
+
+
+            //accessToken.ThrowIfNull(accessToken);
+
             var dto = await this.context.Parties
                 .Where(party => party.Id == command.PartyId)
                 .SingleAsync();
@@ -131,8 +138,8 @@ public class OrganizationDetails
 
             var justinUser = command.OrganizationCode switch
             {
-                OrganizationCode.CorrectionService => await this.jumClient.GetJumUserByPartIdAsync(partId: long.Parse(command.EmployeeIdentifier), accessToken),
-                OrganizationCode.JusticeSector => await this.jumClient.GetJumUserAsync(command.EmployeeIdentifier,accessToken),
+                OrganizationCode.CorrectionService => await this.jumClient.GetJumUserByPartIdAsync(partId: long.Parse(command.EmployeeIdentifier, CultureInfo.InvariantCulture), accessToken!),
+                OrganizationCode.JusticeSector => await this.jumClient.GetJumUserAsync(command.EmployeeIdentifier, accessToken!),
                 OrganizationCode.LawEnforcement => throw new NotImplementedException(),
                 OrganizationCode.LawSociety => throw new NotImplementedException(),
                 OrganizationCode.HealthAuthority => throw new NotImplementedException(),
@@ -174,7 +181,8 @@ public class OrganizationDetails
                     {
                         OrgainizationDetail = org,
                         JustinUserId = command.EmployeeIdentifier,
-                        JusticeSectorCode = (JusticeSectorCode)command.JusticeSectorCode
+                        ParticipantId = justinUser!.participantDetails[0].partId,
+                        JusticeSectorCode = command.JusticeSectorCode
                     };
                     this.context.JusticeSectorDetails.Add(jpsDetail);
                 }
@@ -182,7 +190,8 @@ public class OrganizationDetails
                 {
                     jpsDetail.OrgainizationDetail = org;
                     jpsDetail.JustinUserId = command.EmployeeIdentifier;
-                    jpsDetail.JusticeSectorCode = (JusticeSectorCode)command.JusticeSectorCode;
+                    jpsDetail.ParticipantId = justinUser!.participantDetails[0].partId;
+                    jpsDetail.JusticeSectorCode = command.JusticeSectorCode;
                     this.context.JusticeSectorDetails.Update(jpsDetail);
                 }
 
@@ -201,7 +210,7 @@ public class OrganizationDetails
                     {
                         OrgainizationDetail = org,
                         PeronalId = command.EmployeeIdentifier,
-                        CorrectionServiceCode = (CorrectionServiceCode)command.CorrectionServiceCode
+                        CorrectionServiceCode = command.CorrectionServiceCode
                     };
                     this.context.CorrectionServiceDetails.Add(corDetail);
                 }
@@ -209,7 +218,7 @@ public class OrganizationDetails
                 {
                     corDetail.OrgainizationDetail = org;
                     corDetail.PeronalId = command.EmployeeIdentifier;
-                    corDetail.CorrectionServiceCode = (CorrectionServiceCode)command?.CorrectionServiceCode;
+                    corDetail.CorrectionServiceCode = command.CorrectionServiceCode;
                     this.context.CorrectionServiceDetails.Update(corDetail);
                 }
 

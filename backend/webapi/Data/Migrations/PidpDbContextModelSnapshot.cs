@@ -352,13 +352,12 @@ namespace Pidp.Data.Migrations
                         {
                             Code = 5,
                             Name = "Digital Evidence Management"
-
                         },
-                          new
-                          {
-                              Code = 6,
-                              Name = "Fraser Health UCI"
-                          },
+                        new
+                        {
+                            Code = 6,
+                            Name = "Fraser Health UCI"
+                        },
                         new
                         {
                             Code = 7,
@@ -1109,6 +1108,32 @@ namespace Pidp.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Pidp.Models.OutBoxEvent.ExportedEvent", b =>
+                {
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("AggregateId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AggregateType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JsonEventPayload")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("EventPayload");
+
+                    b.HasKey("EventId", "AggregateId");
+
+                    b.ToTable("OutBoxedExportedEvent", (string)null);
+                });
+
             modelBuilder.Entity("Pidp.Models.Party", b =>
                 {
                     b.Property<int>("Id")
@@ -1136,7 +1161,7 @@ namespace Pidp.Data.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("text");
 
-                    b.Property<string>("Hpdid")
+                    b.Property<string>("Jpdid")
                         .HasColumnType("text");
 
                     b.Property<string>("JobTitle")
@@ -1166,7 +1191,7 @@ namespace Pidp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Hpdid")
+                    b.HasIndex("Jpdid")
                         .IsUnique();
 
                     b.HasIndex("UserId")
@@ -1271,11 +1296,15 @@ namespace Pidp.Data.Migrations
                 {
                     b.HasBaseType("Pidp.Models.AccessRequest");
 
-                    b.Property<string>("ParticipantId")
+                    b.Property<string>("OrganizationName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("UserType")
+                    b.Property<string>("OrganizationType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ParticipantId")
                         .IsRequired()
                         .HasColumnType("text");
 

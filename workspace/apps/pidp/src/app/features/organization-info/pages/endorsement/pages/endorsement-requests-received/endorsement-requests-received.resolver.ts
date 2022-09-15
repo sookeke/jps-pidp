@@ -31,7 +31,7 @@ export class EndorsementRequestsReceivedResolver
           return null;
         }
 
-        return profileStatus.status.endorsement.statusCode;
+        return profileStatus.status.endorsements.statusCode;
       }),
       catchError(() => of(null))
     );

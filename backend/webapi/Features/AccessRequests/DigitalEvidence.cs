@@ -1,17 +1,17 @@
 namespace Pidp.Features.AccessRequests;
-
 using DomainResults.Common;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
 using Pidp.Data;
+using Pidp.Extensions;
+using Pidp.Features.Organization.UserTypeService;
 using Pidp.Infrastructure.Auth;
-using Pidp.Infrastructure.HttpClients.Jum;
 using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Mail;
-using Pidp.Infrastructure.HttpClients.Plr;
 using Pidp.Infrastructure.Services;
+using Pidp.Kafka.Interfaces;
 using Pidp.Models;
 using Pidp.Models.Lookups;
 
@@ -20,8 +20,9 @@ public class DigitalEvidence
     public class Command : ICommand<IDomainResult>
     {
         public int PartyId { get; set; }
-        public UserType UserType { get; set; } = UserType.None;
-        public string PidNumber { get; set; } = string.Empty;
+        public string OrganizationType { get; set; } = string.Empty;
+        public string OrganizationName { get; set; } = string.Empty;
+        public string ParticipantId { get; set; } = string.Empty;
     }
     public enum UserType
     {
@@ -36,7 +37,9 @@ public class DigitalEvidence
     {
         public CommandValidator()
         {
-            this.RuleFor(x => x.UserType).NotEmpty();
+            this.RuleFor(x => x.OrganizationName).NotEmpty();
+            this.RuleFor(x => x.OrganizationType).NotEmpty();
+            this.RuleFor(x => x.ParticipantId).NotEmpty();
             this.RuleFor(x => x.PartyId).GreaterThan(0);
         }
     }
@@ -47,23 +50,29 @@ public class DigitalEvidence
         private readonly IEmailService emailService;
         private readonly IKeycloakAdministrationClient keycloakClient;
         private readonly ILogger logger;
-        private readonly IPlrClient plrClient;
+        private readonly PidpConfiguration config;
+        //private readonly IUserTypeService userTypeService;
         private readonly PidpDbContext context;
+        private readonly IKafkaProducer<string, EdtUserProvisioning> kafkaProducer;
 
         public CommandHandler(
             IClock clock,
             IEmailService emailService,
             IKeycloakAdministrationClient keycloakClient,
             ILogger<CommandHandler> logger,
-            IPlrClient plrClient,
-            PidpDbContext context)
+            //IUserTypeService userTypeService,
+            PidpConfiguration config,
+            PidpDbContext context,
+            IKafkaProducer<string, EdtUserProvisioning> kafkaProducer)
         {
             this.clock = clock;
             this.emailService = emailService;
             this.keycloakClient = keycloakClient;
             this.logger = logger;
-            this.plrClient = plrClient;
+            //this.userTypeService = userTypeService;
             this.context = context;
+            this.kafkaProducer = kafkaProducer;
+            this.config = config;
         }
 
         public async Task<IDomainResult> HandleAsync(Command command)
@@ -74,61 +83,100 @@ public class DigitalEvidence
                 {
                     AlreadyEnroled = party.AccessRequests.Any(request => request.AccessTypeCode == AccessTypeCode.DigitalEvidence),
                     party.Cpn,
-                    party.Hpdid,
+                    party.Jpdid,
                     party.UserId,
-                    party.Email
+                    party.Email,
+                    party.FirstName,
+                    party.LastName
                 })
                 .SingleAsync();
 
+            //var orgType = await this.userTypeService.GetOrgUserType(command.PartyId);
+            //orgType!.ThrowIfNull(nameof(orgType));
+            //var userType = orgType!.Values.Select(n => n.Keys.Skip(1).FirstOrDefault()).First();
+
             if (dto.AlreadyEnroled
                 || dto.Email == null
-                //|| dto.Hpdid == null
+               //|| dto.Hpdid == null
                /* || (await this.plrClient.GetRecordStatus(dto.Ipc))?.IsGoodStanding() != true*/) //check justin api for user standing
             {
                 this.logger.LogDigitalEvidenceAccessRequestDenied();
                 return DomainResult.Failed();
             }
-            switch (command.UserType)
-            {
-                case UserType.BCPS:
-                    break;
-                case UserType.Police:
-                    break;
-                case UserType.OutOfCustody:
-                    //var outOfCustodyVerification = await this.ldapClient.HcimLoginAsync(command.UserType, command.PersonalIdenityficationNumber);
-                    break;
-                case UserType.Lawyer:
-                    break;
-                case UserType.None:
-                    break;
-                default:
-                    break;
-            }
+            //switch (command.UserType)
+            //{
+            //    case UserType.BCPS:
+            //        break;
+            //    case UserType.Police:
+            //        break;
+            //    case UserType.OutOfCustody:
+            //        //var outOfCustodyVerification = await this.ldapClient.HcimLoginAsync(command.UserType, command.PersonalIdenityficationNumber);
+            //        break;
+            //    case UserType.Lawyer:
+            //        break;
+            //    case UserType.None:
+            //        break;
+            //    default:
+            //        break;
+            //}
             if (!await this.keycloakClient.AssignClientRole(dto.UserId, Clients.PidpApi, Roles.User))
             {
                 return DomainResult.Failed();
             }
-
-            //sample
-            //this.context.AccessRequests.Add(new AccessRequest
-            //{
-            //    PartyId = command.PartyId,
-            //    AccessType = AccessType.DigitalEvidence,
-            //    RequestedOn = this.clock.GetCurrentInstant()
-            //});
-            this.context.DigitalEvidences.Add(new Models.DigitalEvidence
+            using var trx = this.context.Database.BeginTransaction();
+            try
             {
-                PartyId = command.PartyId,
-                UserType = command.UserType.ToString(),
-                ParticipantId = command.PidNumber,
-                AccessTypeCode = AccessTypeCode.DigitalEvidence,
-                RequestedOn = this.clock.GetCurrentInstant()
+                var digitalEvenident = new Models.DigitalEvidence
+                {
+                    PartyId = command.PartyId,
+                    OrganizationType = command.OrganizationType.ToString(),
+                    OrganizationName = command.OrganizationName,
+                    ParticipantId = command.ParticipantId,
+                    AccessTypeCode = AccessTypeCode.DigitalEvidence,
+                    RequestedOn = this.clock.GetCurrentInstant()
+                };
+                this.context.DigitalEvidences.Add(digitalEvenident);
 
-            });
+                await this.context.SaveChangesAsync(); //save all trx at once for production(remove this and handle using idempotent)
+                //publish accessRequest Event (Sending Events to the Outbox)
 
-            await this.context.SaveChangesAsync();
+                this.context.ExportedEvents.Add(new Models.OutBoxEvent.ExportedEvent
+                {
+                    EventId = digitalEvenident.Id,
+                    AggregateType = AccessTypeCode.DigitalEvidence.ToString(),
+                    AggregateId = command.ParticipantId,
+                    EventType = "Access Request Created",
+                    EventPayload = new EdtUserProvisioning
+                    {
+                        Key = $"{command.PartyId}",
+                        UserName = dto.Jpdid,
+                        Email = dto.Email,
+                        FullName = $"{dto.FirstName} {dto.LastName}",
+                        AccountType = 0,
+                        Role = "User"
+                    }
+                });
+                await this.kafkaProducer.ProduceAsync(this.config.KafkaCluster.ProducerTopicName, $"{digitalEvenident.Id}", new EdtUserProvisioning
+                {
+                    Key = $"{command.PartyId}",
+                    UserName = dto.Jpdid,
+                    Email = dto.Email,
+                    FullName = dto.FirstName + " " + dto.LastName,
+                    AccountType = 0,
+                    Role = "User"
+                });
 
-            await this.SendConfirmationEmailAsync(dto.Email);
+                await this.context.SaveChangesAsync();
+                await trx.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await trx.RollbackAsync();
+                return DomainResult.Failed();
+            }
+
+
+            //await this.SendConfirmationEmailAsync(dto.Email);
 
             return DomainResult.Success();
         }
@@ -144,7 +192,7 @@ public class DigitalEvidence
             );
             await this.emailService.SendAsync(email);
         }
-        private static bool IsValidJustinUser(JustinUser justinUser, Party party) => false;
+        //private static bool IsValidJustinUser(JustinUser justinUser, Party party) => false;
     }
 }
 

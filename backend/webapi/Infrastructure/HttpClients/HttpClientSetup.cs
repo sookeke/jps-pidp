@@ -1,5 +1,6 @@
 namespace Pidp.Infrastructure.HttpClients;
 
+using Confluent.Kafka;
 using IdentityModel.Client;
 using Pidp.Extensions;
 using Pidp.Infrastructure.HttpClients.AddressAutocomplete;
@@ -8,6 +9,8 @@ using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Ldap;
 using Pidp.Infrastructure.HttpClients.Mail;
 using Pidp.Infrastructure.HttpClients.Plr;
+using Pidp.Kafka.Interfaces;
+using Pidp.Kafka.Producer;
 
 public static class HttpClientSetup
 {
@@ -28,12 +31,6 @@ public static class HttpClientSetup
         services.AddHttpClientWithBaseAddress<ILdapClient, LdapClient>(config.LdapClient.Url);
 
         services.AddHttpClientWithBaseAddress<IJumClient, JumClient>(config.JumClient.Url);
-            //.WithBearerToken(new KeycloakAdministrationClientCredentials
-            //{
-            //    Address = config.Keycloak.TokenUrl,
-            //    ClientId = config.Keycloak.AdministrationClientId,
-            //    ClientSecret = config.Keycloak.AdministrationClientSecret
-            //});
 
         services.AddHttpClientWithBaseAddress<IKeycloakAdministrationClient, KeycloakAdministrationClient>(config.Keycloak.AdministrationUrl)
             .WithBearerToken(new KeycloakAdministrationClientCredentials
@@ -43,14 +40,22 @@ public static class HttpClientSetup
                 ClientSecret = config.Keycloak.AdministrationClientSecret
             });
 
-        //services.AddHttpClient("JUM API", client =>
-        //{
-        //    client.BaseAddress = new Uri(config.JumClient.Url);
-        //}).AddHttpMessageHandler(handler => handler.GetRequiredService<AuthorizationMessageHandler>());
-
         services.AddHttpClientWithBaseAddress<IPlrClient, PlrClient>(config.PlrClient.Url);
 
         services.AddTransient<ISmtpEmailClient, SmtpEmailClient>();
+
+        var producerConfig = new ProducerConfig
+        {
+            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            Acks = Acks.All,
+            SaslMechanism = SaslMechanism.Plain,
+            SecurityProtocol = SecurityProtocol.SaslSsl,
+            SaslUsername = config.KafkaCluster.ClientId,
+            SaslPassword = config.KafkaCluster.ClientSecret,
+            EnableIdempotence = true
+        };
+        services.AddSingleton(producerConfig);
+        services.AddTransient(typeof(IKafkaProducer<,>), typeof(KafkaProducer<,>));
 
         return services;
     }

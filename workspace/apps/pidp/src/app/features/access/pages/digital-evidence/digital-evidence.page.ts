@@ -34,6 +34,8 @@ import { StatusCode } from '@app/features/portal/enums/status-code.enum';
 
 import { FormUtilsService } from '@core/services/form-utils.service';
 
+import { PartyUserTypeResource } from '../../../../features/admin/shared/usertype-resource.service';
+import { OrganizationUserType } from '../../../../features/admin/shared/usertype-service.model';
 import { DigitalEvidenceFormState } from './digital-evidence-form-state';
 import { DigitalEvidenceResource } from './digital-evidence-resource.service';
 import {
@@ -52,9 +54,12 @@ export class DigitalEvidencePage
 {
   public formState: DigitalEvidenceFormState;
   public title: string;
+  public organizationType: OrganizationUserType;
   public digitalEvidenceUrl: string;
   public identityProvider$: Observable<IdentityProvider>;
+  //public userType$: Observable<OrganizationUserType[]>;
   public IdentityProvider = IdentityProvider;
+
   public collectionNotice: string;
   public completed: boolean | null;
   public policeAgency: Observable<string>;
@@ -66,27 +71,21 @@ export class DigitalEvidencePage
   public selectedOption = 0;
   public userTypes = [
     { id: 0, name: '--Select User Type--', disable: true },
-    { id: 1, name: 'BCPS', disable: false },
-    { id: 2, name: 'OutOfCustody', disable: false },
-    { id: 3, name: 'Police', disable: false },
-    { id: 4, name: 'Lawyers', disable: false },
+    { id: 1, name: 'CorrectionService', disable: false },
+    { id: 2, name: 'JusticeSector', disable: false },
+    { id: 3, name: 'LawEnforcement', disable: false },
+    { id: 4, name: 'LawSociety', disable: false },
   ];
-  public agencies = [
-    { id: 0, name: '--Select Police Agency--', disable: true },
-    { id: 1, name: 'VICPD', disable: false },
-    { id: 2, name: 'SannichPD', disable: false },
-    { id: 3, name: 'RCMP', disable: false },
-    { id: 4, name: 'bcsc', disable: false },
-  ];
-
   public constructor(
     @Inject(APP_CONFIG) private config: AppConfig,
     private route: ActivatedRoute,
     protected dialog: MatDialog,
     private router: Router,
+
     protected formUtilsService: FormUtilsService,
     private partyService: PartyService,
     private resource: DigitalEvidenceResource,
+    private usertype: PartyUserTypeResource,
     private logger: LoggerService,
     documentService: DocumentService,
     accessTokenService: AccessTokenService,
@@ -97,6 +96,9 @@ export class DigitalEvidencePage
     const routeData = this.route.snapshot.data;
     this.title = routeData.title;
     this.digitalEvidenceUrl = digitalEvidenceUrl;
+    this.organizationType = new OrganizationUserType();
+    const partyId = this.partyService.partyId;
+    //this.userType$ = this.usertype.getUserType(partyId);
     this.identityProvider$ = this.authorizedUserService.identityProvider$;
     this.result = '';
     this.policeAgency = accessTokenService
@@ -107,6 +109,21 @@ export class DigitalEvidencePage
       console.log(n.identity_provider);
       this.result = n.identity_provider;
     });
+    this.usertype.getUserType(partyId).subscribe((data: any) => {
+      this.organizationType.organizationType = data['organizationType'];
+      this.organizationType.participantId = data['participantId'];
+      this.organizationType.organizationName = data['organizationName'];
+
+      this.formState.OrganizationName.patchValue(
+        this.organizationType.organizationName
+      );
+      this.formState.OrganizationType.patchValue(
+        this.organizationType.organizationType
+      );
+      this.formState.ParticipantId.patchValue(
+        this.organizationType.participantId
+      );
+    });
     this.formState = new DigitalEvidenceFormState(fb);
     this.collectionNotice =
       documentService.getDigitalEvidenceCollectionNotice();
@@ -114,7 +131,11 @@ export class DigitalEvidencePage
       routeData.digitalEvidenceStatusCode === StatusCode.COMPLETED;
     this.accessRequestFailed = false;
     this.digitalEvidenceSupportEmail = digitalEvidenceSupportEmail;
-    this.formControlNames = ['userType', 'ikeyCertCode', 'pidNumber'];
+    this.formControlNames = [
+      'OrganizationType',
+      'OrganizationName',
+      'ParticipantId',
+    ];
   }
 
   public onBack(): void {
@@ -123,13 +144,14 @@ export class DigitalEvidencePage
   protected performSubmission(): Observable<void> {
     const partyId = this.partyService.partyId;
     console.log('Submiting');
-    console.log(this.formState.ikeyCertCode.value);
+    console.log(this.formState.ParticipantId.value);
     if (this.selectedOption == 1) {
       return partyId && this.formState.json
         ? this.resource.requestAccess(
             partyId,
-            this.formState.userType.value,
-            this.formState.ikeyCertCode.value
+            this.formState.OrganizationType.value,
+            this.formState.OrganizationName.value,
+            this.formState.ParticipantId.value
           )
         : EMPTY;
     }
@@ -137,8 +159,9 @@ export class DigitalEvidencePage
     return partyId && this.formState.json
       ? this.resource.requestAccess(
           partyId,
-          this.formState.userType.value,
-          this.formState.pidNumber.value
+          this.formState.OrganizationType.value,
+          this.formState.OrganizationName.value,
+          this.formState.ParticipantId.value
         )
       : EMPTY;
   }
@@ -151,31 +174,32 @@ export class DigitalEvidencePage
   public onChange(data: number): void {
     //const element = event.currentTarget as HTMLInputElement;
     //const value = element.value;
+
     this.selectedOption = data;
-    this.formState.pidNumber.clearValidators();
-    this.formState.pidNumber.reset();
-    this.formState.agency.clearValidators();
-    this.formState.agency.reset();
-    //this.formState.userType.clearValidators();
-    this.formState.ikeyCertCode.clearValidators();
-    this.formState.ikeyCertCode.reset();
-    if (this.selectedOption == 1) {
-      this.formState.ikeyCertCode.setValidators([Validators.required]);
-      console.log(this.formState.ikeyCertCode.value);
-      //this.formState.pidNumber = this.formState.ikeyCertCode;
-      console.log(this.formState.pidNumber.value);
-    }
-    if (this.selectedOption == 2) {
-      this.formState.pidNumber.setValidators([Validators.required]);
-    }
-    if (this.selectedOption == 3) {
-      //let result: string;
-      //this.policeAgency.subscribe((val) => (result = val));
-      //this.policeAgency.pipe(first()).subscribe((n) => (this.result = n));
-      const index = this.agencies.findIndex((p) => p.name == this.result);
-      this.formState.agency.patchValue(index);
-      this.formState.agency.setValidators([Validators.required]);
-    }
+    // this.formState.pidNumber.clearValidators();
+    // this.formState.pidNumber.reset();
+    // this.formState.agency.clearValidators();
+    // this.formState.agency.reset();
+    // //this.formState.userType.clearValidators();
+    // this.formState.ikeyCertCode.clearValidators();
+    // this.formState.ikeyCertCode.reset();
+    // if (this.selectedOption == 1) {
+    //   this.formState.ikeyCertCode.setValidators([Validators.required]);
+    //   console.log(this.formState.ikeyCertCode.value);
+    //   //this.formState.pidNumber = this.formState.ikeyCertCode;
+    //   console.log(this.formState.pidNumber.value);
+    // }
+    // if (this.selectedOption == 2) {
+    //   this.formState.pidNumber.setValidators([Validators.required]);
+    // }
+    // if (this.selectedOption == 3) {
+    //   //let result: string;
+    //   //this.policeAgency.subscribe((val) => (result = val));
+    //   //this.policeAgency.pipe(first()).subscribe((n) => (this.result = n));
+    //   const index = this.agencies.findIndex((p) => p.name == this.result);
+    //   this.formState.agency.patchValue(index);
+    //   this.formState.agency.setValidators([Validators.required]);
+    // }
   }
   // public OnSubmit(): void {
   //   console.log('Form Submitted');
@@ -183,13 +207,14 @@ export class DigitalEvidencePage
   // }
   public onRequestAccess(): void {
     console.log('Submiting');
-    console.log(this.formState.ikeyCertCode.value);
+    console.log(this.formState.ParticipantId.value);
     if (this.selectedOption == 1) {
       this.resource
         .requestAccess(
           this.partyService.partyId,
-          this.formState.userType.value,
-          this.formState.ikeyCertCode.value
+          this.formState.OrganizationType.value,
+          this.formState.OrganizationName.value,
+          this.formState.ParticipantId.value
         )
         .pipe(
           tap(() => (this.completed = true)),
@@ -206,8 +231,9 @@ export class DigitalEvidencePage
       this.resource
         .requestAccess(
           this.partyService.partyId,
-          this.formState.userType.value,
-          this.formState.pidNumber.value
+          this.formState.OrganizationType.value,
+          this.formState.OrganizationName.value,
+          this.formState.ParticipantId.value
         )
         .pipe(
           tap(() => (this.completed = true)),
@@ -225,6 +251,15 @@ export class DigitalEvidencePage
 
   public ngOnInit(): void {
     const partyId = this.partyService.partyId;
+    this.formState.OrganizationName.patchValue(
+      this.organizationType.organizationName
+    );
+    this.formState.OrganizationType.patchValue(
+      this.organizationType.organizationType
+    );
+    this.formState.ParticipantId.patchValue(
+      this.organizationType.participantId
+    );
     // this.form = new FormGroup({
     //   userType: new FormControl('', [Validators.required]),
     //   ikeyCertCode: new FormControl('', [Validators.required]),

@@ -67,7 +67,7 @@ namespace Pidp.Data.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Hpdid = table.Column<string>(type: "text", nullable: false),
+                    Jpdid = table.Column<string>(type: "text", nullable: false),
                     Birthdate = table.Column<LocalDate>(type: "date", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
@@ -340,9 +340,9 @@ namespace Pidp.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Party_Hpdid",
+                name: "IX_Party_Jpdid",
                 table: "Party",
-                column: "Hpdid",
+                column: "Jpdid",
                 unique: true);
 
             migrationBuilder.CreateIndex(
