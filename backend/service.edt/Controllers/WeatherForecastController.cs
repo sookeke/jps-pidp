@@ -1,3 +1,4 @@
+using edt.service.Kafka.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace edt.service.Controllers
@@ -12,22 +13,29 @@ namespace edt.service.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IKafkaProducer<string, WeatherForecast> _kafkaProducer;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IKafkaProducer<string, WeatherForecast> kafkaProducer)
         {
             _logger = logger;
+            _kafkaProducer = kafkaProducer;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var f = Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+
+            await this._kafkaProducer.ProduceAsync("Dems_AccessRequest", Guid.NewGuid().ToString(), f.FirstOrDefault());
+
+            return f;
         }
     }
 }

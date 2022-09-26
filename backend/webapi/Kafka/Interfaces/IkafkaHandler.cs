@@ -8,5 +8,5 @@ public interface IKafkaHandler<TK, TV>
     /// <param name="key">Indicates the message's key for Kafka Topic</param>
     /// <param name="value">Indicates the message's value for Kafka Topic</param>
     /// <returns></returns>
-    Task HandleAsync(TK key, TV value);
+    Task<Task> HandleAsync(string consumerName, TK key, TV value);
 }

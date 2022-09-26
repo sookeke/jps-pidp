@@ -10,6 +10,7 @@ export class BcpsUser implements User {
   public lastName: string;
   public idir: string;
   public email: string;
+  //public roles: string[];
 
   public constructor({ accessTokenParsed, brokerProfile }: UserIdentity) {
     const { firstName, lastName, email, username: jpdid } = brokerProfile;
@@ -26,6 +27,7 @@ export class BcpsUser implements User {
     this.lastName = lastName;
     this.idir = idir;
     this.email = email;
+    //this.roles = roles;
   }
 }
 

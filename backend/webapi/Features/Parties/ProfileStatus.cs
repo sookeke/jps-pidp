@@ -20,6 +20,7 @@ using Pidp.Models;
 using static Pidp.Features.Parties.ProfileStatus.ProfileStatusDto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using System.Globalization;
 
 public partial class ProfileStatus
 {
@@ -28,7 +29,6 @@ public partial class ProfileStatus
         public int Id { get; set; }
         [JsonIgnore]
         public ClaimsPrincipal? User { get; set; }
-
         public Command WithUser(ClaimsPrincipal user)
         {
             this.User = user;
@@ -59,7 +59,8 @@ public partial class ProfileStatus
         {
             TransientError = 1,
             PlrBadStanding,
-            JumValidationError
+            JumValidationError,
+            PendingRequest
         }
 
         public enum StatusCode
@@ -68,7 +69,8 @@ public partial class ProfileStatus
             Complete,
             Locked,
             Error,
-            Hidden
+            Hidden,
+            Pending
         }
     }
 
@@ -133,12 +135,13 @@ public partial class ProfileStatus
             if (profile.OrganizationDetailEntered && profile.OrganizationCode == OrganizationCode.CorrectionService && orgCorrectionDetail != null)
             {
                 //get user token
-                var accessToken = await this.httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+                var httpContext = this.httpContextAccessor.HttpContext;
+                var accessToken = await httpContext!.GetTokenAsync("access_token");
                 profile.EmployeeIdentifier = orgCorrectionDetail.PeronalId;
                 profile.CorrectionServiceCode = orgCorrectionDetail.CorrectionServiceCode;
                 profile.CorrectionService = orgCorrectionDetail.CorrectionService?.Name;
                 //profile.Organization = profile.or
-                profile.JustinUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(profile.EmployeeIdentifier), accessToken);
+                profile.JustinUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(profile.EmployeeIdentifier, CultureInfo.InvariantCulture), accessToken!);
                 profile.IsJumUser = await this.jumClient.IsJumUser(profile.JustinUser, new Party
                 {
                     FirstName = profile.FirstName,
@@ -253,10 +256,14 @@ public partial class ProfileStatus
         public string? EmployeeIdentifier { get; set; }
         //public bool OrganizationDetailEntered { get; set; }
         public IEnumerable<AccessTypeCode> CompletedEnrolments { get; set; } = Enumerable.Empty<AccessTypeCode>();
+        public IEnumerable<string> AccessRequestStatus { get; set; } = Enumerable.Empty<string>();
+
 
         // Resolved after projection
         public PlrStandingsDigest PlrStanding { get; set; } = default!;
         public ClaimsPrincipal? User { get; set; }
+
+        public HttpContextAccessor? HttpContextAccessor { get; set; }
 
         public Participant? JustinUser { get; set; }
         public bool IsJumUser { get; set; }
@@ -272,7 +279,8 @@ public partial class ProfileStatus
         public string? OrgName => this.Organization?.Name;
         public bool UserIsBcServicesCard => this.User.GetIdentityProvider() == ClaimValues.BCServicesCard;
         public bool UserIsPhsa => this.User.GetIdentityProvider() == ClaimValues.Phsa;
-        public bool UserIsBcps => this.User.GetIdentityProvider() == ClaimValues.Bcps;
+        //public bool UserIsBcps => this.User.GetIdentityProvider() == ClaimValues.Bcps;
+        public bool UserIsBcps => this.User.GetIdentityProvider() == ClaimValues.Bcps && this.User?.Identity is ClaimsIdentity identity && identity.GetResourceAccessRoles(Clients.PidpApi).Contains(DefaultRoles.Bcps);
         public bool UserIsIdir => this.User.GetIdentityProvider() == ClaimValues.Idir;
         [MemberNotNullWhen(true, nameof(LicenceDeclaration))]
         public bool HasDeclaredLicence => this.LicenceDeclaration?.HasNoLicence == false;

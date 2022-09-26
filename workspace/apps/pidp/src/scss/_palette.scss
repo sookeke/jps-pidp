@@ -26,6 +26,9 @@ $palettes: (
   grey: (
     base: #e1e1e1,
   ),
+  pink: (
+    base: pink,
+  ),
 );
 
 //
@@ -69,6 +72,18 @@ $alerts: (
     backgroundColorSolid: #575757,
     borderColor: #d3d6d8,
     color: #41464b,
+  ),
+  primary: (
+    backgroundColor: #e0d7f8,
+    backgroundColorSolid: pink,
+    borderColor: #f5c2c7,
+    color: #362084,
+  ),
+  secondary: (
+    backgroundColor: #11ffeeff,
+    backgroundColorSolid: #a11622,
+    borderColor: #c2f5e9,
+    color: #342084,
   ),
 );
 

@@ -102,11 +102,22 @@ public class JumClient : BaseClient, IJumClient
     }
     public Task<bool> IsJumUser(Participant? justinUser, Party party)
     {
-        if (justinUser?.participantDetails.Count == 0
+        if (justinUser == null || justinUser?.participantDetails.Count == 0
             || party == null)
         {
             this.Logger.LogJustinUserNotFound();
             return Task.FromResult(false);
+        }
+
+        if (justinUser!.participantDetails!.FirstOrDefault()!.GrantedRoles.Any(n => n.role.Contains("JRS")))
+        {
+            //bcps user
+            if (justinUser?.participantDetails?.FirstOrDefault()?.firstGivenNm == party.FirstName
+                    && justinUser?.participantDetails?.FirstOrDefault()?.surname == party.LastName
+                    && justinUser?.participantDetails?.FirstOrDefault()?.emailAddress == party.Email)
+            {
+                return Task.FromResult(true);
+            }
         }
 
         if (justinUser?.participantDetails?.FirstOrDefault()?.firstGivenNm == party.FirstName

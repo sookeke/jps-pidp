@@ -3,7 +3,7 @@ export enum IdentityProvider {
   IDIR = 'idir',
   PHSA = 'phsa',
   BCPS = 'adfscert',
-  ADFS = 'adfs',
+  ADFS = 'ADFS',
   OIDC = 'oidc',
   AZUREIDIR = 'oidcazure',
 }

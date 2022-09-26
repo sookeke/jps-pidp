@@ -1,15 +1,18 @@
 dependencies:
 - name: frontend
   repository: file://../frontend
-  version: 0.1.1
+  version: 0.1.2
 - name: webapi
   repository: file://../webapi
-  version: 0.1.4
+  version: 0.1.5
+- name: edt-service
+  repository: file://../edt-service
+  version: 0.1.0
 - name: plr-intake
   repository: file://../plr-intake
   version: 0.1.2
 - name: nginx
   repository: file://../nginx
   version: 9.7.3
-digest: sha256:0d1887e21ddb5987e6a70a35b93460f89595759ac37010549f7606f147925d29
-generated: "2022-09-01T15:30:06.363729714-07:00"
+digest: sha256:bea80d71491b5b42226743a8042e25d551662d36455bc6697cd808092933bee5
+generated: "2022-09-26T01:06:35.581012-07:00"

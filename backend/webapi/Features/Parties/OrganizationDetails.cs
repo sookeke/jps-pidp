@@ -11,9 +11,9 @@ using Pidp.Data;
 using Pidp.Models.Lookups;
 using Pidp.Infrastructure.HttpClients.Jum;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Identity;
 using System.Globalization;
-using Pidp.Extensions;
+//using Pidp.Extensions;
 
 public class OrganizationDetails
 {
@@ -85,7 +85,7 @@ public class OrganizationDetails
                     orgDetails.EmployeeIdentifier = details.JustinUserId;
                 }
 
-                orgDetails.OrganizationCode = org.OrganizationCode;
+                orgDetails!.OrganizationCode = org.OrganizationCode;
             }
             if (org != null && org.OrganizationCode == OrganizationCode.CorrectionService)
             {
@@ -173,7 +173,7 @@ public class OrganizationDetails
                 /*&& await this.jumClient.IsJumUser(justinUser, dto)*/)
             {
                 var jpsDetail = await this.context.JusticeSectorDetails
-               .SingleOrDefaultAsync(detail => detail.OrgainizationDetail == org);
+               .SingleOrDefaultAsync(detail => detail.OrgainizationDetail == org) ?? null;
 
                 if (jpsDetail == null)
                 {
@@ -181,7 +181,7 @@ public class OrganizationDetails
                     {
                         OrgainizationDetail = org,
                         JustinUserId = command.EmployeeIdentifier,
-                        ParticipantId = justinUser!.participantDetails[0].partId,
+                        ParticipantId = justinUser is not null ? justinUser!.participantDetails[0].partId : string.Empty,
                         JusticeSectorCode = command.JusticeSectorCode
                     };
                     this.context.JusticeSectorDetails.Add(jpsDetail);
@@ -190,7 +190,7 @@ public class OrganizationDetails
                 {
                     jpsDetail.OrgainizationDetail = org;
                     jpsDetail.JustinUserId = command.EmployeeIdentifier;
-                    jpsDetail.ParticipantId = justinUser!.participantDetails[0].partId;
+                    jpsDetail.ParticipantId = justinUser is not null ? justinUser!.participantDetails[0].partId : string.Empty;
                     jpsDetail.JusticeSectorCode = command.JusticeSectorCode;
                     this.context.JusticeSectorDetails.Update(jpsDetail);
                 }

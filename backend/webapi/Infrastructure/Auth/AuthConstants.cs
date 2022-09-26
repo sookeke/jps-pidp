@@ -14,6 +14,12 @@ public static class Claims
     public const string PreferredUsername = "preferred_username";
     public const string ResourceAccess = "resource_access";
     public const string Subject = "sub";
+    public const string Roles = "roles";
+}
+
+public static class DefaultRoles
+{
+    public const string Bcps = "BCPS";
 }
 
 public static class ClaimValues
@@ -32,6 +38,7 @@ public static class Policies
     public const string UserOwnsResource = "user-owns-resource-policy";
     public const string AllDemsIdentityProvider = "dems-idp-policy";
     public const string BcpsAuthentication = "bcps-authentication-policy";
+    public const string AdminAuthentication = "admin-authentication-policy";
 }
 
 public static class Clients

@@ -7,6 +7,7 @@ import { AlertType } from '@bcgov/shared/ui';
 import { ShellRoutes } from '@app/features/shell/shell.routes';
 import { TrainingRoutes } from '@app/features/training/training.routes';
 
+import { AdminRoutes } from '../../../admin/admin.routes';
 import { StatusCode } from '../../enums/status-code.enum';
 import { ProfileStatus } from '../../models/profile-status.model';
 import { PortalSectionAction } from '../portal-section-action.model';
@@ -24,7 +25,7 @@ export class AdministratorPortalSection implements IPortalSection {
   ) {
     this.key = 'administrationPanel';
     this.heading = 'Administration Panel';
-    this.description = 'Manage users, review, approve or deny access requests.';
+    this.description = 'Manage Users, Review, Approve or Deny Access Requests.';
   }
 
   public get hint(): string {
@@ -39,19 +40,19 @@ export class AdministratorPortalSection implements IPortalSection {
     const demographicsStatusCode =
       this.profileStatus.status.demographics.statusCode;
     return {
-      label: this.getStatusCode() === StatusCode.COMPLETED ? 'View' : 'Watch',
-      route: TrainingRoutes.routePath(TrainingRoutes.COMPLIANCE_TRAINING),
+      label: 'View',
+      route: AdminRoutes.routePath(AdminRoutes.PARTIES),
       disabled: demographicsStatusCode !== StatusCode.COMPLETED,
     };
   }
 
   public get statusType(): AlertType {
-    return this.getStatusCode() === StatusCode.COMPLETED ? 'success' : 'warn';
+    return 'info';
   }
 
   public get status(): string {
-    const statusCode = this.getStatusCode();
-    return statusCode === StatusCode.COMPLETED ? 'Completed' : 'Incomplete';
+    //const statusCode = this.getStatusCode();
+    return 'Available';
   }
 
   public performAction(): Observable<void> | void {

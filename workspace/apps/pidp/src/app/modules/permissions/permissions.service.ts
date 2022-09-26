@@ -14,4 +14,13 @@ export class PermissionsService {
       .roles()
       .some((role) => allowedRoles.includes(role));
   }
+
+  public hasGroup(allowedGroups: string | string[]): boolean {
+    allowedGroups = Array.isArray(allowedGroups)
+      ? allowedGroups
+      : [allowedGroups];
+    return this.accessTokenService
+      .groups()
+      .some((group) => allowedGroups.includes(group));
+  }
 }

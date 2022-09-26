@@ -10,7 +10,15 @@ import { IconType } from '../icon/icon.component';
 import { AlertActionsDirective } from './alert-actions.directive';
 import { AlertContentDirective } from './alert-content.directive';
 
-export type AlertType = 'success' | 'info' | 'warn' | 'danger' | 'muted';
+export type AlertType =
+  | 'success'
+  | 'info'
+  | 'warn'
+  | 'danger'
+  | 'muted'
+  | 'primary'
+  | 'secondary'
+  | 'light';
 
 @Component({
   selector: 'ui-alert',

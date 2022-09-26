@@ -23,6 +23,10 @@ export class PersonalInformationFormState extends AbstractFormState<PersonalInfo
     return this.formInstance.get('preferredLastName') as FormControl;
   }
 
+  public get email(): FormControl {
+    return this.formInstance.get('email') as FormControl;
+  }
+
   public get json(): PersonalInformation | undefined {
     if (!this.formInstance) {
       return;

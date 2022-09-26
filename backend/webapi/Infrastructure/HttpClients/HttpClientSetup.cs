@@ -9,6 +9,9 @@ using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Ldap;
 using Pidp.Infrastructure.HttpClients.Mail;
 using Pidp.Infrastructure.HttpClients.Plr;
+using Pidp.Kafka.Consumer;
+using Pidp.Kafka.Consumer.Handler;
+using Pidp.Kafka.Consumer.Model;
 using Pidp.Kafka.Interfaces;
 using Pidp.Kafka.Producer;
 
@@ -44,6 +47,15 @@ public static class HttpClientSetup
 
         services.AddTransient<ISmtpEmailClient, SmtpEmailClient>();
 
+        var clientConfig = new ClientConfig()
+        {
+            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            SaslMechanism = SaslMechanism.Plain,
+            SecurityProtocol = SecurityProtocol.SaslSsl,
+            SaslUsername = config.KafkaCluster.ClientId,
+            SaslPassword = config.KafkaCluster.ClientSecret,
+        };
+
         var producerConfig = new ProducerConfig
         {
             BootstrapServers = config.KafkaCluster.BoostrapServers,
@@ -54,8 +66,28 @@ public static class HttpClientSetup
             SaslPassword = config.KafkaCluster.ClientSecret,
             EnableIdempotence = true
         };
+
+        var consumerConfig = new ConsumerConfig(clientConfig)
+        {
+            GroupId = "Dems-Consumer-Group",
+            EnableAutoCommit = true,
+            AutoOffsetReset = AutoOffsetReset.Earliest,
+            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            EnableAutoOffsetStore = false,
+            AutoCommitIntervalMs = 4000,
+            SaslMechanism = SaslMechanism.Plain,
+            SecurityProtocol = SecurityProtocol.SaslSsl,
+            SaslUsername = config.KafkaCluster.ClientId,
+            SaslPassword = config.KafkaCluster.ClientSecret
+        };
+
+        services.AddSingleton(consumerConfig);
         services.AddSingleton(producerConfig);
         services.AddTransient(typeof(IKafkaProducer<,>), typeof(KafkaProducer<,>));
+
+        services.AddScoped<IKafkaHandler<string, NotificationAckModel>, NotificationAckHandler>();
+        services.AddSingleton(typeof(IKafkaConsumer<,>), typeof(KafkaConsumer<,>));
+        services.AddHostedService<NotificationAckService>();
 
         return services;
     }

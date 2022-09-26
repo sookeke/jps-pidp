@@ -30,8 +30,9 @@ export class PartiesPage implements OnInit {
   public displayedColumns: string[] = [
     'id',
     'providerName',
-    'providerCollegeCode',
-    'saEforms',
+    'providerOrganizationCode',
+    'organizationName',
+    'digitalEvidenceAccessRequest',
   ];
   public environment: string;
   public production: string;

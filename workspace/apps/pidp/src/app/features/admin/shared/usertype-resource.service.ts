@@ -11,7 +11,6 @@ import { CrudResource } from '@bcgov/shared/data-access';
 
 import { ApiHttpClient } from '@app/core/resources/api-http-client.service';
 
-import { ReceivedEndorsementRequest } from '../../organization-info/pages/endorsement/models/received-endorsement-request';
 import { OrganizationUserType } from './usertype-service.model';
 
 @Injectable({

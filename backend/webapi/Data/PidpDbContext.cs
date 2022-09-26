@@ -1,6 +1,5 @@
 namespace Pidp.Data;
 
-using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
 
@@ -26,6 +25,7 @@ public class PidpDbContext : DbContext
     public DbSet<PartyLicenceDeclaration> PartyLicenceDeclarations { get; set; } = default!;
     public DbSet<Party> Parties { get; set; } = default!;
     public DbSet<ExportedEvent> ExportedEvents { get; set; } = default!;
+    public DbSet<IdempotentConsumer> IdempotentConsumers { get; set; } = default!;
     public DbSet<PartyAccessAdministrator> PartyAccessAdministrators { get; set; } = default!;
     public DbSet<PartyOrgainizationDetail> PartyOrgainizationDetails { get; set; } = default!;
     public DbSet<JusticeSectorDetail> JusticeSectorDetails { get; set; } = default!;
@@ -48,6 +48,10 @@ public class PidpDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<IdempotentConsumer>()
+            .ToTable("IdempotentConsumers")
+            .HasKey(x => new { x.MessageId, x.Consumer });
+
         modelBuilder.Entity<ExportedEvent>()
              .ToTable("OutBoxedExportedEvent")
              .Property(x => x.JsonEventPayload).HasColumnName("EventPayload");
@@ -59,6 +63,17 @@ public class PidpDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PidpDbContext).Assembly);
     }
 
+    public async Task IdempotentConsumer(string messageId, string consumer)
+    {
+        await this.IdempotentConsumers.AddAsync(new IdempotentConsumer
+        {
+            MessageId = messageId,
+            Consumer = consumer
+        });
+        await this.SaveChangesAsync();
+    }
+
+    public async Task<bool> HasBeenProcessed(string messageId, string consumer) => await this.IdempotentConsumers.AnyAsync(x => x.MessageId == messageId && x.Consumer == consumer);
     private void ApplyAudits()
     {
         this.ChangeTracker.DetectChanges();

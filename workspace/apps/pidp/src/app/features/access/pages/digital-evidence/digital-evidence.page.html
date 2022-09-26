@@ -20,17 +20,38 @@
     </ng-container>
   </ui-alert>
 
+  <ui-alert
+    *ngIf="pending"
+    type="primary"
+    icon="pending_outline"
+    iconType="outlined"
+    heading="Access Request Pending for Approval">
+    <ng-container uiAlertContent>
+      <p>
+        Your request for access to Digital Evidence Management System has been
+        submitted and should be be processed soon. If this issue persists,
+        contact
+        <a
+          uiAnchor
+          scheme="mailto"
+          [attr.href]="digitalEvidenceSupportEmail"></a>
+        for assistance.
+      </p>
+    </ng-container>
+  </ui-alert>
+
   <ui-page-section>
     <ui-page-section-subheader
       icon="assignment"
       heading="Digital Evidence Management System">
       <ng-container uiPageSectionSubheaderDesc>
-        {{ completed ? 'Enrolment Complete.' : 'Collection Notice.' }}
+        {{ completed ? 'Enrolment Complete.' : pending ? 'Enrolment Pending' :
+        'Collection Notice.' }}
       </ng-container>
     </ui-page-section-subheader>
   </ui-page-section>
 
-  <ng-container *ngIf="completed; else notCompleted">
+  <ng-container *ngIf="completed; else stillPending">
     <ui-alert
       type="success"
       icon="check_circle"
@@ -38,11 +59,12 @@
       heading="You have access">
       <ng-container uiAlertContent>
         <p>
-          You now have access to the Digital Evidence Management System. You can
-          log into the application using your BC Services Card app.
+          Thank you for submitting your request. We will let you know via email
+          once your request has been processed.<br />
         </p>
         <p>
-          Follow this link to Digital Evidence Management System:<br />
+          After confirmation email, you can login to DEMS using your registered
+          IDP via this link:<br />
           <a uiAnchor [attr.href]="digitalEvidenceUrl"></a>
         </p>
         <p>
@@ -59,6 +81,10 @@
         class="collection-notice"
         [innerHtml]="collectionNotice | safe: 'html'"></p>
     </ui-page-section>
+  </ng-template>
+
+  <ng-template #stillPending>
+    <ng-container *ngIf="pending; else notCompleted"> </ng-container>
   </ng-template>
 
   <ng-container>
@@ -113,11 +139,11 @@
       type="button"
       color="primary"
       (click)="onBack()">
-      {{ completed ? 'Back Home' : 'Cancel Back Home' }}
+      {{ completed || pending ? 'Back Home' : 'Cancel Back Home' }}
     </button>
 
     <button
-      *ngIf="!completed"
+      *ngIf="!(completed || pending)"
       mat-flat-button
       uiPageFooterAction
       type="button"

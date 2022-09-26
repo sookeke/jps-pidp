@@ -10,8 +10,9 @@ import { ApiHttpClient } from '@app/core/resources/api-http-client.service';
 export interface PartyList {
   id: number;
   providerName?: string;
-  providerCollegeCode?: string;
-  saEformsAccessRequest?: boolean;
+  providerOrganizationCode?: string;
+  organizationName?: string;
+  digitalEvidenceAccessRequest?: boolean;
 }
 
 @Injectable({

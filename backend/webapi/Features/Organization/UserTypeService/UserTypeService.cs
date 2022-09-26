@@ -61,7 +61,7 @@ public class UserTypeService : IUserTypeService
                 {
                     OrganizationType = nameof(OrganizationCode.JusticeSector),
                     OrganizationName = jsCode,
-                    ParticipantId = jsector.JustinUserId
+                    ParticipantId = jsector.ParticipantId
                 };
                 //userType.Add(nameof(OrganizationCode.JusticeSector), new Dictionary<string, string> { { "OrganizationName", jsCode },{"ParticipantId", jsector.JustinUserId } });
             }

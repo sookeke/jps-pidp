@@ -40,17 +40,27 @@ export class DigitalEvidencePortalSection implements IPortalSection {
     const organizationStatusCode =
       this.profileStatus.status.organizationDetails.statusCode;
     return {
-      label: this.getStatusCode() === StatusCode.COMPLETED ? 'View' : 'Request',
+      label:
+        this.getStatusCode() === StatusCode.COMPLETED
+          ? 'View'
+          : this.getStatusCode() === StatusCode.PENDING
+          ? 'View'
+          : 'Request',
       route: AccessRoutes.routePath(AccessRoutes.DIGITAL_EVIDENCE),
       disabled: !(
-        demographicsStatusCode === StatusCode.COMPLETED ||
+        demographicsStatusCode === StatusCode.COMPLETED &&
         organizationStatusCode === StatusCode.COMPLETED
       ),
     };
   }
 
   public get statusType(): AlertType {
-    return this.getStatusCode() === StatusCode.COMPLETED ? 'success' : 'warn';
+    let u = this.getStatusCode();
+    return this.getStatusCode() === StatusCode.COMPLETED
+      ? 'success'
+      : this.getStatusCode() === StatusCode.PENDING
+      ? 'info'
+      : 'warn';
   }
 
   public get status(): string {
@@ -59,6 +69,8 @@ export class DigitalEvidencePortalSection implements IPortalSection {
       ? 'For existing users of DEMS only'
       : statusCode === StatusCode.COMPLETED
       ? 'Completed'
+      : statusCode === StatusCode.PENDING
+      ? 'Pending'
       : 'Incomplete';
   }
 

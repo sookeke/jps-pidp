@@ -58,6 +58,35 @@ public static class ClaimsPrincipalExtensions
     public static string? GetIdentityProvider(this ClaimsPrincipal? user) => user?.FindFirstValue(Claims.IdentityProvider);
 
     /// <summary>
+    /// check wheather the user is a valid bcps user using ad groups
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public static IEnumerable<string> GetUserRoles(this ClaimsIdentity identity)
+    {
+        var roleClaim = identity.Claims
+           .SingleOrDefault(claim => claim.Type == Claims.ResourceAccess)
+           ?.Value;
+
+        if (string.IsNullOrWhiteSpace(roleClaim))
+        {
+            return Enumerable.Empty<string>();
+        }
+
+        try
+        {
+            var userRoles = JsonSerializer.Deserialize<Dictionary<string, ResourceAccess>>(roleClaim, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            return userRoles?.TryGetValue(roleClaim, out var access) == true
+                ? access.Roles
+                : Enumerable.Empty<string>();
+        }
+        catch
+        {
+            return Enumerable.Empty<string>();
+        }
+    }
+    /// <summary>
     /// Parses the Resource Access claim and returns the roles for the given resource
     /// </summary>
     /// <param name="resourceName">The name of the resource to retrive the roles from</param>

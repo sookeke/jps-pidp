@@ -19,6 +19,15 @@ public class AccessRequest : BaseAuditable
     public Instant RequestedOn { get; set; }
 
     public AccessTypeCode AccessTypeCode { get; set; }
+    public string Status { get; set; } = AccessRequestStatus.Pending;
+}
+public static class AccessRequestStatus
+{
+    public const string Accepted = "Accepted";
+    public const string Cancelled = "Cancelled";
+    public const string Completed = "Completed";
+    public const string Failed = "Failed";
+    public const string Pending = "Pending";
 }
 
 [Table(nameof(HcimAccountTransfer))]

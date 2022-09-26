@@ -4,9 +4,9 @@ using Confluent.Kafka;
 using edt.service.HttpClients.Services.EdtCore;
 using edt.service.Kafka.Interfaces;
 using edt.service.ServiceEvents;
+using edt.service.ServiceEvents.UserAccountCreation;
 using edt.service.ServiceEvents.UserAccountCreation.Handler;
 using EdtService.Extensions;
-using EdtService.NotificationEvents.UserProvisioning;
 
 public static class ConsumerSetup
 {

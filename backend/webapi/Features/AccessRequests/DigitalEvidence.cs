@@ -2,11 +2,10 @@ namespace Pidp.Features.AccessRequests;
 using DomainResults.Common;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NodaTime;
 
 using Pidp.Data;
-using Pidp.Extensions;
-using Pidp.Features.Organization.UserTypeService;
 using Pidp.Infrastructure.Auth;
 using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Mail;
@@ -87,7 +86,8 @@ public class DigitalEvidence
                     party.UserId,
                     party.Email,
                     party.FirstName,
-                    party.LastName
+                    party.LastName,
+                    party.Phone
                 })
                 .SingleAsync();
 
@@ -119,16 +119,24 @@ public class DigitalEvidence
             //    default:
             //        break;
             //}
-            if (!await this.keycloakClient.AssignClientRole(dto.UserId, Clients.PidpApi, Roles.User))
-            {
-                return DomainResult.Failed();
-            }
+            //if (!await this.keycloakClient.AssignClientRole(dto.UserId, Clients.PidpApi, Roles.User))
+            //{
+            //    return DomainResult.Failed();
+            //}
+
+            //if (!await this.UpdateKeycloakUser(dto.UserId, Clients.PidpApi, Roles.User, command.ParticipantId))
+            //{
+            //    return DomainResult.Failed();
+            //}
+
             using var trx = this.context.Database.BeginTransaction();
+
             try
             {
                 var digitalEvenident = new Models.DigitalEvidence
                 {
                     PartyId = command.PartyId,
+                    Status = AccessRequestStatus.Pending,
                     OrganizationType = command.OrganizationType.ToString(),
                     OrganizationName = command.OrganizationName,
                     ParticipantId = command.ParticipantId,
@@ -144,25 +152,28 @@ public class DigitalEvidence
                 {
                     EventId = digitalEvenident.Id,
                     AggregateType = AccessTypeCode.DigitalEvidence.ToString(),
-                    AggregateId = command.ParticipantId,
+                    AggregateId = $"{command.PartyId}",
                     EventType = "Access Request Created",
                     EventPayload = new EdtUserProvisioning
                     {
-                        Key = $"{command.PartyId}",
+                        Key = $"{command.ParticipantId}",
                         UserName = dto.Jpdid,
                         Email = dto.Email,
+                        PhoneNumber = dto.Phone!,
                         FullName = $"{dto.FirstName} {dto.LastName}",
-                        AccountType = 0,
+                        AccountType = "Saml",
                         Role = "User"
                     }
                 });
+
                 await this.kafkaProducer.ProduceAsync(this.config.KafkaCluster.ProducerTopicName, $"{digitalEvenident.Id}", new EdtUserProvisioning
                 {
-                    Key = $"{command.PartyId}",
+                    Key = $"{command.ParticipantId}",
                     UserName = dto.Jpdid,
                     Email = dto.Email,
-                    FullName = dto.FirstName + " " + dto.LastName,
-                    AccountType = 0,
+                    PhoneNumber = dto.Phone!,
+                    FullName = $"{dto.FirstName} {dto.LastName}",
+                    AccountType = "Saml",
                     Role = "User"
                 });
 
@@ -171,6 +182,7 @@ public class DigitalEvidence
             }
             catch (Exception)
             {
+                //this.logger.LogTrace(ex.Message);
                 await trx.RollbackAsync();
                 return DomainResult.Failed();
             }
@@ -179,6 +191,21 @@ public class DigitalEvidence
             //await this.SendConfirmationEmailAsync(dto.Email);
 
             return DomainResult.Success();
+        }
+
+        private async Task<bool> UpdateKeycloakUser(Guid userId, string client, string role, string partId)
+        {
+            if (!await this.keycloakClient.UpdateUser(userId, (user) => user.SetPartId(partId)))
+            {
+                return false;
+            }
+
+            if (!await this.keycloakClient.AssignClientRole(userId, client, role))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private async Task SendConfirmationEmailAsync(string partyEmail)

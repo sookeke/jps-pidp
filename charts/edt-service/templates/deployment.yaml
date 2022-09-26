@@ -1,0 +1,150 @@
+{{ $release := .Release.Name }}
+{{ $ocEnv := regexFind "([^-]*$)" .Release.Namespace }}
+{{ $domain := .Values.global.vanityURL }}
+{{ $isPR := hasPrefix "pr-" .Release.Name }}
+## Derived release name
+{{ $drn := ternary $release $ocEnv $isPR }}
+{{ $isProd := contains "prod" $ocEnv }}
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "backend.fullname" . }}
+  labels:
+    {{- include "backend.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "backend.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.global.commit_sha }}
+        commit_sha: {{ .Values.global.commit_sha }}
+        {{- end}}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "backend.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "backend.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.global.image.registry }}/{{ .Values.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DB_HOST
+              value: jum-database
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jum-database
+                  key: DB_PASSWORD
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: jum-database
+                  key: DB_USER
+            - name: DATABASE_NAME
+              value: jum
+            - name: DOTNET_BUNDLE_EXTRACT_BASE_DIR
+              value: /tmp
+            - name: ConnectionStrings__EdtDataStore
+              value: "Server=$(DB_HOST),1433;User ID=$(DB_USER);Password=$(DB_PASSWORD);Database=jum;TrustServerCertificate=true"           
+            - name: KafkaCluster__BoostrapServers
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__BoostrapServers
+            - name: KafkaCluster__ConsumerTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__ConsumerTopicName
+            - name: KafkaCluster__ProducerTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__ProducerTopicName
+            - name: KafkaCluster__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__ClientId
+            - name: KafkaCluster__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__ClientSecret
+            - name: ApplicationUrl
+              value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
+            - name: EdtCLient_Url
+              valueFrom:
+                secretKeyRef:
+                  name: edt-client
+                  key: Url           
+            - name: EdtCLient_Apikey
+              valueFrom:
+                secretKeyRef:
+                  name: edt-client
+                  key: Apikey          
+          envFrom:
+            - secretRef:
+                name: keycloak-secrets
+            - secretRef:
+                name: ches
+            - configMapRef:
+                name: mail-settings
+            - secretRef:
+                name: kafkaconfig
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+        #  livenessProbe: //turn this on for TEST and PROD
+         #   httpGet:
+        #      path: /health/liveness
+        #      port: http
+         #   timeoutSeconds: 1
+        #    periodSeconds: 10
+         #   successThreshold: 1
+         #   failureThreshold: 3
+         # startupProbe:
+        #    httpGet:
+         #     path: /health/liveness
+         #     port: http
+          #    scheme: HTTP
+         #   timeoutSeconds: 1
+         #   periodSeconds: 10
+          #  successThreshold: 1
+          #  failureThreshold: 30
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

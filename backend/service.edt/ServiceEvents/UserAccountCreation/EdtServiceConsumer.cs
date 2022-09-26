@@ -1,5 +1,4 @@
-
-namespace EdtService.NotificationEvents.UserProvisioning;
+namespace edt.service.ServiceEvents.UserAccountCreation;
 
 using System.Net;
 using edt.service;

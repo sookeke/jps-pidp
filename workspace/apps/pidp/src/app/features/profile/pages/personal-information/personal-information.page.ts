@@ -74,6 +74,12 @@ export class PersonalInformationPage
       return this.navigateToRoot();
     }
 
+    this.identityProvider$.subscribe((idp) => {
+      if (idp === IdentityProvider.BCPS || idp === IdentityProvider.IDIR) {
+        this.formState.email.disable(); //disable this for bcps users as this must match justin email
+      }
+    });
+
     this.resource
       .get(partyId)
       .pipe(

@@ -15,8 +15,9 @@ public class PartyIndex
     {
         public int Id { get; set; }
         public string? ProviderName { get; set; }
-        public CollegeCode? ProviderCollegeCode { get; set; }
-        public bool SAEformsAccessRequest { get; set; }
+        public OrganizationCode? ProviderOrganizationCode { get; set; }
+        public bool DigitalEvidenceAccessRequest { get; set; }
+        public string? OrganizationName { get; set; }
     }
 
     public class QueryHandler : IQueryHandler<Query, List<Model>>

@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 
 import { Observable, from, map } from 'rxjs';
@@ -13,6 +14,7 @@ export interface IAccessTokenService {
   isTokenExpired(): boolean;
   decodeToken(): Observable<AccessTokenParsed | null>;
   roles(): string[];
+  groups(): string[];
   clearToken(): void;
 }
 
@@ -46,6 +48,15 @@ export class AccessTokenService implements IAccessTokenService {
 
   public roles(): string[] {
     return this.keycloakService.getUserRoles();
+  }
+
+  public groups(): string[] {
+    let groups: string[] = [];
+    this.keycloakService.loadUserProfile().then((profile) => {
+      groups = profile['attributes'].roles ?? [];
+      return groups; //gives you array of all attributes of user, extract what you need
+    });
+    return groups;
   }
 
   public clearToken(): void {

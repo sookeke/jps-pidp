@@ -1,7 +1,7 @@
 namespace Pidp.Features.Parties;
 
 using NodaTime;
-
+using Pidp.Models;
 using Pidp.Models.Lookups;
 
 public partial class ProfileStatus
@@ -124,7 +124,7 @@ public partial class ProfileStatus
 
             protected override void SetAlertsAndStatus(ProfileStatusDto profile)
             {
-                if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard || profile.UserIsBcps))
+                if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard || profile.UserIsBcps || profile.UserIsIdir))
                 {
                     this.StatusCode = StatusCode.Hidden;
                     return;
@@ -162,6 +162,12 @@ public partial class ProfileStatus
                 if (!(profile.UserIsBcServicesCard || profile.UserIsBcps || profile.UserIsIdir))
                 {
                     this.StatusCode = StatusCode.Hidden;
+                    return;
+                }
+
+                if (profile.AccessRequestStatus.Contains(AccessRequestStatus.Pending))
+                {
+                    this.StatusCode = StatusCode.Pending;
                     return;
                 }
 

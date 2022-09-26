@@ -63,7 +63,7 @@ export class LoginPage {
   }
 
   public onLogin(idpHint?: IdentityProvider): void {
-    if (this.idpHint === IdentityProvider.IDIR) {
+    if (this.idpHint === IdentityProvider.AZUREIDIR) {
       this.login(this.idpHint);
       return;
     }

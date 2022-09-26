@@ -1,3 +1,4 @@
+import { StickyStyler } from '@angular/cdk/table';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -25,7 +26,7 @@ export class EndorsementsPortalSection implements IPortalSection {
     this.key = 'endorsements';
     this.heading = 'Endorsements';
     this.description =
-      'View and make changes to your care team. Request endorsement from the licenced practitioners you work with to gain access to systems.';
+      'View and make changes to your work team. Request endorsement from the professionals you work with to gain access to systems.';
   }
 
   public get hint(): string {
@@ -43,21 +44,28 @@ export class EndorsementsPortalSection implements IPortalSection {
         OrganizationInfoRoutes.ENDORSEMENTS
       ),
       disabled: !(
-        this.profileStatus.status.demographics.statusCode ===
-          StatusCode.COMPLETED &&
-        this.profileStatus.status.collegeCertification.statusCode ===
-          StatusCode.COMPLETED
+        (
+          this.profileStatus.status.demographics.statusCode ===
+            StatusCode.COMPLETED ||
+          this.profileStatus.status.organizationDetails.statusCode ===
+            StatusCode.COMPLETED
+        )
+        // (this.profileStatus.status.digitalEvidence.statusCode ===
+        //   StatusCode.COMPLETED ||
+        //   this.profileStatus.status.driverFitness.statusCode ===
+        //     StatusCode.COMPLETED)
       ),
     };
   }
 
   public get statusType(): AlertType {
-    return this.getStatusCode() === StatusCode.COMPLETED ? 'success' : 'warn';
+    //return this.getStatusCode() === StatusCode.COMPLETED ? 'success' : 'warn';
+    return 'info';
   }
 
   public get status(): string {
     const statusCode = this.getStatusCode();
-    return statusCode === StatusCode.COMPLETED ? 'Completed' : 'Incomplete';
+    return statusCode === StatusCode.COMPLETED ? 'Completed' : 'Available';
   }
 
   public performAction(): Observable<void> | void {

@@ -9,5 +9,5 @@ public class EdtUserProvisioning
     public string PhoneNumber { get; set; } = string.Empty;
     public string? Role { get; set; }
     public bool? IsActive => true;
-    public int? AccountType { get; set; }
+    public string? AccountType { get; set; }
 }

@@ -46,6 +46,10 @@ namespace Pidp.Data.Migrations
                     b.Property<Instant>("RequestedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PartyId");
@@ -139,7 +143,7 @@ namespace Pidp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CorrectionServiceCode")
+                    b.Property<int?>("CorrectionServiceCode")
                         .HasColumnType("integer");
 
                     b.Property<int>("OrgainizationDetailId")
@@ -348,7 +352,7 @@ namespace Pidp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("JusticeSectorCode")
+                    b.Property<int?>("JusticeSectorCode")
                         .HasColumnType("integer");
 
                     b.Property<string>("JustinUserId")
@@ -357,6 +361,10 @@ namespace Pidp.Data.Migrations
 
                     b.Property<int>("OrgainizationDetailId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ParticipantId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -1187,6 +1195,19 @@ namespace Pidp.Data.Migrations
                     b.ToTable("OutBoxedExportedEvent", (string)null);
                 });
 
+            modelBuilder.Entity("Pidp.Models.OutBoxEvent.IdempotentConsumer", b =>
+                {
+                    b.Property<string>("MessageId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Consumer")
+                        .HasColumnType("text");
+
+                    b.HasKey("MessageId", "Consumer");
+
+                    b.ToTable("IdempotentConsumers", (string)null);
+                });
+
             modelBuilder.Entity("Pidp.Models.Party", b =>
                 {
                     b.Property<int>("Id")
@@ -1214,10 +1235,10 @@ namespace Pidp.Data.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("text");
 
-                    b.Property<string>("Jpdid")
+                    b.Property<string>("JobTitle")
                         .HasColumnType("text");
 
-                    b.Property<string>("JobTitle")
+                    b.Property<string>("Jpdid")
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
@@ -1439,14 +1460,11 @@ namespace Pidp.Data.Migrations
                     b.Navigation("Province");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("Pidp.Models.CorrectionServiceDetail", b =>
                 {
                     b.HasOne("Pidp.Models.Lookups.CorrectionService", "CorrectionService")
                         .WithMany()
-                        .HasForeignKey("CorrectionServiceCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CorrectionServiceCode");
 
                     b.HasOne("Pidp.Models.PartyOrgainizationDetail", "OrgainizationDetail")
                         .WithMany()
@@ -1477,25 +1495,6 @@ namespace Pidp.Data.Migrations
 
                     b.Navigation("Party");
                 });
-
-            modelBuilder.Entity("Pidp.Models.EndorsementRequest", b =>
-            {
-                b.HasOne("Pidp.Models.Party", "ReceivingParty")
-                    .WithMany()
-                    .HasForeignKey("ReceivingPartyId")
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                b.HasOne("Pidp.Models.Party", "RequestingParty")
-                    .WithMany()
-                    .HasForeignKey("RequestingPartyId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.Navigation("ReceivingParty");
-
-                b.Navigation("RequestingParty");
-            });
-
 
             modelBuilder.Entity("Pidp.Models.EndorsementRequest", b =>
                 {
@@ -1530,9 +1529,7 @@ namespace Pidp.Data.Migrations
                 {
                     b.HasOne("Pidp.Models.Lookups.JusticeSector", "JusticeSector")
                         .WithMany()
-                        .HasForeignKey("JusticeSectorCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("JusticeSectorCode");
 
                     b.HasOne("Pidp.Models.PartyOrgainizationDetail", "OrgainizationDetail")
                         .WithMany()

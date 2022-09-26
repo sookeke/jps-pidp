@@ -111,7 +111,12 @@ export class PortalService {
         case AlertCode.JUM_VALIDATION_ERROR:
           return {
             heading: 'Having trouble verifying your justin user identity?',
-            content: `You Personal Id may not match your digitial identity. Try again in 24 hours. If this problem persists, contact your Organization administrator.`,
+            content: `Your personal Id may not match your digitial identity. Try again in 24 hours. If this problem persists, contact your organization administrator.`,
+          };
+        case AlertCode.PENDING_REQUEST:
+          return {
+            heading: 'Pending access request!',
+            content: 'Your access request is pending for approval',
           };
       }
     });

@@ -4,4 +4,5 @@ export enum StatusCode {
   NOT_AVAILABLE,
   ERROR,
   HIDDEN,
+  PENDING,
 }

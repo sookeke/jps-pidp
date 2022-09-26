@@ -70,6 +70,8 @@ public class UserRepresentation
 
     public void SetPhone(string phone) => this.SetAttribute("phone", phone);
 
+    public void SetPartId(string partId) => this.SetAttribute("partId", partId);
+
     public void SetPhoneNumber(string phoneNumber) => this.SetAttribute("phoneNumber", phoneNumber);
 
     public void SetPhoneExtension(string phoneExtension) => this.SetAttribute("phoneExtension", phoneExtension);

@@ -16,10 +16,11 @@ public class MappingProfile : Profile
             .IncludeMembers(party => party.OrgainizationDetail)
             //.IncludeMembers(party => party.CorrectionServiceDetail, party => party.OrgainizationDetail)
             //.ForMember(dest => dest.EmployeeIdentifier, opt => opt.MapFrom(src =>src.CorrectionServiceDetail.PeronalId))
-            .ForMember(dest => dest.OrgDetailId, opt => opt.MapFrom(src => src.OrgainizationDetail.Id))
+            .ForMember(dest => dest.OrgDetailId, opt => opt.MapFrom(src => src.OrgainizationDetail!.Id))
             .ForMember(dest => dest.CompletedEnrolments, opt => opt.MapFrom(src => src.AccessRequests.Select(x => x.AccessTypeCode)))
             .ForMember(dest => dest.OrganizationDetailEntered, opt => opt.MapFrom(src => src.OrgainizationDetail != null))
             .ForMember(dest => dest.CompletedEnrolments, opt => opt.MapFrom(src => src.AccessRequests.Select(x => x.AccessTypeCode)))
+            .ForMember(dest => dest.AccessRequestStatus, opt => opt.MapFrom(src => src.AccessRequests.Select(x => x.Status)))
             .ForMember(dest => dest.OrganizationDetailEntered, opt => opt.MapFrom(src => src.OrgainizationDetail != null))
             .ForMember(dest => dest.PlrStanding, opt => opt.Ignore())
             .ForMember(dest => dest.User, opt => opt.Ignore());

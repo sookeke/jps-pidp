@@ -1,7 +1,5 @@
 namespace edt.service.HttpClients.AddressAutocomplete;
 
-using EdtService.HttpClients;
-
 public class AddressAutocompleteClient : BaseClient, IAddressAutocompleteClient
 {
     private readonly string apiKey;

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ArrayUtils } from '@bcgov/shared/utils';
 
 import { PermissionsService } from '@app/modules/permissions/permissions.service';
+import { Group } from '@app/shared/enums/groups.enum';
 import { Role } from '@app/shared/enums/roles.enum';
 
 import { StatusCode } from '../enums/status-code.enum';
@@ -19,7 +20,7 @@ import { AdministratorPortalSection } from './admin/admin-panel-portal-section.c
 import { SignedAcceptedDocumentsPortalSection } from './history/signed-accepted-documents-portal-section.class';
 import { TransactionsPortalSection } from './history/transactions-portal-section.class';
 import { AdministratorInfoPortalSection } from './organization/administrator-information-portal-section';
-import { EndorsementsPortalSection } from './organization/endorsement-portal-section.class';
+import { EndorsementsPortalSection } from './organization/endorsements-portal-section.class';
 import { FacilityDetailsPortalSection } from './organization/facility-details-portal-section.class';
 import { OrganizationDetailsPortalSection } from './organization/organization-details-portal-section.class';
 import { PortalSectionStatusKey } from './portal-section-status-key.type';
@@ -70,6 +71,7 @@ export class PortalStateBuilder {
       history: this.createHistoryGroup(),
     };
   }
+
   private createAdminGroup(profileStatus: ProfileStatus): IPortalSection[] {
     return [
       ...ArrayUtils.insertResultIf<IPortalSection>(
@@ -92,7 +94,8 @@ export class PortalStateBuilder {
     return [
       new DemographicsPortalSection(profileStatus, this.router),
       ...ArrayUtils.insertResultIf<IPortalSection>(
-        this.insertSection('collegeCertification', profileStatus),
+        this.insertSection('collegeCertification', profileStatus) &&
+          this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]),
         () => [
           new CollegeCertificationPortalSection(profileStatus, this.router),
         ]
@@ -126,14 +129,15 @@ export class PortalStateBuilder {
       ...ArrayUtils.insertResultIf<IPortalSection>(
         // TODO remove permissions when API exists and ready for production, or
         // TODO replace || with && to keep it flagged when API exists
-        this.insertSection('administratorInfo', profileStatus),
+        this.permissionsService.hasRole([Role.ADMIN]) &&
+          this.insertSection('administratorInfo', profileStatus),
         () => [new AdministratorInfoPortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
         // TODO remove permissions when API exists and ready for production, or
         // TODO replace || with && to keep it flagged when API exists
         //this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
-        this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
+        this.permissionsService.hasRole([Role.USER]) ||
           this.insertSection('endorsements', profileStatus),
         () => [new EndorsementsPortalSection(profileStatus, this.router)]
       ),
@@ -171,7 +175,8 @@ export class PortalStateBuilder {
         () => [new DriverFitnessPortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(
-        this.insertSection('digitalEvidence', profileStatus),
+        this.permissionsService.hasGroup([Group.BSPS]) ||
+          this.insertSection('digitalEvidence', profileStatus),
         () => [new DigitalEvidencePortalSection(profileStatus, this.router)]
       ),
       ...ArrayUtils.insertResultIf<IPortalSection>(

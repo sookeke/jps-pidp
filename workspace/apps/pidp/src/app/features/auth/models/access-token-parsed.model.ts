@@ -21,4 +21,5 @@ export interface AccessTokenParsed extends KeycloakTokenParsed {
   name: string;
   preferred_username: string;
   birthdate: string;
+  //roles: string[];
 }

@@ -13,7 +13,8 @@ public static class HttpClientSetup
 
         //services.AddHttpClientWithBaseAddress<IAddressAutocompleteClient, AddressAutocompleteClient>(config.AddressAutocompleteClient.Url);
 
-        services.AddHttpClientWithBaseAddress<IEdtClient, EdtClient>(config.EdtClient.Url);
+        services.AddHttpClientWithBaseAddress<IEdtClient, EdtClient>(config.EdtClient.Url)
+            .ConfigureHttpClient(c => c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", config.EdtClient.ApiKey));
 
         return services;
     }

@@ -7,7 +7,7 @@ using Pidp.Infrastructure.Auth;
 using Pidp.Infrastructure.Services;
 
 [Route("api/[controller]")]
-[Authorize(Policy = Policies.IdirAuthentication, Roles = Roles.Admin)]
+[Authorize(Policy = Policies.AdminAuthentication, Roles = Roles.Admin)]
 public class AdminController : PidpControllerBase
 {
     public AdminController(IPidpAuthorizationService authorizationService) : base(authorizationService) { }

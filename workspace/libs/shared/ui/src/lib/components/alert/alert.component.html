@@ -9,7 +9,9 @@
     info: type === 'info',
     warn: type === 'warn',
     danger: type === 'danger',
-    muted: type === 'muted'
+    muted: type === 'muted',
+    primary: type === 'primary',
+    secondary: type === 'secondary'
   }">
   <!-- Work around for ngProjectAs not passing directive reference when applied to ng-content -->
   <ng-container *ngIf="alertContent.length" uiCardContent>

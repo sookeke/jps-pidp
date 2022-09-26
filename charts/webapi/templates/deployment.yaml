@@ -47,13 +47,10 @@ spec:
           env:
             - name: PlrClient__Url
               value: http://{{ $release }}-plr-intake:8080/api
-<<<<<<< HEAD
             - name: JumClient__Url
               value: https://jum-api-e27db1-dev.apps.gold.devops.gov.bc.ca/api
-=======
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspnetcore.environment }}
->>>>>>> 0ea55b7bc9442b95d386d00c7f5d470021b1b323
             - name: DB_HOST
               value: postgresql
             - name: POSTGRESQL_PASSWORD
@@ -80,6 +77,31 @@ spec:
                 configMapKeyRef:
                   name: pidp-api-database
                   key: CONNECTION_STRINGS_PIDP
+            - name: KafkaCluster__BoostrapServers
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__BoostrapServers
+            - name: KafkaCluster__ConsumerTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__ConsumerTopicName
+            - name: KafkaCluster__ProducerTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__ProducerTopicName
+            - name: KafkaCluster__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__ClientId
+            - name: KafkaCluster__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__ClientSecret
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
           envFrom:

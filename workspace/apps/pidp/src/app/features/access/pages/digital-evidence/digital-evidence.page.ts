@@ -62,6 +62,7 @@ export class DigitalEvidencePage
 
   public collectionNotice: string;
   public completed: boolean | null;
+  public pending: boolean | null;
   public policeAgency: Observable<string>;
   public result: string;
   public accessRequestFailed: boolean;
@@ -129,6 +130,7 @@ export class DigitalEvidencePage
       documentService.getDigitalEvidenceCollectionNotice();
     this.completed =
       routeData.digitalEvidenceStatusCode === StatusCode.COMPLETED;
+    this.pending = routeData.digitalEvidenceStatusCode === StatusCode.PENDING;
     this.accessRequestFailed = false;
     this.digitalEvidenceSupportEmail = digitalEvidenceSupportEmail;
     this.formControlNames = [
