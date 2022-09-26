@@ -93,12 +93,12 @@ spec:
                   key: KafkaCluster__ClientSecret
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
-            - name: EdtCLient_Url
+            - name: EdtCLient__Url
               valueFrom:
                 secretKeyRef:
                   name: edt-client
                   key: Url           
-            - name: EdtCLient_Apikey
+            - name: EdtCLient__Apikey
               valueFrom:
                 secretKeyRef:
                   name: edt-client

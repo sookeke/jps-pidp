@@ -64,12 +64,14 @@ public static class HttpClientSetup
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslUsername = config.KafkaCluster.ClientId,
             SaslPassword = config.KafkaCluster.ClientSecret,
-            EnableIdempotence = true
+            EnableIdempotence = true,
+            RetryBackoffMs = 1000,
+            MessageSendMaxRetries = 3
         };
 
         var consumerConfig = new ConsumerConfig(clientConfig)
         {
-            GroupId = "Dems-Consumer-Group",
+            GroupId = "Dems-Notification-Ack",
             EnableAutoCommit = true,
             AutoOffsetReset = AutoOffsetReset.Earliest,
             BootstrapServers = config.KafkaCluster.BoostrapServers,
