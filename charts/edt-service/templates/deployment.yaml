@@ -62,7 +62,10 @@ spec:
             - name: DOTNET_BUNDLE_EXTRACT_BASE_DIR
               value: /tmp
             - name: ConnectionStrings__EdtDataStore
-              value: "Server=$(DB_HOST),1433;User ID=$(DB_USER);Password=$(DB_PASSWORD);Database=jum;TrustServerCertificate=true"           
+              valueFrom:
+                configMapKeyRef:
+                  name: jum-api-database
+                  key: CONNECTION_STRINGS_JUM          
             - name: KafkaCluster__BoostrapServers
               valueFrom:
                 secretKeyRef:
