@@ -21,11 +21,11 @@ WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT="Production"
 ENV ASPNETCORE_URLS="http://+:8080"
 
-# ENV \
-#     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
-#     LC_ALL=en_US.UTF-8 \
-#     LANG=en_US.UTF-8
-# RUN apk add --no-cache icu-libs
+ENV \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8
+RUN apk add --no-cache icu-libs
 
 COPY --from=build-env /app .
 COPY --from=build-env /source/efbundle .
