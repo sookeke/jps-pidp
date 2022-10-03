@@ -23,6 +23,7 @@ spec:
       default: deploy/dev_values.yaml
   workspaces:
     - name: source
+    - name: dockerconfig
   tasks:
     - name: git-clone
       workspaces:
@@ -55,6 +56,8 @@ spec:
       workspaces:
         - name: source
           workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
       taskRef:
         kind: Task
         name: build-frontend
@@ -86,6 +89,8 @@ spec:
       workspaces:
         - name: source
           workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
       taskRef:
         kind: Task
         name: kaniko
@@ -105,6 +110,8 @@ spec:
       workspaces:
         - name: source
           workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
       taskRef:
         kind: Task
         name: kaniko
@@ -124,6 +131,8 @@ spec:
       workspaces:
         - name: source
           workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
       taskRef:
         kind: Task
         name: kaniko

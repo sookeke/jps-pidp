@@ -49,6 +49,9 @@ objects:
       - apiGroups: ["networking.k8s.io"]
         resources: ["ingresses"]
         verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
+      - apiGroups: ["autoscaling"]
+        resources: ["horizontalpodautoscalers"]
+        verbs: ["create", "get", "update", "patch", "delete", "list", "watch"]
         
 
   - kind: RoleBinding

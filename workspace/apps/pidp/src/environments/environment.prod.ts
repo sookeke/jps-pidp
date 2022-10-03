@@ -28,6 +28,8 @@ import { AppEnvironment, EnvironmentName } from './environment.model';
 export const environment: AppEnvironment = {
   production: true,
   apiEndpoint: 'http://localhost:5050',
+  authEndpoint: 'https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca',
+  authRealm: 'DEMSPOC',
   environmentName: EnvironmentName.LOCAL,
   applicationUrl: 'http://localhost:4200',
   emails: {

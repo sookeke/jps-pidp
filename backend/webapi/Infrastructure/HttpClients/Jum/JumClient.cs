@@ -114,7 +114,7 @@ public class JumClient : BaseClient, IJumClient
             //bcps user
             if (justinUser?.participantDetails?.FirstOrDefault()?.firstGivenNm == party.FirstName
                     && justinUser?.participantDetails?.FirstOrDefault()?.surname == party.LastName
-                    && justinUser?.participantDetails?.FirstOrDefault()?.emailAddress == party.Email)
+                    && justinUser?.participantDetails?.FirstOrDefault()?.emailAddress.ToUpper(CultureInfo.CurrentCulture) == party.Email!.ToUpper(CultureInfo.CurrentCulture))
             {
                 return Task.FromResult(true);
             }
