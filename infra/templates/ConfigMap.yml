@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metabase-config
+data:
+  MB_DB_TYPE: postgres
+  MB_DB_DBNAME: pidpdb
+  MB_DB_PORT: "5432"
+  MB_DB_USER: postgres
+  MB_DB_PASS: postgres
+  MB_DB_HOST: postgresql.e27db1-dev.svc.cluster.local

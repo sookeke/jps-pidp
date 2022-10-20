@@ -20,6 +20,15 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
         //this.consumer = consumer;
         //this.topic = topic;
     }
+    /// <summary>
+    /// for production use of sasl/oauthbearer
+    /// implement authentication callbackhandler for token retrival and refresh
+    /// https://docs.confluent.io/platform/current/kafka/authentication_sasl/authentication_sasl_oauth.html#production-use-of-sasl-oauthbearer
+    /// https://techcommunity.microsoft.com/t5/fasttrack-for-azure/event-hub-kafka-endpoint-azure-ad-authentication-using-c/ba-p/2586185
+    /// https://github.com/Azure/azure-event-hubs-for-kafka/issues/97
+    /// https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/test/Confluent.Kafka.IntegrationTests/Tests/OauthBearerToken_PublishConsume.cs
+    /// </summary>
+    /// <param name="config"></param>
 
     public async Task Consume(string topic, CancellationToken stoppingToken)
     {

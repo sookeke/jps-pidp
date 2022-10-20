@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -13,6 +14,8 @@ import { ConfirmDialogComponent } from '@bcgov/shared/ui';
 
 import { APP_CONFIG, AppConfig } from '@app/app.config';
 import { DocumentService } from '@app/core/services/document.service';
+import { LookupService } from '@app/modules/lookup/lookup.service';
+import { Lookup } from '@app/modules/lookup/lookup.types';
 
 import { IdentityProvider } from '../../enums/identity-provider.enum';
 import { AuthService } from '../../services/auth.service';
@@ -26,6 +29,7 @@ export class LoginPage {
   public title: string;
   public headerConfig: DashboardHeaderConfig;
   public loginCancelled: boolean;
+  public organizations: Lookup[];
   public bcscSupportUrl: string;
   public bcscMobileSetupUrl: string;
   public specialAuthorityUrl: string;
@@ -33,6 +37,8 @@ export class LoginPage {
   public idpHint: IdentityProvider;
 
   public IdentityProvider = IdentityProvider;
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+  myControl: FormControl = new FormControl();
 
   public constructor(
     @Inject(APP_CONFIG) private config: AppConfig,
@@ -40,6 +46,7 @@ export class LoginPage {
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
+    private lookupService: LookupService,
     private documentService: DocumentService
   ) {
     const routeSnapshot = this.route.snapshot;
@@ -48,6 +55,7 @@ export class LoginPage {
     this.headerConfig = { theme: 'dark', allowMobileToggle: false };
     this.loginCancelled = routeSnapshot.queryParams.action === 'cancelled';
     this.bcscSupportUrl = this.config.urls.bcscSupport;
+    this.organizations = this.lookupService.organizations;
     this.bcscMobileSetupUrl = this.config.urls.bcscMobileSetup;
     this.specialAuthorityUrl = this.config.urls.specialAuthority;
     this.providerIdentitySupportEmail =
