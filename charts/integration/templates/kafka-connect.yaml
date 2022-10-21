@@ -16,7 +16,7 @@ spec:
     type: oauth
     userNameClaim: preferred_username
     clientId: kafka-producer
-    clientSecret: 14d13b7b-3f0a-433d-b7aa-e6ae7924bf6e
+    clientSecret: ""
     introspectionEndpointUri: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token/introspect
     tokenEndpointUri: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token
   config:
