@@ -1,0 +1,29 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: jpidp-debezium
+  namespace: 5b7aa5-dev
+spec:
+  image: image-registry.openshift-image-registry.svc:5000/5b7aa5-dev/debezium-container-with-avro:latest
+  authentication:
+    clientId: kafka-producer
+    clientSecret:
+      key: connector
+      secretName: dems-kafka-cluster
+    tokenEndpointUri: >-
+      https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token
+    type: oauth
+  bootstrapServers: 'dems-cluster-5b7aa5-dev.apps.silver.devops.gov.bc.ca:443'
+  config:
+    config.storage.replication.factor: 3
+    config.storage.topic: jpidp-debezium-cluster-config
+    group.id: jpidp-debezium-cluster
+    offset.storage.replication.factor: 3
+    offset.storage.topic: jpidp-debezium-cluster-offset
+    status.storage.replication.factor: 3
+    status.storage.topic: jpidp-debezium-cluster-status
+  replicas: 1
+  tls:
+    trustedCertificates:
+      - certificate: ca.crt
+        secretName: dems-cluster-cluster-ca-cert
