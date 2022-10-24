@@ -64,4 +64,4 @@ L4K 2Y2
         type: route
 ```
 
-![Alt text](../../doc/Solution Architecture.drawio.png?raw=true "solution architect")
+![Alt text](../doc/Solution Architecture.drawio.png?raw=true "solution architect")
