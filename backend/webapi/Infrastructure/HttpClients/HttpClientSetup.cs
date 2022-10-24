@@ -47,11 +47,15 @@ public static class HttpClientSetup
 
         services.AddTransient<ISmtpEmailClient, SmtpEmailClient>();
 
+        var protocol = Enum.TryParse(config.KafkaCluster.SecurityProtocol, out SecurityProtocol securityProtocol) ? securityProtocol : SecurityProtocol.SaslSsl;
+        var mechanism = Enum.TryParse(config.KafkaCluster.SaslMechanism, out SaslMechanism saslMechanism) ? saslMechanism : SaslMechanism.Plain;
+
+
         var clientConfig = new ClientConfig()
         {
             BootstrapServers = config.KafkaCluster.BoostrapServers,
-            SaslMechanism = SaslMechanism.Plain,
-            SecurityProtocol = SecurityProtocol.SaslSsl,
+            SaslMechanism = mechanism,
+            SecurityProtocol = protocol,
             SaslUsername = config.KafkaCluster.ClientId,
             SaslPassword = config.KafkaCluster.ClientSecret,
         };
@@ -60,14 +64,15 @@ public static class HttpClientSetup
         {
             BootstrapServers = config.KafkaCluster.BoostrapServers,
             Acks = Acks.All,
-            SaslMechanism = SaslMechanism.Plain,
-            SecurityProtocol = SecurityProtocol.SaslSsl,
+            SaslMechanism = mechanism,
+            SecurityProtocol = protocol,
             SaslUsername = config.KafkaCluster.ClientId,
             SaslPassword = config.KafkaCluster.ClientSecret,
             EnableIdempotence = true,
             RetryBackoffMs = 1000,
             MessageSendMaxRetries = 3
         };
+
 
         var consumerConfig = new ConsumerConfig(clientConfig)
         {
@@ -77,8 +82,8 @@ public static class HttpClientSetup
             BootstrapServers = config.KafkaCluster.BoostrapServers,
             EnableAutoOffsetStore = false,
             AutoCommitIntervalMs = 4000,
-            SaslMechanism = SaslMechanism.Plain,
-            SecurityProtocol = SecurityProtocol.SaslSsl,
+            SaslMechanism = mechanism,
+            SecurityProtocol = protocol,
             SaslUsername = config.KafkaCluster.ClientId,
             SaslPassword = config.KafkaCluster.ClientSecret
         };

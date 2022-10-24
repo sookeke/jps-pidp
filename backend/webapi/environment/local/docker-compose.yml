@@ -1,0 +1,243 @@
+version: '3.3'
+
+
+services:
+  postgres:
+    image: debezium/postgres:13
+    user: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      timeout: 15s
+      interval: 30s
+      retries: 4
+    ports:
+      - 5444:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/create_schemas.sql:/docker-entrypoint-initdb.d/create_schemas.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: Pa55w0rd
+
+  postgres-keycloak:
+    image: postgres
+    ports:
+      - 5544:5432
+    volumes:
+      - postgres_data_keycloak:/var/lib/postgresql/data
+      - ./postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: keycloak
+      POSTGRES_DB: keycloak
+      POSTGRES_PASSWORD: Pa55w0rd
+
+  keycloak:
+    image: jboss/keycloak:latest
+    #image: quay.io/keycloak/keycloak:legacy
+    volumes:
+      - ./keycloak/realm-export-local.json:/tmp/realm-export.json
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak_user
+      DB_PASSWORD: Pa55w0rd
+      DB_SCHEMA: keycloak_schema
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+      KEYCLOAK_IMPORT: /tmp/realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled
+    ports:
+      - 8888:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper
+    restart: always
+    volumes:
+      - ./zookeeper/zookeeper.sasl.jaas.config:/etc/kafka/zookeeper_server_jaas.conf
+    ports:
+      - 22181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      KAFKA_OPTS: -Dzookeeper.4lw.commands.whitelist=*
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/zookeeper_server_jaas.conf 
+          -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+          -Dzookeeper.allowSaslFailedClients=false
+          -Dzookeeper.requireClientAuthScheme=sasl
+
+
+  kafka-1:
+    image: wurstmeister/kafka:latest
+    hostname: kafka-1
+    depends_on:
+      - zookeeper-1
+    ports:
+      - 9092:9092
+      - 29092:29092
+    environment:
+      TEST: '2'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-1:2181'
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:SASL_PLAINTEXT,OUTSIDE:SASL_PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://kafka-1:9092,OUTSIDE://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://10.0.3.19:29092
+      KAFKA_LISTENER_NAME_HOST_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_CREATE_TOPICS: "Dems_AccessRequest:2:2,Dems_Notification_Ack:2:2,Justin_User_Provision:2:2"
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+        #KAFKA_SECURITY_PROTOCOL: SASL_PLAINTEXT 
+      KAFKA_LISTENER_NAME_BROKER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
+    volumes:
+      - /var/run/docker.sock:/var/run/docker/sock
+      - ./kafka/kafka_server_jaas.conf:/etc//kafka/kafka_server_jaas.conf
+
+  kafka-2:
+    image: wurstmeister/kafka:latest
+    hostname: kafka-2
+    depends_on:
+      - zookeeper-1
+    ports:
+      - 9093:9093
+      - 29093:29093
+    environment:
+      TEST: '2'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-1:2181'
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:SASL_PLAINTEXT,OUTSIDE:SASL_PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://kafka-2:9093,OUTSIDE://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9093,OUTSIDE://10.0.3.19:29093
+      KAFKA_LISTENER_NAME_HOST_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+        #KAFKA_SECURITY_PROTOCOL: SASL_PLAINTEXT 
+      KAFKA_LISTENER_NAME_BROKER_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
+    volumes:
+      - /var/run/docker.sock:/var/run/docker/sock
+      - ./kafka/kafka_server_jaas.conf:/etc//kafka/kafka_server_jaas.conf
+
+
+  sqlserver:
+    build: ./mssql_database
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    environment:
+      SA_PASSWORD: "Pa55w0rd"
+      ACCEPT_EULA: "Y"
+
+#  kafdrop:
+#    image: obsidiandynamics/kafdrop:latest
+#    restart: always
+#    ports:
+#      - "9000:9000"
+#    environment:
+#      SECURITY_PROTOCOL: SASL_PLAINTEXT
+#      SASL_MECHANISM: PLAIN
+#      SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="ui" password="ui-secret";'
+#      KAFKA_BROKERCONNECT: kafka-1:9092
+#      ZOOKEEPER_CONNECT: zookeeper-1:2181
+#      JVM_OPTS: "-Xms16M -Xmx48M"
+#    depends_on:
+#      - "kafka-1" 
+#      - "kafka-2" 
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8999:8080"
+    restart: always
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kafka-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'kafka-1:9092,kafka-2:9093'
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-1:2181
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: PLAIN
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="ui" password="ui-secret";'
+        #  - KAFKA_OPTS='-Djava.security.auth.login.config=/opt/kafka/config/kafka_server_jaas.conf'
+    depends_on:
+      - kafka-1
+      - kafka-2
+
+
+  debezium-ui:
+    image: debezium/debezium-ui:2.0.0.Final
+    ports:
+     - 8884:8080
+    environment:
+      KAFKA_CONNECT_URIS: "http://kconnect:8083/"
+    restart: on-failure
+    depends_on:
+      - kconnect
+
+  kconnect:
+    image: debezium/connect:2.0.0.Final
+    ports:
+     - 8883:8083
+    depends_on:
+     - kafka-1
+     - postgres
+     - zookeeper-1
+    links:
+     - kafka-1
+     - postgres
+     - zookeeper-1
+    environment:
+      GROUP_ID: 1
+        #KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+        #VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      CONNECT_SASL_MECHANISM: PLAIN
+      CONNECT_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="connect" password="connect-secret";'
+      CONNECT_CONSUMER_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      CONNECT_CONSUMER_SASL_MECHANISM: PLAIN
+      CONNECT_CONSUMER_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="connect" password="connect-secret";'
+      CONNECT_PRODUCER_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      CONNECT_PRODUCER_SASL_MECHANISM: PLAIN
+      CONNECT_PRODUCER_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="connect" password="connect-secret";'
+      BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9093
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_source_connect_statuses
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.5.3
+    restart: always
+    depends_on:
+      - zookeeper-1
+      - kafka-1
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper-1:2181"
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8085
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'SASL_PLAINTEXT://kafka-1:9092,SASL_PLAINTEXT://kafka-2:9093'
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_MECHANISM: PLAIN
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="connect" password="connect-secret";'
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8777:8080
+    environment:
+      - ADM_INSTALL_MSSQL=true
+      - PHP_FPM_INSTALL_MSSQL=true
+      - WORKSPACE_INSTALL_MSSQL=true
+
+volumes:
+  mssql_data:
+      driver: local
+  postgres_data_keycloak:
+      driver: local
+  postgres_data:
+      driver: local
