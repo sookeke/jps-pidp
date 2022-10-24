@@ -14,7 +14,7 @@
 install kafka ui
 helm repo add kafka-ui https://provectus.github.io/kafka-ui
 	
-helm install kafka-ui kafka-ui/kafka-ui --set envs.config.KAFKA_CLUSTERS_0_SCHEMAREGISTRY=http://dems-apicurioregistry-kafkasql-service.5b7aa5-dev.svc.cluster.local:8080/apis/ccompat/v6 --set envs.config.AUTH_TYPE=OAUTH2 --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_CLIENTID=kafka-ui --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_CLIENTSECRET=7b55b7c6-e975-46c2-9f64-dbbd71d023d8 --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_SCOPE=openid --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH0_ISSUER_URI=https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC --set envs.config.KAFKA_CLUSTERS_0_NAME=dems-cluster --set envs.config.KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=dems-cluster-kafka-bootstrap:9092
+helm install kafka-ui kafka-ui/kafka-ui --set envs.config.KAFKA_CLUSTERS_0_SCHEMAREGISTRY=http://dems-apicurioregistry-kafkasql-service.5b7aa5-dev.svc.cluster.local:8080/apis/ccompat/v6 --set envs.config.AUTH_TYPE=OAUTH2 --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_CLIENTID=kafka-ui --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_CLIENTSECRET=122223333333333333 --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_SCOPE=openid --set envs.config.SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH0_ISSUER_URI=https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC --set envs.config.KAFKA_CLUSTERS_0_NAME=dems-cluster --set envs.config.KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=dems-cluster-kafka-bootstrap:9092
 
 helm install --set kafka.enabled=false --set kafka.bootstrapServers=SSL://dems-cluster-kafka-bootstrap:9093 --set schema-registry.enabled=false --set schema-registry.url=http://dems-apicurioregistry-kafkasql-service.5b7aa5-dev.svc.cluster.local:8080 --set kafka-connect.enabled=false --set kafka-connect.url=jpidp-debezium-connect-api.5b7aa5-dev.svc.cluster.local ktool rhcharts/ksqldb
 
@@ -28,8 +28,8 @@ helm install ksqlserver --set kafka.enabled=false --set kafka.bootstrapServers=S
 - Encrypt Data in rest using Harshicop Vault
 - Secure client with proven Identity with a Centralized Authrorization server
 - Validate JWT token issuer
-- Validate scope and audience  4001, Steeles Avenue West
-L4K 2Y2
+- Validate scope and audience
+
 ```bash
       - name: tls
         port: 9093
