@@ -6,8 +6,10 @@ import { DashboardHeaderTheme, IDashboard } from '@bcgov/shared/ui';
 
 import { APP_CONFIG, AppConfig } from '@app/app.config';
 import { AdminRoutes } from '@app/features/admin/admin.routes';
+import { IdentityProvider } from '@app/features/auth/enums/identity-provider.enum';
 import { AccessTokenService } from '@app/features/auth/services/access-token.service';
 import { AuthService } from '@app/features/auth/services/auth.service';
+import { AuthorizedUserService } from '@app/features/auth/services/authorized-user.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -29,7 +31,8 @@ export class AdminDashboardComponent implements IDashboard {
   public constructor(
     @Inject(APP_CONFIG) private config: AppConfig,
     private authService: AuthService,
-    accessTokenService: AccessTokenService
+    accessTokenService: AccessTokenService,
+    private authorizedUserService: AuthorizedUserService
   ) {
     this.logoutRedirectUrl = `${this.config.applicationUrl}/${this.config.routes.auth}/${AdminRoutes.MODULE_PATH}`;
     this.username = accessTokenService
@@ -45,6 +48,10 @@ export class AdminDashboardComponent implements IDashboard {
   }
 
   public onLogout(): void {
-    this.authService.logout(this.logoutRedirectUrl);
+    this.authorizedUserService.identityProvider$.pipe(
+      map((idp: IdentityProvider) => {
+        this.authService.logout(this.logoutRedirectUrl, idp);
+      })
+    );
   }
 }

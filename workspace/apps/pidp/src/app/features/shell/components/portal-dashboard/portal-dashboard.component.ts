@@ -12,8 +12,10 @@ import {
 import { ArrayUtils } from '@bcgov/shared/utils';
 
 import { APP_CONFIG, AppConfig } from '@app/app.config';
+import { IdentityProvider } from '@app/features/auth/enums/identity-provider.enum';
 import { AccessTokenService } from '@app/features/auth/services/access-token.service';
 import { AuthService } from '@app/features/auth/services/auth.service';
+import { AuthorizedUserService } from '@app/features/auth/services/authorized-user.service';
 import { PortalRoutes } from '@app/features/portal/portal.routes';
 import { PermissionsService } from '@app/modules/permissions/permissions.service';
 import { Role } from '@app/shared/enums/roles.enum';
@@ -36,8 +38,9 @@ export class PortalDashboardComponent implements IDashboard {
   public constructor(
     @Inject(APP_CONFIG) private config: AppConfig,
     private authService: AuthService,
+    private accessTokenService: AccessTokenService,
     private permissionsService: PermissionsService,
-    accessTokenService: AccessTokenService
+    private authorizedUserService: AuthorizedUserService
   ) {
     this.logoutRedirectUrl = `${this.config.applicationUrl}/${this.config.routes.auth}`;
     this.username = accessTokenService
@@ -54,7 +57,12 @@ export class PortalDashboardComponent implements IDashboard {
   }
 
   public onLogout(): void {
-    this.authService.logout(this.logoutRedirectUrl);
+    debugger;
+    this.authorizedUserService.identityProvider$.subscribe(
+      (idp: IdentityProvider) => {
+        return this.authService.logout(this.logoutRedirectUrl, idp);
+      }
+    );
   }
 
   private createMenuItems(): DashboardMenuItem[] {

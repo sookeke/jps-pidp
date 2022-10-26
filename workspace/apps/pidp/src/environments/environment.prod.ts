@@ -43,6 +43,10 @@ export const environment: AppEnvironment = {
     msTeamsSupport: msTeamsSupportEmail,
     doctorsTechnologyOfficeSupport: doctorsTechnologyOfficeEmail,
   },
+  idpConfig: {
+    idir: 'https://login.microsoftonline.com/6fdb5200-3d0d-4a8a-b036-d3685e359adc/oauth2/v2.0/logout?client-id=PIDP-SERVICE&post_logout_redirect=http://localhost:4200',
+    adfs: 'https://ststest.gov.bc.ca/adfs/oauth2/logout',
+  },
   urls: {
     bcscSupport: `https://www2.gov.bc.ca/gov/content/governments/government-id/bcservicescardapp/help`,
     bcscMobileSetup: 'https://id.gov.bc.ca/account',
