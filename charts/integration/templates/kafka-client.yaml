@@ -33,7 +33,7 @@ spec:
     - name: OAUTH_INTROSPECTION_ENDPOINT_URI
       value: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token/introspect
     - name: OAUTH_CLIENT_SECRET
-      value: 14d13b7b-3f0a-433d-b7aa-e6ae7924bf6e
+      value: <redacted>
     - name: OAUTH_USERNAME_CLAIM
       value: preferred_username
     - name: OAUTH_VALID_TOKEN_TYPE
