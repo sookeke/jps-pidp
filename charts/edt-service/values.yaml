@@ -23,6 +23,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+trustStoreCertificateSecretName: "kafka-client-truststore"
+
 database:
   # .NET Core database connection string
   dbConnectionString: 'host=postgresql;port=5432;database=pidpdb;username=postgres;password=postgres'

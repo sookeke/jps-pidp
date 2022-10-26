@@ -1,0 +1,60 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: jpidp-cluster
+  namespace: 5b7aa5-test
+spec:
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+  kafka:
+    config:
+      default.replication.factor: 3
+      inter.broker.protocol.version: '3.1'
+      min.insync.replicas: 2
+      offsets.topic.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      transaction.state.log.replication.factor: 3
+    listeners:
+      - authentication:
+          userNameClaim: preferred_username
+          clientId: kafka-broker
+          enableOauthBearer: true
+          validIssuerUri: >-
+            https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/jpidpPOC
+          maxSecondsWithoutReauthentication: 3600
+          tlsTrustedCertificates:
+            - certificate: keycloak.crt
+              secretName: ca-keycloak
+          type: oauth
+          checkAudience: true
+          clientSecret:
+            key: clientSecret
+            secretName: jpidp-kafka-cluster
+          introspectionEndpointUri: >-
+            https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token/introspect
+          tokenEndpointUri: >-
+            https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token
+        configuration:
+          bootstrap:
+            host: jpidp-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca
+          createBootstrapService: true
+        name: external
+        port: 9094
+        tls: true
+        type: route
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: '5Gi'
+      deleteClaim: true
+      class: netapp-file-standard
+    version: 3.1.0
+  zookeeper:
+    replicas: 3
+    storage:
+      type: persistent-claim
+      class: netapp-file-standard
+      deleteClaim: true
+      size: '5Gi'
+

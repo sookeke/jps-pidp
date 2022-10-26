@@ -1,0 +1,49 @@
+kind: KafkaConnector
+apiVersion: kafka.strimzi.io/v1beta2
+metadata:
+  name: jpidp-outbox-connector
+  labels:
+    strimzi.io/cluster: jpidp-debezium
+  namespace: 5b7aa5-dev
+spec:
+  class: io.debezium.connector.postgresql.PostgresConnector
+  tasksMax: 1
+  config:
+    connector.class: "io.debezium.connector.postgresql.PostgresConnector"
+    plugin.name: "pgoutput"
+    database.hostname: "postgres-debezium-postgresql.5b7aa5-dev.svc.cluster.local"
+    database.port: "5432"
+    database.user: "postgres"
+    database.password: "passw0rd"
+    database.dbname: "postgres"
+    database.server.name: "postgres"
+    tombstones.on.delete: "false"
+    schema.include.list: "public"
+    table.include.list: "public.outboxevent"
+    transforms: "outbox"
+    transforms.outbox.type: "io.debezium.transforms.outbox.EventRouter"
+    transforms.outbox.route.topic.replacement: "${routedByValue}.events"
+    transforms.outbox.table.field.event.id: "id"
+    transforms.outbox.table.field.event.key: "aggregateId"
+    transforms.outbox.table.field.event.payload: "payload"
+    transforms.outbox.table.field.event.payload.id: "aggregateId"
+    transforms.outbox.route.by.field: "aggregateType"   
+    key.converter: io.apicurio.registry.utils.converter.AvroConverter
+    key.converter.apicurio.registry.url: http://dems-apicurioregistry-kafkasql-service.5b7aa5-dev.svc.cluster.local:8080
+    key.converter.apicurio.registry.global-id: io.apicurio.registry.serde.strategy.GetOrCreateIdStrategy
+    value.converter: io.apicurio.registry.utils.converter.AvroConverter
+    value.converter.apicurio.registry.url: http://dems-apicurioregistry-kafkasql-service.5b7aa5-dev.svc.cluster.local:8080
+    value.converter.apicurio.registry.global-id: io.apicurio.registry.serde.strategy.GetOrCreateIdStrategy   
+    transforms.outbox.table.expand.json.payload: "true"
+    transforms.outbox.table.fields.additional.placement: "type:header:eventType"
+    key.converter.apicurio.registry.converter.serializer: "io.apicurio.registry.serde.avro.AvroKafkaSerializer"
+    key.converter.apicurio.registry.converter.deserializer: "io.apicurio.registry.serde.avro.AvroKafkaDeserializer"
+    value.converter.apicurio.registry.converter.serializer: "io.apicurio.registry.serde.avro.AvroKafkaSerializer"
+    value.converter.apicurio.registry.converter.deserializer: "io.apicurio.registry.serde.avro.AvroKafkaDeserializer"
+    key.converter.apicurio.registry.auto-register: "true"
+    key.converter.apicurio.registry.find-latest: "true"
+    key.converter.apicurio.registry.as-confluent: "true"
+    value.converter.apicurio.registry.auto-register: "true"
+    value.converter.apicurio.registry.find-latest: "true"
+    value.converter.apicurio.registry.as-confluent: "true"
+    

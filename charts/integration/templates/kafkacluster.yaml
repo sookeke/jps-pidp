@@ -1,0 +1,117 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  generation: 1
+  managedFields:
+    - apiVersion: kafka.strimzi.io/v1beta2
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:entityOperator':
+            .: {}
+            'f:topicOperator': {}
+            'f:userOperator': {}
+          'f:kafka':
+            .: {}
+            'f:config':
+              .: {}
+              'f:default.replication.factor': {}
+              'f:inter.broker.protocol.version': {}
+              'f:min.insync.replicas': {}
+              'f:offsets.topic.replication.factor': {}
+              'f:transaction.state.log.min.isr': {}
+              'f:transaction.state.log.replication.factor': {}
+            'f:listeners': {}
+            'f:replicas': {}
+            'f:storage':
+              .: {}
+              'f:type': {}
+            'f:version': {}
+          'f:zookeeper':
+            .: {}
+            'f:replicas': {}
+            'f:storage':
+              .: {}
+              'f:type': {}
+      manager: Mozilla
+      operation: Update
+      time: '2022-10-03T06:35:30Z'
+    - apiVersion: kafka.strimzi.io/v1beta2
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          .: {}
+          'f:conditions': {}
+          'f:observedGeneration': {}
+      manager: okhttp
+      operation: Update
+      subresource: status
+      time: '2022-10-03T06:35:30Z'
+  name: dems-cluster
+  namespace: 5b7aa5-dev
+  resourceVersion: '4689783338'
+  uid: 56e0d858-7819-44d0-8a1f-61cf48143115
+spec:
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+  kafka:
+    config:
+      default.replication.factor: 3
+      inter.broker.protocol.version: '3.1'
+      min.insync.replicas: 2
+      offsets.topic.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      transaction.state.log.replication.factor: 3
+    listeners:
+      - name: plain
+        port: 9092
+        tls: false
+        type: internal
+      - name: tls
+        port: 9093
+        tls: true
+        type: internal
+      - authentication:
+          userNameClaim: preferred_username
+          clientId: kafka-broker
+          sasl: true
+          enableOauthBearer: true
+          validIssuerUri: >-
+            https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
+          maxSecondsWithoutReauthentication: 3600
+          tlsTrustedCertificates:
+            - certificate: keycloak.crt
+              secretName: ca-keycloak
+          type: oauth
+          clientSecret:
+            key: clientSecret
+            secretName: dems-kafka-cluster
+          introspectionEndpointUri: >-
+            https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token/introspect
+          tokenEndpointUri: >-
+            https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token
+        configuration:
+          bootstrap:
+            host: dems-cluster-5b7aa5-dev.apps.silver.devops.gov.bc.ca
+          createBootstrapService: true
+        name: external
+        port: 9094
+        tls: true
+        type: route
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: '5Gi'
+      deleteClaim: true
+      class: netapp-file-standard
+    version: 3.1.0
+  zookeeper:
+    replicas: 3
+    storage:
+      type: persistent-claim
+      class: netapp-file-standard
+      deleteClaim: true
+      size: '5Gi'
+

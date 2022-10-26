@@ -102,6 +102,11 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
                   key: KafkaCluster__ClientSecret
+            - name: KafkaCluster__SslCaLocation
+              valueFrom:
+                 secretKeyRef:
+                   name: kafka-client-truststore
+                   key: kafka-client-truststore.cer.pem
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
           envFrom:

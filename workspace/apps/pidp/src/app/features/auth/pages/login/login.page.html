@@ -134,6 +134,24 @@
           (click)="onLogin(IdentityProvider.AZUREIDIR)">
           Login with your IDIR
         </button>
+        <br /><br />
+        <mat-form-field class="example-form">
+          <input
+            #inputField
+            type="text"
+            placeholder="Select your organization"
+            matInput
+            aria-label="Number"
+            [formControl]="myControl"
+            [matAutocomplete]="auto" />
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option
+              *ngFor="let organization of organizations"
+              [value]="organization.name">
+              {{ organization.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
       </div>
     </div>
   </ng-template>

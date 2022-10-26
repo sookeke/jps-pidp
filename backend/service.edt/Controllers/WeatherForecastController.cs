@@ -33,7 +33,7 @@ namespace edt.service.Controllers
             })
             .ToArray();
 
-            await this._kafkaProducer.ProduceAsync("Dems_AccessRequest", Guid.NewGuid().ToString(), f.FirstOrDefault());
+            await this._kafkaProducer.ProduceAsync("beer-events", Guid.NewGuid().ToString(), f.FirstOrDefault());
 
             return f;
         }
