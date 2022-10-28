@@ -5,6 +5,9 @@ global:
   image:
     tag: develop
 
+postgresdb:
+  # nothing here yet
+
 database:
   autoCreate: false
   # databaseHost: dev-patroni
