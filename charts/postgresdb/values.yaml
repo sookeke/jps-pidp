@@ -201,7 +201,7 @@ extendedConfConfigMap: postgresql-config
 
 ## ConfigMap with scripts to be run at first boot
 ## NOTE: This will override initdbScripts
-# initdbScriptsConfigMap:
+initdbScriptsConfigMap: pidp-postgres-init
 
 ## Secret with scripts to be run at first boot (in case it contains sensitive information)
 ## NOTE: This can work along initdbScripts or initdbScriptsConfigMap
