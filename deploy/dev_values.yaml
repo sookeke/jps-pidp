@@ -5,13 +5,23 @@ global:
   image:
     tag: develop
 
-postgresdb:
-  # nothing here yet
+postgresql:
+  auth:
+    username: jps-pidp
+  existingSecret: postgresql
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: jps-password
+  primary:
+    initdb:
+      scriptsConfigMap: pipd-postgres-init
 
 database:
   autoCreate: false
   # databaseHost: dev-patroni
   # existingSecret: dev-patroni-secret
+
+
 
 redis:
   enabled: false

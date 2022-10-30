@@ -29,9 +29,9 @@ icon: https://drive.google.com/uc?export=view&id=1fc37O4LI_ciUI87_Y00lFgO8CaUv_7
 # These are the dependent services for pidp
 
 dependencies:
-#  - name: postgresdb
-#    repository: "file://../postgresdb"
-#    version: "0.1.0"
+  - name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: "11.1.3"
   - name: frontend
     repository: "file://../frontend"
     version: "0.1.2"
