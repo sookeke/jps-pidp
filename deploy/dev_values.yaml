@@ -7,7 +7,8 @@ global:
 
 postgresql:
   auth:
-    username: jps-pidp
+    postgresPassword: "postgres"
+    username: postgres
   existingSecret: postgresql
   secretKeys:
     adminPasswordKey: admin-password
