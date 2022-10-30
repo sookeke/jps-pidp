@@ -5,6 +5,7 @@
 global:
   postgresql:
     auth:
+      postgresPassword: "postgres"
       database: "pidpdb"
 
 #   imageRegistry: myRegistryName
