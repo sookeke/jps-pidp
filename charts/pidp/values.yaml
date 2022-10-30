@@ -10,11 +10,11 @@ global:
     tag: latest
 
 # used for creating/dropping databases
-#image:
-#  repository: postgresql
-#  pullPolicy: Always
-#  # Overrides the image tag whose default is the chart appVersion.
-#  tag: 12
+image:
+  repository: postgresql
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: 12
 
 replicaCount: 1
 
