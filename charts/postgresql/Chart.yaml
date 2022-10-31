@@ -1,7 +1,7 @@
 apiVersion: v2
 name: postgresdb
 description: A Helm chart for Kubernetes
-
+icon: https://wiki.postgresql.org/wiki/File:PostgreSQL_logo.3colors.120x120.png
 # A chart can be either an 'application' or a 'library' chart.
 #
 # Application charts are a collection of templates that can be packaged into versioned archives
