@@ -5,17 +5,17 @@ global:
   image:
     tag: develop
 
-postgresql:
-  auth:
-    postgresPassword: "postgres"
-    username: postgres
-  existingSecret: postgresql
-  secretKeys:
-    adminPasswordKey: admin-password
-    userPasswordKey: jps-password
-  primary:
-    initdb:
-      scriptsConfigMap: pipd-postgres-init
+#postgresql:
+#  auth:
+#    postgresPassword: "postgres"
+#    username: postgres
+#  existingSecret: postgresql
+#  secretKeys:
+#    adminPasswordKey: admin-password
+#    userPasswordKey: jps-password
+#  primary:
+#    initdb:
+#      scriptsConfigMap: pipd-postgres-init
 
 database:
   autoCreate: false
