@@ -7,7 +7,7 @@ global:
   commit_sha: ""
   image:
     registry: image-registry.openshift-image-registry.svc:5000/e27db1-tools
-    tag: latest
+    tag: develop
 
 replicaCount: 1
 aspnetcore:
@@ -17,7 +17,7 @@ image:
   repository: pidp-webapi
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "develop"
 
 imagePullSecrets: []
 nameOverride: ""
