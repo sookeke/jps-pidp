@@ -1,0 +1,8 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "postgresql.primary.fullname" . }}
+data:
+  initDb.sql: |-
+    CREATE USER keycloak_user WITH PASSWORD 'Pa55w0rd';
+    CREATE SCHEMA IF NOT EXISTS keycloak_schema AUTHORIZATION keycloak_user;

@@ -1,21 +1,18 @@
 dependencies:
 - name: postgresql
   repository: file://../postgresql
-  version: 0.1.0
+  version: 12.0.0
 - name: frontend
   repository: file://../frontend
   version: 0.1.2
 - name: webapi
   repository: file://../webapi
   version: 0.1.5
-- name: edt-service
-  repository: file://../edt-service
-  version: 0.1.0
 - name: plr-intake
   repository: file://../plr-intake
   version: 0.1.2
 - name: nginx
   repository: file://../nginx
   version: 9.7.3
-digest: sha256:37eddbdac2af29d1c12bdd751f304ccf43e58f79e89c56bd73965f3a85d7d7e8
-generated: "2022-10-30T13:04:39.0547099-07:00"
+digest: sha256:3fc5e8a9ac0c0adcaba14ee384c189d1346bf8957ca9c623cad8174e982042e0
+generated: "2022-10-31T16:25:31.6759444-07:00"

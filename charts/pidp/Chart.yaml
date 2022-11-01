@@ -30,17 +30,17 @@ icon: https://drive.google.com/uc?export=view&id=1fc37O4LI_ciUI87_Y00lFgO8CaUv_7
 
 dependencies:
   - name: postgresql
-    repository: https://charts.bitnami.com/bitnami
-    version: "11.1.3"
+    repository: "file://../postgresql"
+    version: "12.0.0"
   - name: frontend
     repository: "file://../frontend"
     version: "0.1.2"
   - name: webapi
     repository: "file://../webapi"
     version: "0.1.5"
-  - name: edt-service
-    repository: "file://../edt-service"
-    version: "0.1.0"
+#  - name: edt-service
+#    repository: "file://../edt-service"
+#    version: "0.1.0"
   - name: plr-intake
     repository: "file://../plr-intake"
     version: "0.1.2"
