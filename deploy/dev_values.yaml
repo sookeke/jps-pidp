@@ -23,7 +23,7 @@ database:
   autoCreate: false
   # databaseHost: dev-patroni
   # existingSecret: dev-patroni-secret
-
+  # trigger
 
 
 redis:
