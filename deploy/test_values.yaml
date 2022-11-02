@@ -51,3 +51,10 @@ webapi:
 
 plr-intake:
   replicaCount: 1
+  resources:
+    limits:
+      cpu: '1'
+      memory: 500Mi
+    requests:
+      cpu: 500m
+      memory: 500Mi
