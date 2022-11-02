@@ -31,19 +31,23 @@ redis:
     existingSecretPasswordKey: database-password
 
 nginx:
-  replicaCount: 2
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
 
 frontend:
-  replicaCount: 3
+  replicaCount: 1
   settings:
     environmentName: test
     keycloak:
       url: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
 
 webapi:
-  replicaCount: 3
+  replicaCount: 1
   aspnetcore:
     environment: Staging
 
 plr-intake:
-  replicaCount: 2
+  replicaCount: 1
