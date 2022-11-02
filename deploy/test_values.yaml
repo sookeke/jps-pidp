@@ -34,7 +34,7 @@ nginx:
   replicaCount: 1
   resources:
     limits:
-      cpu: 100m
+      cpu: 500m
       memory: 128Mi
 
 frontend:
@@ -48,12 +48,19 @@ webapi:
   replicaCount: 1
   aspnetcore:
     environment: Staging
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 500m
+      memory: 500Mi
 
 plr-intake:
   replicaCount: 1
   resources:
     limits:
-      cpu: '1'
+      cpu: 500m
       memory: 500Mi
     requests:
       cpu: 500m
