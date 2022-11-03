@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    description: Route for application's https service.
+  labels:
+    application: {{ .Values.application_name }}
+    rhsso: 7.6.0.GA
+    template: sso76-ocp4-x509-postgresql-persistent
+  name: {{ include "sso.fullname" . }}
+spec:
+  tls:
+    termination: reencrypt
+  to:
+    kind: Service
+    name: {{ include "sso.fullname" . }}-https
+  wildcardPolicy: None
