@@ -1,9 +1,9 @@
 # PR Helm values
 global:
-  vanityURL: "healthprovideridentityportal.gov.bc.ca"
+  vanityURL: "pidp-e27db1-test.apps.gold.devops.gov.bc.ca"
   commit_sha: ""
   image:
-    tag: test
+    tag: test123
 
 database:
   autoCreate: false
@@ -20,9 +20,10 @@ nginx:
   replicaCount: 2
 
 frontend:
+  replicaCount: 1
   replicaCount: 3
   settings:
-    environmentName: test
+    environmentName: test123
     keycloak:
       url: https://common-logon-test.hlth.gov.bc.ca/auth
 
@@ -31,5 +32,6 @@ webapi:
   aspnetcore:
     environment: Staging
 
+
 plr-intake:
-  replicaCount: 2
+  replicaCount: 1
