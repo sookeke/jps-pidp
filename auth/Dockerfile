@@ -1,4 +1,4 @@
-FROM registry.redhat.io/rh-sso-7/sso76-openshift-rhel8:7.6-5
+FROM registry.redhat.io/rh-sso-7/sso76-openshift-rhel8:7.6-5 as build-env
 WORKDIR /source
 MAINTAINER acme
 
