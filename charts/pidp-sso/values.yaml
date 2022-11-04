@@ -8,7 +8,7 @@ global:
   vanityURL: ""
   commit_sha: ""
   image:
-    registry: image-registry.openshift-image-registry.svc:5000/5b7aa5-tools
+    registry: image-registry.openshift-image-registry.svc:5000/e27db1-tools
     tag: latest
 
 

@@ -1,0 +1,84 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: sso-pipeline
+  namespace: e27db1-tools
+spec:
+  params:
+    - name: git-url
+      type: string
+    - default: develop
+      name: git-revision
+      type: string
+    - name: git-short-sha
+      type: string
+    - default: 'image-registry.openshift-image-registry.svc:5000/e27db1-tools'
+      name: image-registry
+      type: string
+    - default: develop
+      name: image-tag
+      type: string
+    - default: dev
+      name: release_name
+      type: string
+    - default: e27db1-dev
+      name: release_namespace
+      type: string
+    - default: v0.1.0
+      name: release_version
+      type: string
+    - default: deploy/dev_values.yaml
+      name: values_file
+      type: string
+  tasks:
+    - name: git-clone-pidp-repo
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: subdirectory
+          value: jps-pidp
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: revision
+          value: $(params.git-revision)
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:afc5d3f9efe26c7042635d43b8ffd09d67936e3d0b6b901dc08a33e20313d361
+      taskRef:
+        kind: ClusterTask
+        name: git-clone-v0-22-0
+      workspaces:
+        - name: output
+          workspace: source
+    - name: build-custom-sso-image
+      params:
+        - name: IMAGE
+          value: '$(params.image-registry)/pidp-sso:$(params.image-tag)'
+        - name: CONTEXT
+          value: jps-pidp/auth/
+        - name: DOCKERFILE
+          value: jps-pidp/auth/Dockerfile
+        - name: EXTRA_ARGS
+          value:
+            - '--skip-tls-verify'
+      runAfter:
+        - git-clone-pidp-repo
+      taskRef:
+        kind: Task
+        name: kaniko
+      workspaces:
+        - name: source
+          workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
+  workspaces:
+    - name: source
+    - name: dockerconfig

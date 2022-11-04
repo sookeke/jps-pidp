@@ -19,6 +19,8 @@ global:
         scriptsConfigMap: pipd-postgres-init
 
 
+
+
 database:
   autoCreate: false
   # databaseHost: dev-patroni
@@ -48,3 +50,9 @@ webapi:
 
 plr-intake:
   replicaCount: 1
+  migrations:
+    enabled: false
+
+edt-service:
+  migrations:
+    enabled: false

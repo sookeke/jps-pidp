@@ -70,7 +70,7 @@ spec:
             - name: DB_JNDI
               value: java:jboss/datasources/KeycloakDS
             - name: DB_USERNAME
-              value: keycloak
+              value: postgres
             - name: DB_DRIVER_NAME
               value: postgres
             - name: DRIVER_NAME
@@ -78,7 +78,7 @@ spec:
             - name: DB_DRIVER
               value: postgres
             - name: DB_PASSWORD
-              value: keycloak
+              value: postgres
             - name: DB_JDBC_URL
               value: 'jdbc:postgresql://pidp-sso-postgresql/keycloak'
             - name: DB_DATABASE
@@ -91,10 +91,11 @@ spec:
               value: '5'
             - name: DB_MAX_POOL_SIZE
               value: '15'
+            - name: KEYCLOAK_EXTRA_ARGS
             - name: JAVA_OPTS_APPEND
-              value: '-Dkeycloak.profile.feature.authorization=enabled -Djboss.persistent.log.dir=/var/log/eap'
-#            - name: DB_TX_ISOLATION
-#              value: {{ .Values.db_tx_isolation }}
+              value: '-Dkeycloak.profile.feature.authorization=enabled -Dkeycloak.profile.feature.upload_scripts=enabled -Djboss.persistent.log.dir=/var/log/eap'
+            - name: DB_TX_ISOLATION
+              value: {{ .Values.db_tx_isolation }}
             - name: JGROUPS_PING_PROTOCOL
               value: dns.DNS_PING
             - name: OPENSHIFT_DNS_PING_SERVICE_NAME
@@ -111,13 +112,13 @@ spec:
             - name: SSO_ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: sso-admin-test
-                  key: username
+                  name: keycloak-secret
+                  key: keycloak-admin-user
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: sso-admin-test
-                  key: password
+                  name: keycloak-secret
+                  key: keycloak-admin-password
           ports:
             - containerPort: 8778
               name: jolokia
@@ -157,9 +158,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: sso-standalone-openshift-xml-test
-              readOnly: true
-              mountPath: /provisioning
+#            - name: sso-standalone-openshift-xml-test
+#              readOnly: true
+#              mountPath: /provisioning
             - mountPath: /etc/x509/https
               name: sso-x509-https-volume
               readOnly: true
