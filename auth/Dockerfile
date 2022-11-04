@@ -1,5 +1,5 @@
 FROM registry.redhat.io/rh-sso-7/sso76-openshift-rhel8:7.6-5
-
+WORKDIR /source
 MAINTAINER acme
 
 MAINTAINER acme
