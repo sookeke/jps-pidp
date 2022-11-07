@@ -3,20 +3,21 @@ global:
   vanityURL: "pidp-e27db1-test.apps.gold.devops.gov.bc.ca"
   commit_sha: ""
   image:
-    tag: test
+    tag: develop
 
-  postgresql:
-    postgresqlDatabase: pidpdb
-    auth:
-      postgresPassword: "postgres"
-      username: postgres
-    existingSecret: postgresql
-    secretKeys:
-      adminPasswordKey: admin-password
-      userPasswordKey: jps-password
-    primary:
-      initdb:
-        scriptsConfigMap: pipd-postgres-init
+postgresql:
+  createSecret: true
+  database: pidpdb
+  auth:
+    postgresPassword: "postgres"
+    username: postgres
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: jps-password
+  primary:
+    database: pidpdb
+    initdb:
+      scriptsConfigMap: pipd-postgres-init
 
 
 
@@ -40,7 +41,7 @@ frontend:
   settings:
     environmentName: test
     keycloak:
-      url: https://sso-dev-5b7aa5-test.apps.silver.devops.gov.bc.ca/auth
+      url: https://pidp-sso-test.apps.gold.devops.gov.bc.ca/auth
 
 webapi:
   replicaCount: 1
@@ -50,9 +51,4 @@ webapi:
 
 plr-intake:
   replicaCount: 1
-  migrations:
-    enabled: false
 
-edt-service:
-  migrations:
-    enabled: false

@@ -70,7 +70,7 @@ spec:
             - name: DB_JNDI
               value: java:jboss/datasources/KeycloakDS
             - name: DB_USERNAME
-              value: postgres
+              value: keycloak
             - name: DB_DRIVER_NAME
               value: postgres
             - name: DRIVER_NAME
@@ -78,7 +78,7 @@ spec:
             - name: DB_DRIVER
               value: postgres
             - name: DB_PASSWORD
-              value: postgres
+              value: keycloak
             - name: DB_JDBC_URL
               value: 'jdbc:postgresql://pidp-sso-postgresql/keycloak'
             - name: DB_DATABASE

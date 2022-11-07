@@ -28,10 +28,10 @@ global:
     ##
     createSecret: true
     auth:
-      postgresPassword: "postgres"
-      username: "postgres"
-      password: "postgres"
-      database: "pidpdb"
+      postgresPassword: ""
+      username: ""
+      password: ""
+      database: ""
       existingSecret: ""
       secretKeys:
         adminPasswordKey: ""

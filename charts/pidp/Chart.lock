@@ -18,4 +18,4 @@ dependencies:
   repository: file://../nginx
   version: 9.7.3
 digest: sha256:7688405d0fce828ec8ce9a6b744df0784762706bbd242695cf499f75616826c1
-generated: "2022-11-03T11:11:13.6571744-07:00"
+generated: "2022-11-07T14:24:02.89225-08:00"

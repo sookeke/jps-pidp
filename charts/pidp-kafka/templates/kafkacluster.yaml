@@ -9,9 +9,9 @@ spec:
   kafka:
 
     listeners:
-      - name: plain
+      - name: internal
         port: 9092
-        tls: false
+        tls: true
         type: internal
       - name: tls
         port: 9093
