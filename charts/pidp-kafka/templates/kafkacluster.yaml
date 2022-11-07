@@ -35,7 +35,7 @@ spec:
               certificate: ca.crt
         configuration:
           bootstrap:
-            host: {{ include "pidp-kafka.fullname" . }}-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca
+            host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca
           createBootstrapService: true
         name: external
         port: 9094
