@@ -1,0 +1,66 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+  kafka:
+
+    listeners:
+      - name: plain
+        port: 9092
+        tls: false
+        type: internal
+      - name: tls
+        port: 9093
+        tls: true
+        type: internal
+      - authentication:
+          type: oauth
+          checkAudience: true
+          enableOauthBearer: true
+          clientId: kafka-broker
+          clientSecret:
+            key: secret
+            secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-kafka-secret
+          validIssuerUri: {{ .Values.keycloak.realm }}
+          introspectionEndpointUri: {{ .Values.keycloak.realm }}/protocol/openid-connect/token/introspect
+#          jwksEndpointUri: {{ .Values.keycloak.realm }}/protocol/openid-connect/certs
+          userNameClaim: preferred_username
+          maxSecondsWithoutReauthentication: 3600
+          tlsTrustedCertificates:
+            - secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-ca
+              certificate: ca.crt
+        configuration:
+          bootstrap:
+            host: {{ include "pidp-kafka.fullname" . }}-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca
+          createBootstrapService: true
+        name: external
+        port: 9094
+        tls: true
+        type: route
+    storage:
+      type: persistent-claim
+      size: 1Gi
+      deleteClaim: true
+      class: netapp-file-standard
+    version: 3.2.3
+    replicas: 3
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      inter.broker.protocol.version: '3.2'
+  zookeeper:
+    livenessProbe:
+      initialDelaySeconds: 30
+    storage:
+      type: persistent-claim
+      class: netapp-file-standard
+      deleteClaim: true
+      size: 1Gi
+    replicas: 3

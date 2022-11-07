@@ -1,0 +1,47 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "pidp-kafka.fullname" . }}-zookeeper-config
+data:
+  log4j.properties: >
+    # Do not change this generated file. Logging can be configured in the
+    corresponding Kubernetes resource.
+
+    log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+
+    log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+
+    log4j.appender.CONSOLE.layout.ConversionPattern=%d{ISO8601} %p %m (%c)
+    [%t]%n
+
+    zookeeper.root.logger=INFO
+
+    log4j.rootLogger=${zookeeper.root.logger}, CONSOLE
+  zookeeper.node-count: '3'
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "pidp-kafka.fullname" . }}-ui-config
+data:
+  AUTH_TYPE: OAUTH2
+
+  KAFKA_CLUSTERS_0_AUTH_TYPE: OAUTH2
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_CLIENTID: kafka-ui
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_CLIENTSECRET: 7b55b7c6-e975-46c2-9f64-dbbd71d023d8
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_SCOPE: openid
+  KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'pidp-kafka-cluster-kafka-bootstrap:9092'
+  KAFKA_CLUSTERS_0_NAME: pidp-kafka-cluster
+  KAFKA_CLUSTERS_0_SCHEMAREGISTRY: >-
+    http://pidp-kafka-apicurioregistry-kafkasql-service.5b7aa5-test.svc.cluster.local:8080/apis/registry/v2
+  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH0_ISSUER_URI: 'https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC'
+
+  KAFKA_CLUSTERS_1_AUTH_TYPE: OAUTH2
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH1_CLIENTID: kafka-ui
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH1_CLIENTSECRET: 7b55b7c6-e975-46c2-9f64-dbbd71d023d8
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH1_SCOPE: openid
+  KAFKA_CLUSTERS_1_BOOTSTRAPSERVERS: 'dems-cluster-kafka-bootstrap:9092'
+  KAFKA_CLUSTERS_1_NAME: dems-cluster
+  KAFKA_CLUSTERS_1_SCHEMAREGISTRY: >-
+    http://pidp-kafka-apicurioregistry-kafkasql-service.5b7aa5-test.svc.cluster.local:8080/apis/registry/v2
+  SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH1_ISSUER_URI: 'https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC'
