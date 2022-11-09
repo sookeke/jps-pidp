@@ -1,7 +1,4 @@
 dependencies:
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 11.1.3
 - name: frontend
   repository: file://../frontend
   version: 0.1.2
@@ -17,5 +14,5 @@ dependencies:
 - name: nginx
   repository: file://../nginx
   version: 9.7.3
-digest: sha256:7688405d0fce828ec8ce9a6b744df0784762706bbd242695cf499f75616826c1
-generated: "2022-11-07T14:24:02.89225-08:00"
+digest: sha256:bea80d71491b5b42226743a8042e25d551662d36455bc6697cd808092933bee5
+generated: "2022-11-08T14:12:04.3441718-08:00"

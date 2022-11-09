@@ -112,12 +112,12 @@ spec:
             - name: SSO_ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-secret
+                  name: keycloak-secrets
                   key: keycloak-admin-user
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-secret
+                  name: keycloak-secrets
                   key: keycloak-admin-password
           ports:
             - containerPort: 8778

@@ -5,22 +5,45 @@ global:
   image:
     tag: develop
 
+#postgresql:
+#  createSecret: true
+#  database: pidpdb
+#  auth:
+#    postgresPassword: "postgres"
+#    username: postgres
+#  secretKeys:
+#    adminPasswordKey: admin-password
+#    userPasswordKey: jps-password
+#  primary:
+#    database: pidpdb
+#    initdb:
+#      scriptsConfigMap: pipd-postgres-init
+
 postgresql:
   createSecret: true
   database: pidpdb
   auth:
     postgresPassword: "postgres"
     username: postgres
+    database: pidpdb
   secretKeys:
     adminPasswordKey: admin-password
     userPasswordKey: jps-password
   primary:
     database: pidpdb
-    initdb:
-      scriptsConfigMap: pipd-postgres-init
+#    initdb:
+#      scriptsConfigMap: pipd-postgres-init
 
 
+pidp-sso:
+  keycloak:
+    realm: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
 
+
+keycloak:
+  realmName: DEMSTEST
+  auth: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
+  base: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
 
 database:
   autoCreate: false
@@ -41,7 +64,8 @@ frontend:
   settings:
     environmentName: test
     keycloak:
-      url: https://pidp-sso-test.apps.gold.devops.gov.bc.ca/auth
+      url: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
+      realm: "DEMSTEST"
 
 webapi:
   replicaCount: 1

@@ -25,6 +25,9 @@ database:
   # existingSecret: dev-patroni-secret
   # trigger
 
+keycloak:
+  realm: DEMSPOC
+  auth: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
 
 redis:
   enabled: false

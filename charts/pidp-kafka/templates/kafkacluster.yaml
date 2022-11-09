@@ -9,15 +9,16 @@ spec:
   kafka:
 
     listeners:
-      - name: internal
+      - name: plain
         port: 9092
         tls: true
         type: internal
-      - name: tls
+      - name: external
         port: 9093
         tls: true
-        type: internal
-      - authentication:
+        type: route
+
+        authentication:
           type: oauth
           checkAudience: true
           enableOauthBearer: true
@@ -25,9 +26,9 @@ spec:
           clientSecret:
             key: secret
             secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-kafka-secret
-          validIssuerUri: {{ .Values.keycloak.realm }}
-          introspectionEndpointUri: {{ .Values.keycloak.realm }}/protocol/openid-connect/token/introspect
-#          jwksEndpointUri: {{ .Values.keycloak.realm }}/protocol/openid-connect/certs
+          validIssuerUri: {{ .Values.keycloak.auth }}
+          introspectionEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token/introspect
+          #          jwksEndpointUri: {{ .Values.keycloak.realm }}/protocol/openid-connect/certs
           userNameClaim: preferred_username
           maxSecondsWithoutReauthentication: 3600
           tlsTrustedCertificates:
@@ -37,10 +38,12 @@ spec:
           bootstrap:
             host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca
           createBootstrapService: true
-        name: external
-        port: 9094
-        tls: true
-        type: route
+          brokerCertChainAndKey:
+            secretName: my-secret
+            certificate: my-listener-certificate.crt
+            key: my-listener-key.key
+
+
     storage:
       type: persistent-claim
       size: 1Gi
@@ -57,7 +60,7 @@ spec:
       inter.broker.protocol.version: '3.2'
   zookeeper:
     livenessProbe:
-      initialDelaySeconds: 30
+      initialDelaySeconds: 60
     storage:
       type: persistent-claim
       class: netapp-file-standard

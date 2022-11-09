@@ -50,12 +50,12 @@ spec:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: jum-database
+                  name: {{ include "edt-service.fullname" . }}-jum-database
                   key: DB_PASSWORD
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: jum-database
+                  name: {{ include "edt-service.fullname" . }}-jum-database
                   key: DB_USER
             - name: DATABASE_NAME
               value: jum

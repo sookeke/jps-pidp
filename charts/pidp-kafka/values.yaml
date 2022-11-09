@@ -90,7 +90,7 @@ postgresql:
   auth:
     username: postgres
     password: postgres
-    database: postgres
+    database: kafka
   primary:
     podSecurityContext:
       enabled: false
