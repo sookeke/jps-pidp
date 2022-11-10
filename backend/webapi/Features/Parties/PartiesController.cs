@@ -111,6 +111,15 @@ public class PartiesController : PidpControllerBase
     => await this.AuthorizePartyBeforeHandleAsync(query.PartyId, handler, query)
         .ToActionResultOfT();
 
+    [HttpGet("{partyId}/crown-region/{participantId}/user-orgunit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<OrgUnitModel?>>> GetUserOuGroup([FromServices] IQueryHandler<CrownRegionQuery.Query, IEnumerable<OrgUnitModel?>> handler,
+                                                                                [FromRoute] CrownRegionQuery.Query query)
+    => await this.AuthorizePartyBeforeHandleAsync(query.PartyId, handler, query)
+        .ToActionResultOfT();
+
     [HttpPut("{partyId}/organization-details")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

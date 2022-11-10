@@ -27,7 +27,7 @@ public static class ConsumerSetup
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
             //SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
-            //SslKeyLocation = config.KafkaCluster.SslKeyLocation
+            SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
         var producerConfig = new ProducerConfig(clientConfig)
         {
