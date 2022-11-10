@@ -1,0 +1,33 @@
+apiVersion: registry.apicur.io/v1
+kind: ApicurioRegistry
+metadata:
+  name: dems-apicurioregistry-kafkasql
+  namespace: 5b7aa5-test
+spec:
+  configuration:
+    env:
+      - name: AUTH_ENABLED
+        value: 'true'
+      - name: QUARKUS_PROFILE
+        value: prod
+      - name: ROLES_ENABLED
+        value: 'true'
+      - name: REGISTRY_AUTH_OWNER_ONLY_AUTHORIZATION
+        value: 'false'
+      - name: KEYCLOAK_URL
+        value: 'https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth'
+      - name: KEYCLOAK_REALM
+        value: DEMSPOC
+      - name: KEYCLOAK_API_CLIENT_ID
+        value: registry-client-api
+      - name: KEYCLOAK_UI_CLIENT_ID
+        value: registry-client-ui
+      - name: ROLE_BASED_AUTHZ_ENABLED
+        value: 'true'
+    sql:
+      dataSource:
+        userName: postgres
+        password: passw0rd
+        url: >-
+          jdbc:postgresql://postgres-debezium-postgresql.5b7aa5-test.svc.cluster.local:5432/jpidp?currentSchema=registry
+    persistence: sql
