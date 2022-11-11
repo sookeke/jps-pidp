@@ -1,12 +1,16 @@
 namespace Pidp.Features.AccessRequests;
+
+using System.Globalization;
 using DomainResults.Common;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 
 using Pidp.Data;
 using Pidp.Infrastructure.Auth;
+using Pidp.Infrastructure.HttpClients.Jum;
 using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Infrastructure.HttpClients.Mail;
 using Pidp.Infrastructure.Services;
@@ -22,6 +26,7 @@ public class DigitalEvidence
         public string OrganizationType { get; set; } = string.Empty;
         public string OrganizationName { get; set; } = string.Empty;
         public string ParticipantId { get; set; } = string.Empty;
+        public List<string> Region { get; set; } = new List<string>();
     }
     public enum UserType
     {
@@ -50,6 +55,8 @@ public class DigitalEvidence
         private readonly IKeycloakAdministrationClient keycloakClient;
         private readonly ILogger logger;
         private readonly PidpConfiguration config;
+        private readonly IJumClient jumClient;
+        private readonly IHttpContextAccessor httpContextAccessor;
         //private readonly IUserTypeService userTypeService;
         private readonly PidpDbContext context;
         private readonly IKafkaProducer<string, EdtUserProvisioning> kafkaProducer;
@@ -59,6 +66,8 @@ public class DigitalEvidence
             IEmailService emailService,
             IKeycloakAdministrationClient keycloakClient,
             ILogger<CommandHandler> logger,
+            IJumClient jumClient,
+            IHttpContextAccessor httpContextAccessor,
             //IUserTypeService userTypeService,
             PidpConfiguration config,
             PidpDbContext context,
@@ -68,6 +77,8 @@ public class DigitalEvidence
             this.emailService = emailService;
             this.keycloakClient = keycloakClient;
             this.logger = logger;
+            this.jumClient = jumClient;
+            this.httpContextAccessor = httpContextAccessor;
             //this.userTypeService = userTypeService;
             this.context = context;
             this.kafkaProducer = kafkaProducer;
@@ -76,6 +87,8 @@ public class DigitalEvidence
 
         public async Task<IDomainResult> HandleAsync(Command command)
         {
+            var httpContext = this.httpContextAccessor.HttpContext;
+            var accessToken = await httpContext!.GetTokenAsync("access_token");
             var dto = await this.context.Parties
                 .Where(party => party.Id == command.PartyId)
                 .Select(party => new
@@ -90,10 +103,8 @@ public class DigitalEvidence
                     party.Phone
                 })
                 .SingleAsync();
-
-            //var orgType = await this.userTypeService.GetOrgUserType(command.PartyId);
-            //orgType!.ThrowIfNull(nameof(orgType));
-            //var userType = orgType!.Values.Select(n => n.Keys.Skip(1).FirstOrDefault()).First();
+            var justinUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(command.ParticipantId, CultureInfo.InvariantCulture), accessToken!);
+            //ar y = tt.participantDetails.FirstOrDefault().GrantedRoles.Select(n => n.role).ToList();
 
             if (dto.AlreadyEnroled
                 || dto.Email == null
@@ -162,7 +173,8 @@ public class DigitalEvidence
                         PhoneNumber = dto.Phone!,
                         FullName = $"{dto.FirstName} {dto.LastName}",
                         AccountType = "Saml",
-                        Role = "User"
+                        Role = "User",
+                        Group = command.Region
                     }
                 });
 
@@ -174,7 +186,8 @@ public class DigitalEvidence
                     PhoneNumber = dto.Phone!,
                     FullName = $"{dto.FirstName} {dto.LastName}",
                     AccountType = "Saml",
-                    Role = "User"
+                    Role = "User",
+                    Group = command.Region
                 });
 
                 await this.context.SaveChangesAsync();

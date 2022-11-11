@@ -50,4 +50,13 @@ public class DigitalEvidence : AccessRequest
     public string OrganizationType { get; set; } = string.Empty;
     public string OrganizationName { get; set; } = string.Empty;
     public string ParticipantId { get; set; } = string.Empty;
+    public List<string> AssignedRegions { get; set; } = new List<string>();
+}
+
+public class AssignedAgencies
+{
+    public decimal AgencyId { get; set; }
+    public string AgencyName { get; set; } = string.Empty;
+    public string AgencyType { get; set; } = string.Empty;
+    public Instant StartDate { get; set; }
 }

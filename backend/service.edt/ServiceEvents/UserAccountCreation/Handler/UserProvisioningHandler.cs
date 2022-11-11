@@ -31,17 +31,21 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
         {
             return Task.CompletedTask;
         }
+        ///check weather edt service api is available before making any http request
+        ///
+        /// call version endpoint via get
+        ///
 
         //check wheather edt user already exist
         var user = await this.edtClient.GetUser(value);
         //create user account in EDT
 
-        var result = user != null
-            || await this.edtClient.CreateUser(value);
+        //var result = user != null
+        //    || await this.edtClient.CreateUser(value);
 
-        //await this.edtClient.UpdateUser(value);//update user (PUT)
-
-        //var result = await this.edtClient.CreateUser(value);
+        var result = user == null
+            ? await this.edtClient.CreateUser(value) && await this.edtClient.AddUserGroup($"Key:{value.Key!}", value.Group) //create user
+            : await this.edtClient.UpdateUser(value);//update user
 
         if (result)
         {
