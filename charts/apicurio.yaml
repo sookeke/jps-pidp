@@ -1,7 +1,7 @@
 apiVersion: registry.apicur.io/v1
 kind: ApicurioRegistry
 metadata:
-  name: {{ include "pidp-kafka.fullname" . }}-apicurioregistry-pgsql
+  name: {{ include "pidp-kafka.fullname" . }}-apicurioregistry-kafkasql
 spec:
   configuration:
     env:
@@ -12,11 +12,11 @@ spec:
       - name: ROLES_ENABLED
         value: 'true'
       - name: REGISTRY_AUTH_OWNER_ONLY_AUTHORIZATION
-        value: 'true'
+        value: 'false'
       - name: KEYCLOAK_URL
-        value: {{ .Values.keycloak.base }}
+        value: 'https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth'
       - name: KEYCLOAK_REALM
-        value: {{ .Values.keycloak.realmName }}
+        value: DEMSPOC
       - name: KEYCLOAK_API_CLIENT_ID
         value: registry-client-api
       - name: KEYCLOAK_UI_CLIENT_ID
@@ -24,14 +24,14 @@ spec:
       - name: ROLE_BASED_AUTHZ_ENABLED
         value: 'true'
       - name: REGISTRY_DATASOURCE_URL
-        value: jdbc:postgresql://{{ include "pidp-kafka.fullname" . }}-postgresql.5b7aa5-test.svc.cluster.local:5432/pidpdb
+        value: jdbc:postgresql://{{ include "pidp-kafka.fullname" . }}-postgresql.5b7aa5-test.svc.cluster.local:5432/postgres
       - name: REGISTRY_DATASOURCE_PASSWORD
         value: postgres
       - name: REGISTRY_DATASOURCE_USERNAME
         value: postgres
     kafkasql:
-      bootstrapServers: '{{ include "pidp-kafka.fullname" . }}-cluster-bootstrap.5b7aa5-test.svc.cluster.local:9092'
-    persistence: "sql"
+      bootstrapServers: '{{ include "pidp-kafka.fullname" . }}-kafka-cluster.5b7aa5-dev.svc.cluster.local:9092'
+    persistence: kafkasql
   deployment:
     host: >-
-      {{ include "pidp-kafka.fullname" . }}-apicurioregistry-pgsql.5b7aa5-dev.router-default.apps.silver.devops.gov.bc.ca
+      {{ include "pidp-kafka.fullname" . }}-apicurioregistry-kafkasql.5b7aa5-dev.router-default.apps.silver.devops.gov.bc.ca

@@ -53,7 +53,7 @@ public class JumClient : BaseClient, IJumClient
         return user;
     }
 
-    public async Task<JustinUser?> GetJumUserByPartIdAsync(long partId)
+    public async Task<JustinUser?> GetJumUserByPartIdAsync(decimal partId)
     {
         var result = await this.GetAsync<JustinUser>($"users/{partId}");
 
@@ -138,11 +138,11 @@ public static partial class JumClientLoggingExtensions
     [LoggerMessage(1, LogLevel.Warning, "No User found in JUM with Username = {username}.")]
     public static partial void LogNoUserFound(this ILogger logger, string username);
     [LoggerMessage(2, LogLevel.Warning, "No User found in JUM with PartId = {partId}.")]
-    public static partial void LogNoUserWithPartIdFound(this ILogger logger, long partId);
+    public static partial void LogNoUserWithPartIdFound(this ILogger logger, decimal partId);
     [LoggerMessage(3, LogLevel.Warning, "User found but disabled in JUM with Username = {username}.")]
     public static partial void LogDisabledUserFound(this ILogger logger, string username);
     [LoggerMessage(4, LogLevel.Warning, "User found but disabled in JUM with PartId = {partId}.")]
-    public static partial void LogDisabledPartIdFound(this ILogger logger, long partId);
+    public static partial void LogDisabledPartIdFound(this ILogger logger, decimal partId);
     [LoggerMessage(5, LogLevel.Error, "Justin user not found.")]
     public static partial void LogJustinUserNotFound(this ILogger logger);
     [LoggerMessage(7, LogLevel.Warning, "User found but disabled in JUM with PartId = {partId}.")]

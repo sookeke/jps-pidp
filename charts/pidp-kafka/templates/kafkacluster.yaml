@@ -7,29 +7,34 @@ spec:
     topicOperator: {}
     userOperator: {}
   kafka:
-
     listeners:
       - name: plain
         port: 9092
-        tls: true
         type: internal
-      - name: external
+        tls: false
+      - name: tls
         port: 9093
+        type: internal
+        tls: true
+      - name: external
+        port: 9094
         tls: true
         type: route
-
         authentication:
           type: oauth
-          checkAudience: true
+#          checkAudience: true
           enableOauthBearer: true
-          clientId: kafka-broker
+#          checkAccessTokenType: true
+#          accessTokenIsJwt: true
+          clientId: kafka-broker-test
           clientSecret:
             key: secret
-            secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-kafka-secret
+            secretName: {{ include "pidp-kafka.fullname" . }}-broker-secret-test
           validIssuerUri: {{ .Values.keycloak.auth }}
-          introspectionEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token/introspect
-          #          jwksEndpointUri: {{ .Values.keycloak.realm }}/protocol/openid-connect/certs
+          # introspectionEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token/introspect
+          jwksEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/certs
           userNameClaim: preferred_username
+          tokenEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token
           maxSecondsWithoutReauthentication: 3600
           tlsTrustedCertificates:
             - secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-ca
@@ -38,12 +43,6 @@ spec:
           bootstrap:
             host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca
           createBootstrapService: true
-          brokerCertChainAndKey:
-            secretName: my-secret
-            certificate: my-listener-certificate.crt
-            key: my-listener-key.key
-
-
     storage:
       type: persistent-claim
       size: 1Gi
@@ -60,7 +59,7 @@ spec:
       inter.broker.protocol.version: '3.2'
   zookeeper:
     livenessProbe:
-      initialDelaySeconds: 60
+      initialDelaySeconds: 90
     storage:
       type: persistent-claim
       class: netapp-file-standard

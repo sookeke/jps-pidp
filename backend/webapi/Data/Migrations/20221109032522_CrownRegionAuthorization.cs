@@ -15,6 +15,7 @@ namespace Pidp.Data.Migrations
                 type: "text[]",
                 nullable: false);
 
+
             migrationBuilder.CreateTable(
                 name: "CrownRegionLookup",
                 columns: table => new
@@ -103,6 +104,9 @@ namespace Pidp.Data.Migrations
                     { "WOC", "Workers Compensation Crown Counsel", 6, "CASP" }
                 });
         }
+
+
+
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {

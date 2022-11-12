@@ -31,11 +31,12 @@ data:
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_AUTH0_SCOPE: openid
   KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 'pidp-kafka-cluster-kafka-bootstrap:9092'
   KAFKA_CLUSTERS_0_NAME: pidp-kafka-cluster
-  KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SSL
-  KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_LOCATION: /kafka.truststore.jks
-  KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: /kafka.pass
+#  KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SSL
+#  KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_LOCATION: /opt/kafka/certificates/ca.crt
+#  KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: /opt/kafka/certificates/ca.password
+#  KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_TYPE: PEM
   KAFKA_CLUSTERS_0_SCHEMAREGISTRY: >-
-    http://pidp-kafka-apicurioregistry-kafkasql-service.5b7aa5-test.svc.cluster.local:8080/apis/registry/v2
+    http://pidp-kafka-apicurioregistry-pgsql-service.5b7aa5-test.svc.cluster.local:8080/apis/registry/v2
   SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH0_ISSUER_URI: 'https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST'
 
   KAFKA_CLUSTERS_1_AUTH_TYPE: OAUTH2

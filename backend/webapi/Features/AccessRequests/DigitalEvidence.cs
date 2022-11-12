@@ -103,7 +103,8 @@ public class DigitalEvidence
                     party.Phone
                 })
                 .SingleAsync();
-            var justinUser = await this.jumClient.GetJumUserByPartIdAsync(long.Parse(command.ParticipantId, CultureInfo.InvariantCulture), accessToken!);
+
+            var justinUser = await this.jumClient.GetJumUserByPartIdAsync(decimal.Parse(command.ParticipantId, CultureInfo.InvariantCulture), accessToken!);
             //ar y = tt.participantDetails.FirstOrDefault().GrantedRoles.Select(n => n.role).ToList();
 
             if (dto.AlreadyEnroled
@@ -193,9 +194,9 @@ public class DigitalEvidence
                 await this.context.SaveChangesAsync();
                 await trx.CommitAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //this.logger.LogTrace(ex.Message);
+                this.logger.LogTrace(ex.Message);
                 await trx.RollbackAsync();
                 return DomainResult.Failed();
             }

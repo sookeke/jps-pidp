@@ -47,6 +47,8 @@ spec:
           env:
             - name: PlrClient__Url
               value: http://{{ $release }}-plr-intake:8080/api
+            - name: KafkaCluster__SslCaLocation
+              value: //opt/kafka/certificates/ca.crt
             - name: JumClient__Url
               value: https://jum-api-e27db1-dev.apps.gold.devops.gov.bc.ca/api
             - name: ASPNETCORE_ENVIRONMENT
@@ -102,13 +104,32 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
                   key: KafkaCluster__ClientSecret
-            - name: KafkaCluster__SslCaLocation
+
+
+            - name: KafkaCluster__SaslOauthbearerConsumerClientSecret
               valueFrom:
-                 secretKeyRef:
-                   name: kafka-client-truststore
-                   key: kafka-client-truststore.cer.pem
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__SaslOauthbearerConsumerClientSecret
+            - name: KafkaCluster__SaslOauthbearerProducerClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__SaslOauthbearerProducerClientSecret
+
+            - name: KafkaCluster__SaslOauthbearerTokenEndpointUrl
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__SaslOauthbearerTokenEndpointUrl
+
+
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
+          volumeMounts:
+            - name: truststore
+              mountPath: "/opt/kafka/certificates"
+              readOnly: true
           envFrom:
             - secretRef:
                 name: keycloak-secrets
@@ -157,3 +178,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: truststore
+          secret:
+            secretName: kafka-cluster-client-truststore

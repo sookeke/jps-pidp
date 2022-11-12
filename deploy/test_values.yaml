@@ -31,6 +31,9 @@ postgresql:
     userPasswordKey: jps-password
   primary:
     database: pidpdb
+    auth:
+      postgresPassword: "postgres"
+      username: postgres
 #    initdb:
 #      scriptsConfigMap: pipd-postgres-init
 
@@ -70,7 +73,7 @@ frontend:
 webapi:
   replicaCount: 1
   aspnetcore:
-    environment: Staging
+    environment: Test
 
 
 plr-intake:
