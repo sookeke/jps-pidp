@@ -22,19 +22,26 @@ public static class ConsumerSetup
             SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
-            SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
+            //SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
             SaslOauthbearerScope = "oidc",
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
             SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
             //SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
-        var producerConfig = new ProducerConfig(clientConfig)
+        var producerConfig = new ProducerConfig()
         {
+            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            SaslMechanism = SaslMechanism.OAuthBearer,
+            SecurityProtocol = SecurityProtocol.SaslSsl,
+            SaslOauthbearerScope = "oidc",
+            SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
+            SslCaLocation = config.KafkaCluster.SslCaLocation,
+            SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
             Acks = Acks.All,
-            SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerProducerClientId,
-            SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerProducerClientSecret,
-            EnableIdempotence = true
+            EnableIdempotence = true,
+            ApiVersionFallbackMs = 0,
+            BrokerVersionFallback = "0.10.0.0"
         };
 
         var consumerConfig = new ConsumerConfig(clientConfig)
@@ -42,8 +49,6 @@ public static class ConsumerSetup
             GroupId = "accessrequest-consumer-group",
             EnableAutoCommit = true,
             AutoOffsetReset = AutoOffsetReset.Earliest,
-            SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerConsumerClientId,
-            SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerConsumerClientSecret,
             EnableAutoOffsetStore = false,
             AutoCommitIntervalMs = 4000,
             BootstrapServers = config.KafkaCluster.BoostrapServers,

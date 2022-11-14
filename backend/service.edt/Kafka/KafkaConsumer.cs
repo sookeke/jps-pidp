@@ -2,6 +2,8 @@ namespace edt.service.Kafka;
 
 using Confluent.Kafka;
 using edt.service.Kafka.Interfaces;
+using IdentityModel.Client;
+using System.Globalization;
 
 public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TValue : class
 {
@@ -35,7 +37,7 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
         using var scope = this.serviceScopeFactory.CreateScope();
 
         this.handler = scope.ServiceProvider.GetRequiredService<IKafkaHandler<TKey, TValue>>();
-        this.consumer = new ConsumerBuilder<TKey, TValue>(this.config).SetValueDeserializer(new KafkaDeserializer<TValue>()).Build();
+        this.consumer = new ConsumerBuilder<TKey, TValue>(this.config).SetOAuthBearerTokenRefreshHandler(OauthTokenRefreshCallback).SetValueDeserializer(new KafkaDeserializer<TValue>()).Build();
         this.topic = topic;
 
         await Task.Run(() => this.StartConsumerLoop(stoppingToken), stoppingToken);
@@ -86,6 +88,43 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
                 break;
             }
         }
+    }
+
+    private static async void OauthTokenRefreshCallback(IClient client, string config)
+    {
+        try
+        {
+            var clusterConfig = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json").Build();
+            var tokenEndpoint = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
+            var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
+            var clientSecret = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientSecret");
+            var accessTokenClient = new HttpClient();
+            var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            {
+                Address = tokenEndpoint,
+                ClientId = clientId,
+                ClientSecret = clientSecret,
+                GrantType = "client_credentials"
+            });
+            var tokenTicks = GetTokenExpirationTime(accessToken.AccessToken);
+            var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
+
+            client.OAuthBearerSetToken(accessToken.AccessToken, tokenDate.ToUnixTimeMilliseconds(), null);
+        }
+        catch (Exception ex)
+        {
+            client.OAuthBearerSetTokenFailure(ex.ToString());
+        }
+    }
+    private static long GetTokenExpirationTime(string token)
+    {
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(token);
+        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp", StringComparison.Ordinal)).Value;
+        var ticks = long.Parse(tokenExp, CultureInfo.InvariantCulture);
+        return ticks;
     }
 }
 
