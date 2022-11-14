@@ -57,7 +57,7 @@ public static class HttpClientSetup
             SaslOauthbearerScope = "oidc",
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
-           // SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
+            //SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
             //SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
 
