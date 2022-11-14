@@ -36,6 +36,7 @@ import { FormUtilsService } from '@core/services/form-utils.service';
 
 import { PartyUserTypeResource } from '../../../../features/admin/shared/usertype-resource.service';
 import { OrganizationUserType } from '../../../../features/admin/shared/usertype-service.model';
+import { BcpsAuthResourceService } from './auth/bcps-auth-resource.service';
 import { DigitalEvidenceFormState } from './digital-evidence-form-state';
 import { DigitalEvidenceResource } from './digital-evidence-resource.service';
 import {
@@ -87,6 +88,7 @@ export class DigitalEvidencePage
     private partyService: PartyService,
     private resource: DigitalEvidenceResource,
     private usertype: PartyUserTypeResource,
+    private userOrgunit: BcpsAuthResourceService,
     private logger: LoggerService,
     documentService: DocumentService,
     accessTokenService: AccessTokenService,
@@ -105,7 +107,7 @@ export class DigitalEvidencePage
     this.policeAgency = accessTokenService
       .decodeToken()
       .pipe(map((token) => token?.identity_provider ?? ''));
-    //const result = this.policeAgency.pipe(take(1));
+
     accessTokenService.decodeToken().subscribe((n) => {
       console.log(n.identity_provider);
       this.result = n.identity_provider;
