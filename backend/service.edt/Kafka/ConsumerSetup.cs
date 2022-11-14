@@ -26,8 +26,8 @@ public static class ConsumerSetup
             SaslOauthbearerScope = "oidc",
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
-            //SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
-            SslKeyLocation = config.KafkaCluster.SslKeyLocation
+            SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
+            //SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
         var producerConfig = new ProducerConfig(clientConfig)
         {

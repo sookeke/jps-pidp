@@ -57,8 +57,8 @@ public static class HttpClientSetup
             SaslOauthbearerScope = "oidc",
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
-            //SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
-            SslKeyLocation = config.KafkaCluster.SslKeyLocation
+           // SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
+            //SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
 
         var producerConfig = new ProducerConfig
@@ -74,8 +74,8 @@ public static class HttpClientSetup
             SslCaLocation = config.KafkaCluster.SslCaLocation,
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerProducerClientId,
             SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerProducerClientSecret,
-            //SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
-            SslKeyLocation = config.KafkaCluster.SslKeyLocation,
+            SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
+            //SslKeyLocation = config.KafkaCluster.SslKeyLocation,
             EnableIdempotence = true,
             RetryBackoffMs = 1000,
             MessageSendMaxRetries = 3

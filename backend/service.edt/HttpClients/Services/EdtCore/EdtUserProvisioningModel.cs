@@ -8,9 +8,16 @@ public class EdtUserProvisioningModel
     public string? FullName { get; set; }
     public string? Email { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
-    public List<string> Group { get; set; } = new List<string>();
+    public List<AssignedRegion>? AssignedRegion { get; set; }
     public string? Role { get; set; }
     public bool? IsActive => true;
     public string? AccountType { get; set; }
 
+}
+
+public class AssignedRegion
+{
+    public int RegionId { get; set; }
+    public string? RegionName { get; set; }
+    public string? AssignedAgency { get; set; }
 }

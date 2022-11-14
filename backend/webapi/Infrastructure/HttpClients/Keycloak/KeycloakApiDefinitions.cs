@@ -56,6 +56,11 @@ public class Role
     public string? Id { get; set; }
     public string? Name { get; set; }
 }
+public class Group
+{
+    public string? Id { get; set; }
+    public string? Name { get; set; }
+}
 
 /// <summary>
 /// This is not the entire Keycloak User Representation! See https://www.keycloak.org/docs-api/5.0/rest-api/index.html#_userrepresentation.

@@ -50,13 +50,14 @@ public class DigitalEvidence : AccessRequest
     public string OrganizationType { get; set; } = string.Empty;
     public string OrganizationName { get; set; } = string.Empty;
     public string ParticipantId { get; set; } = string.Empty;
-    public List<string> AssignedRegions { get; set; } = new List<string>();
+    [Column(TypeName = "jsonb")]
+    public List<AssignedRegion> AssignedRegions { get; set; } = new List<AssignedRegion>();
 }
 
-public class AssignedAgencies
+public class AssignedRegion
 {
-    public decimal AgencyId { get; set; }
-    public string AgencyName { get; set; } = string.Empty;
-    public string AgencyType { get; set; } = string.Empty;
-    public Instant StartDate { get; set; }
+    public int RegionId { get; set; }
+    public string RegionName { get; set; } = string.Empty;
+    public string AssignedAgency { get; set; } = string.Empty;
+
 }

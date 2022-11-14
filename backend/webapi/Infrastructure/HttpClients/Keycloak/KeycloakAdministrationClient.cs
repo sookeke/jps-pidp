@@ -25,6 +25,22 @@ public class KeycloakAdministrationClient : BaseClient, IKeycloakAdministrationC
 
         return result.IsSuccess;
     }
+    public async Task<bool> AddGrouptoUser(Guid userId, string groupName)
+    {
+        var group = await this.GetRealmGroup(groupName);
+        if (group == null)
+        {
+            return false;
+        }
+        //assign user to group
+        var response = await this.PutAsync($"users/{userId}/groups/{group.Id}");
+        if (!response.IsSuccess)
+        {
+            this.Logger.LogRealmGroupAssigned(userId, groupName);
+        }
+        return response.IsSuccess;
+
+    }
 
     public async Task<bool> AssignRealmRole(Guid userId, string roleName)
     {
@@ -101,6 +117,17 @@ public class KeycloakAdministrationClient : BaseClient, IKeycloakAdministrationC
 
         return result.Value;
     }
+    public async Task<Group?> GetRealmGroup(string groupName)
+    {
+        var result = await this.GetAsync<IEnumerable<Group>>($"groups?search={groupName}");
+
+        if (!result.IsSuccess)
+        {
+            return null;
+        }
+
+        return result.Value.SingleOrDefault();
+    }
 
     public async Task<UserRepresentation?> GetUser(Guid userId)
     {
@@ -159,4 +186,6 @@ public static partial class KeycloakAdministrationClientLoggingExtensions
 
     [LoggerMessage(4, LogLevel.Information, "User {userId} was assigned Realm Role {roleName}.")]
     public static partial void LogRealmRoleAssigned(this ILogger logger, Guid userId, string roleName);
+    [LoggerMessage(5, LogLevel.Information, "User {userId} was assigned Realm Group {groupName}.")]
+    public static partial void LogRealmGroupAssigned(this ILogger logger, Guid userId, string groupName);
 }
