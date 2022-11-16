@@ -18,7 +18,7 @@ RUN dotnet ef migrations bundle
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 WORKDIR /app
 
-ENV ASPNETCORE_ENVIRONMENT="Production"
+ENV ASPNETCORE_ENVIRONMENT="Development"
 ENV ASPNETCORE_URLS="http://+:8080"
 
 # ENV \

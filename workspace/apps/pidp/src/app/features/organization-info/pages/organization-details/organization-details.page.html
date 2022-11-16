@@ -165,6 +165,24 @@
               <mat-error>Required</mat-error>
             </mat-form-field>
           </section>
+
+          <!-- <section>
+            <ui-page-subheader>BCPS Region</ui-page-subheader>
+            <p>Provide your BCPS Region(s)</p>
+
+            <mat-form-field class="w-100">
+              <mat-select multiple
+                placeholder="BCPS Region"
+                formControlName="regionIdentifiers">
+                <mat-option
+                  *ngFor="let region of crownRegions"
+                  [value]="region.agencyCode">
+                  {{ region.crownLocation }}
+                </mat-option>
+              </mat-select>
+              <mat-error>Required</mat-error>
+            </mat-form-field>
+          </section> -->
         </ng-container>
       </ng-container>
     </ng-container>

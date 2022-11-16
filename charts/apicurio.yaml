@@ -21,6 +21,8 @@ spec:
         value: registry-client-api
       - name: KEYCLOAK_UI_CLIENT_ID
         value: registry-client-ui
+
+
       - name: ROLE_BASED_AUTHZ_ENABLED
         value: 'true'
       - name: REGISTRY_DATASOURCE_URL

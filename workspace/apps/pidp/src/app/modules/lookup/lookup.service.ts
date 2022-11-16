@@ -9,6 +9,7 @@ import {
   CollegeLookup,
   Lookup,
   LookupConfig,
+  CrownRegionLookup,
   ProvinceLookup,
 } from './lookup.types';
 
@@ -25,7 +26,6 @@ export class LookupService implements ILookupService {
   public constructor(private lookupResource: LookupResource) {
     this.lookupConfig = null;
   }
-
   public get accessTypes(): Lookup[] {
     return this.copyAndSortByKey(this.lookupConfig?.accessTypes);
   }
@@ -40,6 +40,8 @@ export class LookupService implements ILookupService {
       'name'
     );
   }
+
+
 
   public get provinces(): ProvinceLookup[] {
     return this.copyAndSortByKey<ProvinceLookup>(
@@ -58,6 +60,13 @@ export class LookupService implements ILookupService {
   public get justiceSectors(): Lookup[] {
     return this.copyAndSortByKey(this.lookupConfig?.justiceSectors);
   }
+
+  public get crownRegions(): CrownRegionLookup[] {
+    return this.copyAndSortByKey<CrownRegionLookup>(
+      this.lookupConfig?.crownRegions,
+      'crownLocation'
+    );  }
+
   public get lawEnforcements(): Lookup[] {
     return this.copyAndSortByKey(this.lookupConfig?.lawEnforcements);
   }

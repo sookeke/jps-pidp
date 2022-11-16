@@ -15,6 +15,7 @@ export class OrganizationDetailsFormState extends AbstractFormState<Organization
     return this.formInstance.get('organizationCode') as FormControl;
   }
 
+
   public get justiceSectorCode(): FormControl {
     return this.formInstance.get('justiceSectorCode') as FormControl;
   }
@@ -66,6 +67,8 @@ export class OrganizationDetailsFormState extends AbstractFormState<Organization
         [Validators.required, FormControlValidators.requiredIndex],
       ],
       employeeIdentifier: ['', [Validators.required]],
+      // regionIdentifiers: ['', [Validators.required]],
+
     });
   }
 }

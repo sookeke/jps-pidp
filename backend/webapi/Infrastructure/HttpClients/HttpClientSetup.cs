@@ -35,7 +35,7 @@ public static class HttpClientSetup
 
         services.AddHttpClientWithBaseAddress<IJumClient, JumClient>(config.JumClient.Url);
 
-        services.AddHttpClientWithBaseAddress<IKeycloakAdministrationClient, KeycloakAdministrationClient>(config.Keycloak.AdministrationUrl)
+          services.AddHttpClientWithBaseAddress<IKeycloakAdministrationClient, KeycloakAdministrationClient>(config.Keycloak.AdministrationUrl)
             .WithBearerToken(new KeycloakAdministrationClientCredentials
             {
                 Address = config.Keycloak.TokenUrl,
@@ -58,7 +58,7 @@ public static class HttpClientSetup
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
             SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
-      //      SaslOauthbearerScope = "oidc",
+            SaslOauthbearerScope = "openid",
 
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
@@ -74,7 +74,7 @@ public static class HttpClientSetup
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
             SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
-          //  SaslOauthbearerScope = "oidc",
+            SaslOauthbearerScope = "openid",
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerProducerClientId,

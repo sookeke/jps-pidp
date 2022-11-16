@@ -5,6 +5,10 @@ global:
   image:
     tag: develop
 
+
+jumClientURL: https://jum-api-e27db1-test.apps.gold.devops.gov.bc.ca/api
+
+
 postgresql:
   postgresqlDatabase: jps-pidp
   auth:

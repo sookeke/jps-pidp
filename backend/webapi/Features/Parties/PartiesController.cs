@@ -127,6 +127,7 @@ public class PartiesController : PidpControllerBase
     [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
     public async Task<IActionResult> UpdateOrganizationDetails([FromServices] ICommandHandler<OrganizationDetails.Command> handler,
                                                                [FromHybrid] OrganizationDetails.Command command)
+
         => await this.AuthorizePartyBeforeHandleAsync(command.PartyId, handler, command)
             .ToActionResult();
 

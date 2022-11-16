@@ -5,6 +5,7 @@ global:
   image:
     tag: build-test
 
+
 #postgresql:
 #  createSecret: true
 #  database: pidpdb
@@ -37,6 +38,9 @@ postgresql:
 #    initdb:
 #      scriptsConfigMap: pipd-postgres-init
 
+edt-service:
+  image:
+    tag: build-test
 
 pidp-sso:
   keycloak:
@@ -71,9 +75,10 @@ frontend:
       realm: "DEMSTEST"
 
 webapi:
+  jumClientURL: https://jum-api-e27db1-test.apps.gold.devops.gov.bc.ca/api
   replicaCount: 1
   aspnetcore:
-    environment: Test
+    environment: Staging
 
 
 plr-intake:

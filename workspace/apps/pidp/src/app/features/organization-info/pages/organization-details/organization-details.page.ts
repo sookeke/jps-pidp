@@ -20,7 +20,7 @@ import { LoggerService } from '@app/core/services/logger.service';
 import { IdentityProvider } from '@app/features/auth/enums/identity-provider.enum';
 import { AuthorizedUserService } from '@app/features/auth/services/authorized-user.service';
 import { LookupService } from '@app/modules/lookup/lookup.service';
-import { Lookup } from '@app/modules/lookup/lookup.types';
+import { CrownRegionLookup, Lookup } from '@app/modules/lookup/lookup.types';
 
 import { OrganizationDetailsFormState } from './organization-details-form-state';
 import { OrganizationDetailsResource } from './organization-details-resource.service';
@@ -41,6 +41,7 @@ export class OrganizationDetailsPage
   public healthAuthorities: Lookup[];
   public lawEnforcements: Lookup[];
   public justiceSectors: Lookup[];
+  public crownRegions: CrownRegionLookup[];
   public correctionServices: Lookup[];
   public lawSocieties: Lookup[];
   public IdentityProvider = IdentityProvider;
@@ -100,6 +101,7 @@ export class OrganizationDetailsPage
     );
     this.healthAuthorities = this.lookupService.healthAuthorities;
     this.justiceSectors = this.lookupService.justiceSectors;
+    this.crownRegions = this.lookupService.crownRegions;
     this.lawEnforcements = this.lookupService.lawEnforcements;
     this.correctionServices = this.lookupService.correctionServices;
     this.lawSocieties = this.lookupService.lawSocieties;

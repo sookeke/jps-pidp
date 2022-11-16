@@ -23,12 +23,18 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        
         var config = this.InitializeConfiguration(services);
         services
           .AddAutoMapper(typeof(Startup))
-          .AddKafkaConsumer(config)
           .AddHttpClients(config)
-          .AddSingleton<IClock>(SystemClock.Instance);
+          .AddSingleton<IClock>(SystemClock.Instance)
+          .AddKafkaConsumer(config);
+;
+        Log.Logger.Information("SizeOf IntPtr is: {0}", IntPtr.Size);
+
+        Log.Logger.Information("### Loaded service");
+
 
         services.AddAuthorization(options =>
         {
@@ -39,15 +45,22 @@ public class Startup
             .UseSqlServer(config.ConnectionStrings.EdtDataStore, sql => sql.UseNodaTime())
             .EnableSensitiveDataLogging(sensitiveDataLoggingEnabled: false));
 
+        Log.Logger.Information("### Loaded db context");
+
+
+
         services.AddHealthChecks()
                 .AddCheck("liveliness", () => HealthCheckResult.Healthy())
                 .AddSqlServer(config.ConnectionStrings.EdtDataStore, tags: new[] { "services" });
+        Log.Logger.Information("### Loaded healthchecks");
+
 
         services.AddControllers();
         services.AddHttpClient();
+        Log.Logger.Information("### Loaded http services");
 
         //services.AddSingleton<ProblemDetailsFactory, UserManagerProblemDetailsFactory>();
-        //services.AddHealthChecks();
+        // services.AddHealthChecks();
 
         services.AddApiVersioning(options =>
         {
@@ -87,7 +100,11 @@ public class Startup
             options.OperationFilter<SecurityRequirementsOperationFilter>();
             options.CustomSchemaIds(x => x.FullName);
         });
+
+        Log.Logger.Information("### Loaded swagger services");
+
         services.AddFluentValidationRulesToSwagger();
+        Log.Logger.Information("### Loaded fluent swagger rules");
 
         //services.AddKafkaConsumer(config);
 
@@ -99,7 +116,7 @@ public class Startup
         services.AddSingleton(config);
 
         Log.Logger.Information("### App Version:{0} ###", Assembly.GetExecutingAssembly().GetName().Version);
-        Log.Logger.Information("### Noticification Service Configuration:{0} ###", JsonSerializer.Serialize(config));
+        Log.Logger.Information("### EDT Service Service Configuration:{0} ###", JsonSerializer.Serialize(config));
 
         return config;
     }
@@ -128,6 +145,11 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints => endpoints.MapControllers());
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapHealthChecks("/health/liveness").AllowAnonymous();
+        });
 
     }
 }

@@ -4,6 +4,7 @@ using DomainResults.Common;
 using Microsoft.AspNetCore.Mvc;
 
 using Pidp.Infrastructure.Services;
+using Serilog;
 
 [Produces("application/json")]
 [ApiController]
@@ -59,11 +60,19 @@ public class PidpControllerBase : ControllerBase
     /// <param name="request"></param>
     protected async Task<IDomainResult> AuthorizePartyBeforeHandleAsync<TRequest>(int partyId, IRequestHandler<TRequest> handler, TRequest request)
     {
+
+        Log.Logger.Information("### AuthorizePartyBeforeHandleAsync");
+
         var access = await this.AuthorizationService.CheckPartyAccessibility(partyId, this.User);
         if (access.IsSuccess)
         {
             await handler.HandleAsync(request);
             return DomainResult.Success();
+        }
+        else
+        {
+            Log.Logger.Information("###  Not authorized");
+
         }
 
         return access;

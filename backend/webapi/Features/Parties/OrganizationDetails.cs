@@ -33,6 +33,7 @@ public class OrganizationDetails
         public JusticeSectorCode? JusticeSectorCode { get; set; }
         public CorrectionServiceCode? CorrectionServiceCode { get; set; }
         public string EmployeeIdentifier { get; set; } = string.Empty;
+        
     }
 
     public class QueryValidator : AbstractValidator<Query>

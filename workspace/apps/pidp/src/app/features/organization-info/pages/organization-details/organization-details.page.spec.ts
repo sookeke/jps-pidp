@@ -83,7 +83,7 @@ describe('OrganizationDetailsPage', () => {
     mockForm = {
       organizationCode: randNumber(),
       healthAuthorityCode: randNumber(),
-      employeeIdentifier: randWord(),
+      employeeIdentifier: randWord()
     };
   });
 

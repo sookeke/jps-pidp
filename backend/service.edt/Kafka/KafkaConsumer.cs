@@ -3,6 +3,7 @@ namespace edt.service.Kafka;
 using Confluent.Kafka;
 using edt.service.Kafka.Interfaces;
 using IdentityModel.Client;
+using Serilog;
 using System.Globalization;
 
 public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TValue : class
@@ -52,6 +53,10 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
     public void Dispose() => this.consumer.Dispose();
     private async Task StartConsumerLoop(CancellationToken cancellationToken)
     {
+        Log.Logger.Information("### Starting topic consumer for {0}", this.topic);
+
+
+
         this.consumer.Subscribe(this.topic);
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -60,6 +65,8 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
                 var result = this.consumer.Consume(cancellationToken);
                 if (result != null)
                 {
+                    Log.Logger.Information("### Got message key {0} [{1}]", result.Message.Key, result.Message.Value);
+
                     var consumerResult = await this.handler.HandleAsync(this.consumer.Name, result.Message.Key, result.Message.Value);
 
                     if (consumerResult.Status == TaskStatus.RanToCompletion && consumerResult.Exception == null)
@@ -68,14 +75,18 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
                     }
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException oce)
             {
+                Log.Logger.Warning("### Consumer operation cancelled {0}", oce.Message);
+                Console.WriteLine($"Consumer operation cancelled  {oce.Message}");
+
                 break;
             }
             catch (ConsumeException e)
             {
                 // Consumer errors should generally be ignored (or logged) unless fatal.
                 Console.WriteLine($"Consume error: {e.Error.Reason}");
+                Log.Logger.Error("### Consume error {0}", e.Error.Reason);
 
                 if (e.Error.IsFatal)
                 {
@@ -85,9 +96,14 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             catch (Exception e)
             {
                 Console.WriteLine($"Unexpected error: {e}");
+                Log.Logger.Error("### Consume setup error {0}", e);
+
                 break;
             }
         }
+
+        Log.Logger.Information("### Consumer started");
+
     }
 
     private static async void OauthTokenRefreshCallback(IClient client, string config)
@@ -100,6 +116,9 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             var tokenEndpoint = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
             var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
             var clientSecret = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientSecret");
+
+            Log.Logger.Information("### Token endpoint {0}", tokenEndpoint);
+
             var accessTokenClient = new HttpClient();
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
@@ -115,6 +134,8 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
         }
         catch (Exception ex)
         {
+            Log.Logger.Error("### Token error {0}", ex.ToString());
+
             client.OAuthBearerSetTokenFailure(ex.ToString());
         }
     }

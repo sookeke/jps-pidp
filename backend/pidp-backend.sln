@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plr-intake", "services.plr-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plr-intake.tests", "services.plr-intake.tests\plr-intake.tests.csproj", "{6C64ACF9-73DD-4A52-926E-9AFC07555060}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edt.service", "service.edt\edt.service.csproj", "{B4470CEB-BE69-4736-9A78-DEC03DF8554C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edt.service", "service.edt\edt.service.csproj", "{B4470CEB-BE69-4736-9A78-DEC03DF8554C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,4 +9,5 @@ export interface PartyOrganizationDetails {
   correctionServiceCode: CorrectionServiceCode;
   justiceSectorService: string;
   employeeIdentifier: string;
+  regionIdentifier: string;
 }

@@ -5,6 +5,7 @@ using edt.service.Data;
 using edt.service.HttpClients.Services.EdtCore;
 using edt.service.Kafka.Interfaces;
 using edt.service.ServiceEvents.UserAccountCreation.Models;
+using Serilog;
 
 public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioningModel>
 {
@@ -26,6 +27,9 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
     }
     public async Task<Task> HandleAsync(string consumerName, string key, EdtUserProvisioningModel value)
     {
+
+        Log.Logger.Information("Handling message {0}", value);
+
         //check wheather this message has been processed before   
         if (await this.context.HasBeenProcessed(key, consumerName))
         {

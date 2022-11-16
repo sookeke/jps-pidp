@@ -4,6 +4,7 @@ using System.Net;
 using edt.service;
 using edt.service.HttpClients.Services.EdtCore;
 using edt.service.Kafka.Interfaces;
+using Serilog;
 
 public class EdtServiceConsumer : BackgroundService
 {
@@ -23,6 +24,8 @@ public class EdtServiceConsumer : BackgroundService
         }
         catch (Exception ex)
         {
+            Log.Logger.Error("### Topic consume failed {0} {1}", this.config.KafkaCluster.ConsumerTopicName, ex.Message);
+
             Console.WriteLine($"{(int)HttpStatusCode.InternalServerError} ConsumeFailedOnTopic - {this.config.KafkaCluster.ConsumerTopicName}, {ex}");
         }
     }

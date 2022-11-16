@@ -51,9 +51,15 @@ spec:
             - name: DB_HOST
               value: jum-database
             - name: KafkaCluster__SslCaLocation
-              value: /opt/kafka/certificates/ca.crt
+              value: /opt/kafka/certificates/server-ca.crt
+            - name: KafkaCluster__SslCertificateLocation
+              value: /opt/kafka/certificates/client-ca.crt
             - name: KafkaCluster__SslKeyLocation
-              value: /opt/kafka/certificates/key
+              value: /opt/kafka/certificates/client.key
+            - name: KafkaCluster__SaslOauthbearerProducerClientId
+              value: "kafka-producer"
+            - name: KafkaCluster__SaslOauthbearerConsumerClientId
+              value: "kafka-consumer"
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -88,16 +94,7 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-edt
                   key: KafkaCluster__ProducerTopicName
-            - name: KafkaCluster__ClientId
-              valueFrom:
-                secretKeyRef:
-                  name: kafkaconfig-edt
-                  key: KafkaCluster__ClientId
-            - name: KafkaCluster__ClientSecret
-              valueFrom:
-                secretKeyRef:
-                  name: kafkaconfig-edt
-                  key: KafkaCluster__ClientSecret
+
 
             - name: KafkaCluster__SaslOauthbearerConsumerClientSecret
               valueFrom:
@@ -116,12 +113,6 @@ spec:
                   name: kafkaconfig-edt
                   key: KafkaCluster__SaslOauthbearerTokenEndpointUrl
 
-#
-#            - name: KafkaCluster__SslCaLocation
-#              valueFrom:
-#                 secretKeyRef:
-#                   name: kafka-client-truststore
-#                   key: kafka-client-truststore.cer.pem
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
             - name: EdtCLient__Url
@@ -151,6 +142,15 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
         #  livenessProbe: //turn this on for TEST and PROD
          #   httpGet:
         #      path: /health/liveness

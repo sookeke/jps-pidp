@@ -5,6 +5,7 @@ export const lookupConfigKeys = [
   'organizations',
   'healthAuthorities',
   'justiceSectors',
+  'crownRegions',
   'lawEnforcements',
   'correctionServices',
   'lawSocieties',
@@ -24,6 +25,7 @@ export interface LookupConfig extends ILookupConfig {
   organizations: Lookup[];
   healthAuthorities: Lookup[];
   justiceSectors: Lookup[];
+  crownRegions: CrownRegionLookup[];
   lawEnforcements: Lookup[];
   correctionServices: Lookup[];
   lawSocieties: Lookup[];
@@ -36,6 +38,13 @@ export interface Lookup<T extends number | string = number> {
 
 export interface ProvinceLookup extends Lookup<string> {
   countryCode: string;
+}
+
+export interface CrownRegionLookup extends Lookup<string> {
+  regionName: string;
+  regionId: number;
+  crownLocation: string;
+  agencyCode: string;
 }
 
 export interface CollegeLookup extends Lookup<number> {
