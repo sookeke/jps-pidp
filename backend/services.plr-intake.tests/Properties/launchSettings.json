@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "plr-intake.tests": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:10321;http://localhost:10322"
+    }
+  }
+}

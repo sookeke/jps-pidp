@@ -71,4 +71,5 @@ public interface IKeycloakAdministrationClient
     /// <param name="userId"></param>
     /// <param name="updateAction"></param>
     Task<bool> UpdateUser(Guid userId, Action<UserRepresentation> updateAction);
+    Task<bool> AddGrouptoUser(Guid userId, string groupName);
 }

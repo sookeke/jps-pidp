@@ -22,6 +22,7 @@ using Pidp.Infrastructure.Services;
 using Pidp.Helpers.Middleware;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Pidp.Features.Organization.UserTypeService;
+using Pidp.Features.Organization.OrgUnitService;
 
 public class Startup
 {
@@ -61,6 +62,7 @@ public class Startup
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
         services.AddScoped<IUserTypeService, UserTypeService>();
+        services.AddScoped<IOrgUnitService, OrgUnitService>();
 
         services.AddHealthChecks();
 
