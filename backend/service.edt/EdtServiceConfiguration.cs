@@ -55,6 +55,10 @@ public class EdtServiceConfiguration
         public string SslCaLocation { get; set; } = string.Empty;
         public string SslCertificateLocation { get; set; } = string.Empty;
         public string SslKeyLocation { get; set; } = string.Empty;
+        public string DebugOptions { get; set; } = string.Empty;
+        public string ConsumerGroupId { get; set; } = string.Empty;
+
+
     }
     public class JustinParticipantClientConfiguration
     {

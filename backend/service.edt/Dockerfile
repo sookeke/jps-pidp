@@ -10,29 +10,29 @@ COPY *.csproj .
 RUN dotnet restore -r linux-musl-x64 /p:PublishReadyToRun=true
 
 COPY . .
-RUN dotnet publish -c release -o /app -r linux-musl-x64 --self-contained true --no-restore
+RUN dotnet publish -c release -o /app -r linux-musl-x64 --self-contained false --no-restore
 
 RUN dotnet ef migrations bundle
 
 #----------------------------------------------------------------#
-FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
-WORKDIR /app
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 
+WORKDIR /app
+#
 ENV ASPNETCORE_ENVIRONMENT="Production"
 ENV ASPNETCORE_URLS="http://+:8080"
 
 
-RUN dotnet tool install dotnet-trace --tool-path=/app
+ENV \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8
+RUN apk add --no-cache icu-libs
 
 
-#ENV \
-    #DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
-    #LC_ALL=en_US.UTF-8 \
-    #LANG=en_US.UTF-8
-#RUN apk add --no-cache icu-libs
+#COPY certs/dems /app/certs
+COPY certs/pidp /app/certs
 
-
-COPY logs/pidp /app/certs
 
 COPY --from=build-env /app .
 COPY --from=build-env /source/efbundle .

@@ -4,6 +4,7 @@ using Confluent.Kafka;
 using Pidp.Kafka.Interfaces;
 using IdentityModel.Client;
 using System.Globalization;
+using Serilog;
 
 public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TValue : class
 {
@@ -40,6 +41,8 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
     public void Dispose() => this.consumer.Dispose();
     private async Task StartConsumerLoop(CancellationToken cancellationToken)
     {
+
+        Log.Logger.Information("### Starting consumer on topic {0}", this.topic);
         this.consumer.Subscribe(this.topic);
 
         while (!cancellationToken.IsCancellationRequested)
@@ -90,6 +93,9 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             var tokenEndpoint = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
             var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
             var clientSecret = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientSecret");
+
+            Log.Logger.Information("### CONSUMER GETTING NEW TOKEN {0}", tokenEndpoint);
+
             var accessTokenClient = new HttpClient();
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
@@ -100,11 +106,16 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             });
             var tokenTicks = GetTokenExpirationTime(accessToken.AccessToken);
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
+            var subject = GetTokenSubject(accessToken.AccessToken);
+            var ms = tokenDate.ToUnixTimeMilliseconds();
+            Log.Logger.Information("### CONSUMER GOT NEW TOKEN  {0}", ms);
 
-            client.OAuthBearerSetToken(accessToken.AccessToken, tokenDate.ToUnixTimeMilliseconds(), null);
+            client.OAuthBearerSetToken(accessToken.AccessToken, ms, subject);
         }
         catch (Exception ex)
         {
+            Log.Logger.Error("### Token error {0}", ex.ToString());
+
             client.OAuthBearerSetTokenFailure(ex.ToString());
         }
     }
@@ -115,5 +126,13 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
         var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp", StringComparison.Ordinal)).Value;
         var ticks = long.Parse(tokenExp, CultureInfo.InvariantCulture);
         return ticks;
+    }
+
+    private static string GetTokenSubject(string token)
+    {
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(token);
+        return jwtSecurityToken.Claims.First(claim => claim.Type.Equals("sub", StringComparison.Ordinal)).Value;
+
     }
 }

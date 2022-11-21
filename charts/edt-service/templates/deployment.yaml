@@ -60,6 +60,8 @@ spec:
               value: "kafka-producer"
             - name: KafkaCluster__SaslOauthbearerConsumerClientId
               value: "kafka-consumer"
+            - name: KafkaCluster__ConsumerGroupId
+              value: {{ include "edt-service.fullname" . }}-{{}}-consumer-group
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:

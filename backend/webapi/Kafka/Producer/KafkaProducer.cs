@@ -14,6 +14,7 @@ public class KafkaProducer<TKey, TValue> : IDisposable, IKafkaProducer<TKey, TVa
     public async Task ProduceAsync(string topic, TKey key, TValue value) => await this.producer.ProduceAsync(topic, new Message<TKey, TValue> { Key = key, Value = value });
     public void Dispose()
     {
+
         this.producer.Flush();
         this.producer.Dispose();
         GC.SuppressFinalize(this);

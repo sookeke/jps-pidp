@@ -35,13 +35,13 @@ public static class HttpClientSetup
 
         services.AddHttpClientWithBaseAddress<IJumClient, JumClient>(config.JumClient.Url);
 
-          services.AddHttpClientWithBaseAddress<IKeycloakAdministrationClient, KeycloakAdministrationClient>(config.Keycloak.AdministrationUrl)
-            .WithBearerToken(new KeycloakAdministrationClientCredentials
-            {
-                Address = config.Keycloak.TokenUrl,
-                ClientId = config.Keycloak.AdministrationClientId,
-                ClientSecret = config.Keycloak.AdministrationClientSecret
-            });
+        services.AddHttpClientWithBaseAddress<IKeycloakAdministrationClient, KeycloakAdministrationClient>(config.Keycloak.AdministrationUrl)
+          .WithBearerToken(new KeycloakAdministrationClientCredentials
+          {
+              Address = config.Keycloak.TokenUrl,
+              ClientId = config.Keycloak.AdministrationClientId,
+              ClientSecret = config.Keycloak.AdministrationClientSecret
+          });
 
         services.AddHttpClientWithBaseAddress<IPlrClient, PlrClient>(config.PlrClient.Url);
 

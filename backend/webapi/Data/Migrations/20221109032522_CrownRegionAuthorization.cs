@@ -12,7 +12,7 @@ namespace Pidp.Data.Migrations
             migrationBuilder.AddColumn<List<string>>(
                 name: "AssignedRegions",
                 table: "DigitalEvidence",
-                type: "text[]",
+                type: "jsonb",
                 nullable: false);
 
 

@@ -1,5 +1,7 @@
 namespace edt.service.Kafka;
 
+using System.Diagnostics;
+using System.Net;
 using Confluent.Kafka;
 using edt.service.HttpClients.Services.EdtCore;
 using edt.service.Kafka.Interfaces;
@@ -23,10 +25,7 @@ public static class ConsumerSetup
         Log.Logger.Information("### cert loc [{0}]", config.KafkaCluster.SslCertificateLocation);
         Log.Logger.Information("### key loc [{0}]", config.KafkaCluster.SslKeyLocation);
         Log.Logger.Information("### producer id [{0}]", config.KafkaCluster.SaslOauthbearerProducerClientId);
-        Log.Logger.Information("### producer # [{0}]", config.KafkaCluster.SaslOauthbearerProducerClientSecret);
         Log.Logger.Information("### consumer id [{0}]", config.KafkaCluster.SaslOauthbearerConsumerClientId);
-        Log.Logger.Information("### consumer # [{0}]", config.KafkaCluster.SaslOauthbearerConsumerClientSecret);
-
         Log.Logger.Information("### consumer topic # [{0}]", config.KafkaCluster.ConsumerTopicName);
         Log.Logger.Information("### producer topic # [{0}]", config.KafkaCluster.ProducerTopicName);
 
@@ -46,10 +45,11 @@ public static class ConsumerSetup
 
         };
 
- 
+
 
         var producerConfig = new ProducerConfig()
         {
+            ClientId = Dns.GetHostName(),
             BootstrapServers = config.KafkaCluster.BoostrapServers,
             SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl,
@@ -62,50 +62,40 @@ public static class ConsumerSetup
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerProducerClientId,
             SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerProducerClientSecret,
             Acks = Acks.All,
+            RetryBackoffMs = 5000,
+            MessageSendMaxRetries = 3,
             EnableIdempotence = true,
             ApiVersionFallbackMs = 0,
-            BrokerVersionFallback = "0.10.0.0"
-        };
-
-        var consumerConfig_orig = new ConsumerConfig(clientConfig)
-        {
-            GroupId = "accessrequest-consumer-group",
-            EnableAutoCommit = true,
-            AutoOffsetReset = AutoOffsetReset.Earliest,
-            EnableAutoOffsetStore = false,
-            AutoCommitIntervalMs = 4000,
-            BootstrapServers = config.KafkaCluster.BoostrapServers,
-            SaslMechanism = SaslMechanism.OAuthBearer,
-            SecurityProtocol = SecurityProtocol.SaslSsl
         };
 
         var consumerConfig = new ConsumerConfig(clientConfig)
         {
-            GroupId = "accessrequest-consumer-group-testing",
+            GroupId = config.KafkaCluster.ConsumerGroupId,
             EnableAutoCommit = true,
             AutoOffsetReset = AutoOffsetReset.Earliest,
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerConsumerClientId,
             SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerConsumerClientSecret,
             SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
             EnableAutoOffsetStore = false,
-            AutoCommitIntervalMs = 4000,
             BootstrapServers = config.KafkaCluster.BoostrapServers,
             SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl
         };
 
+        if (!string.IsNullOrEmpty(config.KafkaCluster.DebugOptions))
+        {
+            Log.Logger.Information("### Debug enabled [{0}]", config.KafkaCluster.DebugOptions);
+            clientConfig.Debug = config.KafkaCluster.DebugOptions;
+            producerConfig.Debug = config.KafkaCluster.DebugOptions;
+            consumerConfig.Debug = config.KafkaCluster.DebugOptions;
+        }
 
 
-        //var producerConfig = new ProducerConfig(clientConfig);
+        services.AddSingleton(producerConfig);
+        services.AddSingleton(typeof(IKafkaProducer<,>), typeof(KafkaProducer<,>));
+        services.AddScoped<IKafkaHandler<string, EdtUserProvisioningModel>, UserProvisioningHandler>();
 
         services.AddSingleton(consumerConfig);
-        services.AddSingleton(producerConfig);
-
-        services.AddSingleton(typeof(IKafkaProducer<,>), typeof(KafkaProducer<,>));
-
-        //services.AddSingleton(consumerConfig);
-
-        services.AddScoped<IKafkaHandler<string, EdtUserProvisioningModel>, UserProvisioningHandler>();
         services.AddSingleton(typeof(IKafkaConsumer<,>), typeof(KafkaConsumer<,>));
         services.AddHostedService<EdtServiceConsumer>();
 

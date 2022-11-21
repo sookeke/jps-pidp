@@ -44,6 +44,9 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
         var user = await this.edtClient.GetUser(value.Key!);
         //create user account in EDT
 
+        Log.Logger.Information("EDT user {0} {1}", user.FullName, user.Key);
+
+
         var result = user == null
             ? await this.edtClient.CreateUser(value) //&& await this.edtClient.AddUserGroup($"Key:{value.Key!}", value.AssignedRegion) //create user
             : await this.edtClient.UpdateUser(value, user);//update user

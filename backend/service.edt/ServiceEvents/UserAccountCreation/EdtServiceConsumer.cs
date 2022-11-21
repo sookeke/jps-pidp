@@ -20,23 +20,25 @@ public class EdtServiceConsumer : BackgroundService
     {
         try
         {
+            Log.Logger.Information("### Start consuming from {0} ", this.config.KafkaCluster.ConsumerTopicName);
             await this.consumer.Consume(this.config.KafkaCluster.ConsumerTopicName, stoppingToken);
         }
         catch (Exception ex)
         {
             Log.Logger.Error("### Topic consume failed {0} {1}", this.config.KafkaCluster.ConsumerTopicName, ex.Message);
-
             Console.WriteLine($"{(int)HttpStatusCode.InternalServerError} ConsumeFailedOnTopic - {this.config.KafkaCluster.ConsumerTopicName}, {ex}");
         }
     }
 
     public override void Dispose()
     {
+ 
         this.consumer.Close();
         this.consumer.Dispose();
 
         base.Dispose();
         GC.SuppressFinalize(this);
+
     }
 }
 

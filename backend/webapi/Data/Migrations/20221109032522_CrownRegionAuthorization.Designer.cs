@@ -1867,7 +1867,7 @@ namespace Pidp.Data.Migrations
 
                     b.Property<List<string>>("AssignedRegions")
                         .IsRequired()
-                        .HasColumnType("text[]");
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("OrganizationName")
                         .IsRequired()

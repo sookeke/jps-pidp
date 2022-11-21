@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 using Pidp.Extensions;
+using System;
+using Serilog;
 
 public static class AuthenticationSetup
 {
@@ -68,6 +70,8 @@ public static class AuthenticationSetup
 
         return services;
     }
+
+ 
 
     private static Task OnTokenValidatedAsync(TokenValidatedContext context)
     {

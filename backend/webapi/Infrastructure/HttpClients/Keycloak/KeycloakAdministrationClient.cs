@@ -30,6 +30,7 @@ public class KeycloakAdministrationClient : BaseClient, IKeycloakAdministrationC
         var group = await this.GetRealmGroup(groupName);
         if (group == null)
         {
+            this.Logger.LogGroupNotFound(groupName);
             return false;
         }
         //assign user to group
@@ -131,6 +132,7 @@ public class KeycloakAdministrationClient : BaseClient, IKeycloakAdministrationC
 
     public async Task<UserRepresentation?> GetUser(Guid userId)
     {
+
         var result = await this.GetAsync<UserRepresentation>($"users/{userId}");
         if (!result.IsSuccess)
         {
@@ -177,6 +179,9 @@ public static partial class KeycloakAdministrationClientLoggingExtensions
 {
     [LoggerMessage(1, LogLevel.Error, "Could not find a Client with ClientId {clientId} in Keycloak response.")]
     public static partial void LogClientNotFound(this ILogger logger, string clientId);
+
+    [LoggerMessage(1, LogLevel.Error, "Could not find a Group with name {groupName} in Keycloak.")]
+    public static partial void LogGroupNotFound(this ILogger logger, string groupName);
 
     [LoggerMessage(2, LogLevel.Error, "Could not find a Client Role with name {roleName} from Client {clientId} in Keycloak response.")]
     public static partial void LogClientRoleNotFound(this ILogger logger, string roleName, string clientId);

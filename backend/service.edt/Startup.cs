@@ -108,6 +108,7 @@ public class Startup
 
         //services.AddKafkaConsumer(config);
 
+
     }
     private EdtServiceConfiguration InitializeConfiguration(IServiceCollection services)
     {

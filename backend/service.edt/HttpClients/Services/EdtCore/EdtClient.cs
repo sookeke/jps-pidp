@@ -2,6 +2,7 @@ namespace edt.service.HttpClients.Services.EdtCore;
 
 using System.Threading.Tasks;
 using AutoMapper;
+using Serilog;
 
 public class EdtClient : BaseClient, IEdtClient
 {
@@ -19,15 +20,19 @@ public class EdtClient : BaseClient, IEdtClient
 
         if (!result.IsSuccess)
         {
+            Log.Logger.Error("Failed to create EDT user {0}", string.Join(",", result.Errors));
             return false;
         }
         //add user to group
         var getUser = await this.GetUser(accessRequest.Key!);
+
         if (getUser != null)
         {
-            var addGroupToUser = await this.AddUserGroup(getUser.Id!, accessRequest.AssignedRegion!);
+            var addGroupToUser = await this.AddUserGroups(getUser.Id!, accessRequest.AssignedRegions!);
             if (!addGroupToUser)
             {
+                Log.Logger.Error("Failed to add EDT user to group user {0}", string.Join(",", result.Errors));
+
                 return false;
             }
         }
@@ -38,10 +43,16 @@ public class EdtClient : BaseClient, IEdtClient
 
         return result.IsSuccess;
     }
-    public async Task<bool> AddUserGroup(string userIdOrKey, List<AssignedRegion> regionName)
+    public async Task<bool> AddUserGroups(string userIdOrKey, List<AssignedRegion> assignedRegions)
     {
-        foreach (var region in regionName)
+
+
+        // Get existing groups assigned to user
+
+        foreach (var region in assignedRegions)
         {
+
+            Log.Logger.Information("Adding user {0} to region {1}", userIdOrKey, region);
             var groupId = await this.GetOuGroupId(region.RegionName!);
             if (groupId == 0)
             {
@@ -52,7 +63,18 @@ public class EdtClient : BaseClient, IEdtClient
 
             if (!result.IsSuccess)
             {
-                return false;
+                var successResult = false;
+                Log.Logger.Error("Failed to add user {0} to region {1} due to {2}", userIdOrKey, region, string.Join(",", result.Errors));
+                // we need a way to get existing groups - otherwise how do we keep the users/groups in-sync??
+                foreach (var error in result.Errors)
+                {
+                    if (error.Contains("already a member of the group"))
+                    {
+                        Log.Logger.Information("User is already in group - ignoring error");
+                        successResult = true;
+                    }
+                }
+                return successResult;
             }
         }
         return true;
@@ -60,6 +82,8 @@ public class EdtClient : BaseClient, IEdtClient
     }
     public async Task<bool> UpdateUser(EdtUserProvisioningModel accessRequest, EdtUserDto previousRequest)
     {
+
+        Log.Logger.Information("Updating EDT User {0} {1}", accessRequest.ToString(), previousRequest.ToString());    
         var edtUserDto = this.mapper.Map<EdtUserProvisioningModel, EdtUserDto>(accessRequest);
         edtUserDto.Id = previousRequest.Id;
         var result = await this.PutAsync($"/api/v1/users", edtUserDto);
@@ -72,7 +96,7 @@ public class EdtClient : BaseClient, IEdtClient
         var user = await this.GetUser(accessRequest.Key!);
         if (user != null)
         {
-            var addGroupToUser = await this.AddUserGroup(user.Id!, accessRequest.AssignedRegion!);
+            var addGroupToUser = await this.AddUserGroups(user.Id!, accessRequest.AssignedRegions!);
             if (!addGroupToUser)
             {
                 return false;
@@ -80,6 +104,7 @@ public class EdtClient : BaseClient, IEdtClient
         }
         else
         {
+            Log.Logger.Error("Failed to add user {0} to group {1}", accessRequest.Id, accessRequest.AssignedRegions);
             return false;
         }
 
