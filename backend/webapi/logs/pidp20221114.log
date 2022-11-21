@@ -1,0 +1,242 @@
+[09:11:35 INF] Starting web host
+[09:11:40 INF] ### App Version:1.0.0.0 ###
+[09:11:40 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[09:11:56 INF] Now listening on: https://localhost:5051
+[09:11:56 INF] Now listening on: http://localhost:5050
+[09:11:56 INF] Application started. Press Ctrl+C to shut down.
+[09:11:56 INF] Hosting environment: Development
+[09:11:56 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[09:14:00 INF] HTTP GET /api/lookups responded 200 in 3759.8292 ms
+[09:14:00 INF] HTTP GET /api/lookups responded 200 in 3432.8569 ms
+[09:14:02 INF] HTTP GET /api/parties responded 200 in 2004.6282 ms
+[09:14:08 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[09:14:30 ERR] Response content was null.
+[09:14:30 ERR] Justin user not found.
+[09:14:30 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 27559.9926 ms
+[09:14:38 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 5203.3717 ms
+[09:15:04 ERR] Response content was null.
+[09:15:04 ERR] User not a valid Justin User or does not meeting all prerequisites.
+[09:15:04 INF] HTTP PUT /api/parties/1011/organization-details responded 204 in 23232.7927 ms
+[09:15:28 ERR] Response content was null.
+[09:15:28 ERR] Justin user not found.
+[09:15:28 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 23368.6904 ms
+[09:17:14 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 6052.3798 ms
+[09:17:22 INF] HTTP PUT /api/parties/1011/organization-details responded 204 in 5518.4978 ms
+[09:17:25 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 3014.9900 ms
+[09:17:41 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 8751.6116 ms
+[09:17:55 INF] HTTP GET /api/parties/1011/user-type responded 200 in 14836.1864 ms
+[10:26:18 ERR] Received non-success status code "Unauthorized" with message: "The access token provided has expired."{"error":"invalid_token","error_description":"The token expired at '11/14/2022 17:23:58'"}.
+[10:26:18 ERR] Justin user not found.
+[10:26:18 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 4037847.4999 ms
+[10:26:31 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 7591.3282 ms
+[10:27:00 INF] HTTP PUT /api/parties/1011/organization-details responded 204 in 26737.0199 ms
+[10:27:01 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 1280.0980 ms
+[10:51:36 INF] HTTP GET /api/lookups responded 200 in 168.5700 ms
+[10:51:38 INF] HTTP GET /api/lookups responded 200 in 57.6187 ms
+[10:51:39 INF] HTTP GET /api/parties responded 200 in 21.0665 ms
+[10:51:47 ERR] Unhandled exception when calling the API.
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (localhost:7215)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|277_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(HttpRequestMessage request)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Pidp.Infrastructure.HttpClients.BaseClient.SendCoreInternalAsync[T](HttpMethod method, String url, String accessToken, HttpContent content, Boolean ignoreResponseContent, CancellationToken cancellationToken) in C:\Development\jps-pidp\backend\webapi\Infrastructure\HttpClients\BaseClient.cs:line 198
+[10:51:47 ERR] Justin user not found.
+[10:51:47 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 8011.1694 ms
+[10:52:09 INF] HTTP GET /api/lookups responded 200 in 118.4803 ms
+[10:52:13 INF] HTTP GET /api/lookups responded 200 in 864.6220 ms
+[10:52:15 INF] HTTP GET /api/parties responded 200 in 26.3658 ms
+[10:52:27 INF] HTTP GET /api/lookups responded 200 in 67.4696 ms
+[10:52:27 INF] HTTP GET /api/lookups responded 200 in 67.8992 ms
+[10:52:28 INF] HTTP GET /api/parties responded 200 in 18.1724 ms
+[10:52:30 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 14297.2804 ms
+[10:52:30 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 1385.6183 ms
+[10:55:46 INF] HTTP GET /api/lookups responded 200 in 109.1770 ms
+[10:55:47 INF] HTTP GET /api/lookups responded 200 in 95.0678 ms
+[10:55:48 INF] HTTP GET /api/parties responded 200 in 9.5855 ms
+[10:57:30 ERR] Unhandled exception when calling the API.
+System.Threading.Tasks.TaskCanceledException: The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.
+ ---> System.TimeoutException: The operation was canceled.
+ ---> System.Threading.Tasks.TaskCanceledException: The operation was canceled.
+ ---> System.IO.IOException: Unable to read data from the transport connection: The I/O operation has been aborted because of either a thread exit or an application request..
+ ---> System.Net.Sockets.SocketException (995): The I/O operation has been aborted because of either a thread exit or an application request.
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource<System.Int32>.GetResult(Int16 token)
+   at System.Net.Security.SslStream.EnsureFullTlsFrameAsync[TIOAdapter](TIOAdapter adapter)
+   at System.Net.Security.SslStream.ReadAsyncInternal[TIOAdapter](TIOAdapter adapter, Memory`1 buffer)
+   at System.Net.Http.HttpConnection.InitialFillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   --- End of inner exception stack trace ---
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Pidp.Infrastructure.HttpClients.BaseClient.SendCoreInternalAsync[T](HttpMethod method, String url, String accessToken, HttpContent content, Boolean ignoreResponseContent, CancellationToken cancellationToken) in C:\Development\jps-pidp\backend\webapi\Infrastructure\HttpClients\BaseClient.cs:line 198
+[10:57:30 ERR] Justin user not found.
+[10:57:30 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 102287.5317 ms
+[11:02:52 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 5694.7340 ms
+[11:03:01 INF] HTTP GET /api/lookups responded 200 in 608.8692 ms
+[11:03:12 INF] HTTP GET /api/lookups responded 200 in 958.6250 ms
+[11:03:14 INF] HTTP GET /api/parties responded 200 in 16.5586 ms
+[11:03:32 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 16963.4199 ms
+[11:03:39 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 4752.2561 ms
+[11:03:46 INF] HTTP PUT /api/parties/1011/organization-details responded 204 in 3652.6081 ms
+[11:03:50 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 3058.2879 ms
+[13:02:25 INF] Starting web host
+[13:02:31 INF] ### App Version:1.0.0.0 ###
+[13:02:37 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[14:12:08 INF] Starting web host
+[14:12:14 INF] ### App Version:1.0.0.0 ###
+[14:12:14 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[14:12:23 INF] Now listening on: https://localhost:5051
+[14:12:23 INF] Now listening on: http://localhost:5050
+[14:12:23 INF] Application started. Press Ctrl+C to shut down.
+[14:12:23 INF] Hosting environment: Development
+[14:12:23 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[14:16:31 INF] HTTP GET /api/lookups responded 200 in 6831.1355 ms
+[14:16:53 INF] HTTP GET /api/lookups responded 200 in 84.6902 ms
+[14:16:31 INF] HTTP GET /api/lookups responded 200 in 6419.8646 ms
+[14:16:51 INF] HTTP GET /api/lookups responded 200 in 180.9505 ms
+[14:17:30 INF] HTTP GET /api/lookups responded 200 in 67.4710 ms
+[14:17:51 INF] HTTP GET /api/lookups responded 200 in 65.5496 ms
+[14:17:52 INF] HTTP GET /api/parties responded 200 in 816.7589 ms
+[14:17:56 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[14:18:02 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 9275.9436 ms
+[14:18:16 INF] HTTP GET /api/access-requests/1011 responded 200 in 4123.6372 ms
+[14:18:23 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 115.4662 ms
+[14:23:16 INF] HTTP GET /api/lookups responded 200 in 109.1851 ms
+[14:23:16 INF] HTTP GET /api/lookups responded 200 in 62.2276 ms
+[14:23:25 INF] HTTP GET /api/lookups responded 200 in 54.4149 ms
+[14:23:26 INF] HTTP GET /api/parties responded 200 in 6.1550 ms
+[14:23:30 ERR] Unhandled exception when calling the API.
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (localhost:7215)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|277_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(HttpRequestMessage request)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Pidp.Infrastructure.HttpClients.BaseClient.SendCoreInternalAsync[T](HttpMethod method, String url, String accessToken, HttpContent content, Boolean ignoreResponseContent, CancellationToken cancellationToken) in C:\Development\jps-pidp\backend\webapi\Infrastructure\HttpClients\BaseClient.cs:line 198
+[14:23:30 ERR] Justin user not found.
+[14:23:30 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 4186.4197 ms
+[14:23:35 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 3044.2656 ms
+[14:23:46 ERR] Unhandled exception when calling the API.
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (localhost:7215)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|277_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(HttpRequestMessage request)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Pidp.Infrastructure.HttpClients.BaseClient.SendCoreInternalAsync[T](HttpMethod method, String url, String accessToken, HttpContent content, Boolean ignoreResponseContent, CancellationToken cancellationToken) in C:\Development\jps-pidp\backend\webapi\Infrastructure\HttpClients\BaseClient.cs:line 198
+[14:23:46 ERR] User not a valid Justin User or does not meeting all prerequisites.
+[14:23:47 INF] HTTP PUT /api/parties/1011/organization-details responded 204 in 7552.4466 ms
+[14:23:51 ERR] Unhandled exception when calling the API.
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (localhost:7215)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|277_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(HttpRequestMessage request)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Pidp.Infrastructure.HttpClients.BaseClient.SendCoreInternalAsync[T](HttpMethod method, String url, String accessToken, HttpContent content, Boolean ignoreResponseContent, CancellationToken cancellationToken) in C:\Development\jps-pidp\backend\webapi\Infrastructure\HttpClients\BaseClient.cs:line 198
+[14:23:51 ERR] Justin user not found.
+[14:23:51 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 4172.4550 ms
+[14:24:23 INF] HTTP GET /api/lookups responded 200 in 54.8106 ms
+[14:24:23 INF] HTTP GET /api/lookups responded 200 in 45.5960 ms
+[14:24:30 INF] HTTP GET /api/parties responded 200 in 6.9361 ms
+[14:24:33 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 3440.0850 ms
+[19:24:16 INF] Starting web host
+[19:24:18 INF] ### App Version:1.0.0.0 ###
+[19:24:18 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[19:24:22 INF] Now listening on: https://localhost:5051
+[19:24:22 INF] Now listening on: http://localhost:5050
+[19:24:22 INF] Application started. Press Ctrl+C to shut down.
+[19:24:22 INF] Hosting environment: Development
+[19:24:22 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[19:25:28 INF] HTTP GET /api/lookups responded 200 in 6230.5867 ms
+[19:25:28 INF] HTTP GET /api/lookups responded 200 in 573.4992 ms
+[19:25:32 INF] HTTP GET /api/lookups responded 200 in 126.0049 ms
+[19:25:32 INF] HTTP GET /api/lookups responded 200 in 51.2222 ms
+[19:25:40 INF] HTTP GET /api/lookups responded 200 in 60.0210 ms
+[19:25:43 INF] HTTP GET /api/lookups responded 200 in 61.4992 ms
+[19:25:58 INF] HTTP GET /api/lookups responded 200 in 55.5782 ms
+[19:25:59 INF] HTTP GET /api/lookups responded 200 in 56.6481 ms
+[19:26:06 INF] HTTP GET /api/parties responded 200 in 736.5963 ms
+[19:26:07 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[19:26:27 INF] HTTP POST /api/parties/1011/profile-status responded 200 in 20360.7167 ms
+[19:26:39 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 99.7905 ms
+[19:27:34 INF] HTTP GET /api/lookups responded 200 in 81.1207 ms
+[19:27:36 INF] HTTP GET /api/lookups responded 200 in 54.2332 ms
+[19:27:37 INF] HTTP GET /api/parties responded 200 in 9.3678 ms
+[19:27:37 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 33.6909 ms
+[19:27:45 INF] HTTP GET /api/lookups responded 200 in 60.6345 ms
+[19:27:46 INF] HTTP GET /api/lookups responded 200 in 63.9525 ms
+[19:27:46 INF] HTTP GET /api/parties responded 200 in 11.0053 ms
+[19:27:46 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 29.9464 ms
+[19:29:13 INF] HTTP GET /api/lookups responded 200 in 47.9289 ms
+[19:29:14 INF] HTTP GET /api/lookups responded 200 in 87.0276 ms
+[19:29:16 INF] HTTP GET /api/parties responded 200 in 13.4385 ms
+[19:29:17 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 36.3975 ms
+[19:29:23 INF] HTTP GET /api/lookups responded 200 in 123.4330 ms
+[19:29:23 INF] HTTP GET /api/lookups responded 200 in 36.4519 ms
+[19:29:24 INF] HTTP GET /api/parties responded 200 in 6.6152 ms
+[19:29:24 INF] HTTP GET /api/parties/1011/organization-details responded 200 in 26.2387 ms

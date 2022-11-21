@@ -5,6 +5,8 @@
 
 tls/
 
+/log/*
+
 # Icon must end with two \r
 Icon
 
@@ -23,3 +25,26 @@ ehthumbs_vista.db
 # Folder config file
 [Dd]esktop.ini
 /.vs
+/test
+/.idea
+/.vscode
+/backend/service.edt/certs
+/testpg.cmd
+/edt.service_20221116_172715.nettrace.etlx
+/edt.service_20221116_172715.nettrace
+/workspace/yarn.lock
+/backend/webapi/certs
+/backend/webapi/logs/pidp20221121.log
+/backend/webapi/logs/pidp20221121.json
+/backend/webapi/appsettings.json
+/backend/webapi/appsettings.Development.json
+/backend/webapi/Dockerfile
+/charts/ca.password
+/charts/ca.p12
+/charts/ca.key
+/charts/ca.crt
+/scripts/login.cmd
+/backend/service.edt/appsettings.Test.json
+/backend/service.edt/appsettings.json
+/backend/service.edt/appsettings.Development.json
+/backend/service.edt/edt.service.csproj

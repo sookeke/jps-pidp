@@ -1,0 +1,770 @@
+[13:10:03 INF] Starting web host
+[13:10:05 INF] ### App Version:1.0.0.0 ###
+[13:10:07 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[13:10:10 INF] Now listening on: https://localhost:5051
+[13:10:10 INF] Now listening on: http://localhost:5050
+[13:10:10 INF] Application started. Press Ctrl+C to shut down.
+[13:10:10 INF] Hosting environment: Development
+[13:10:10 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[13:10:23 WRN] Applying IncludeRules for type 'Pidp.Features.Parties.Create+Command' fails.
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+ ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+ ---> System.NotImplementedException: Given Identity Provider is not supported
+   at Pidp.Features.Parties.Create.CommandValidator.<>c__DisplayClass0_0.<.ctor>b__3(Command x) in C:\Development\jps-pidp\backend\webapi\Features\Parties\Create.cs:line 41
+   at FluentValidation.Internal.IncludeRule`1.<>c__DisplayClass3_0`1.<Create>b__0(ValidationContext`1 ctx, T _) in /media/jskinner/Linux2/code/FluentValidation/src/FluentValidation/Internal/IncludeRule.cs:line 54
+   --- End of inner exception stack trace ---
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Span`1& arguments, Signature sig, Boolean constructor, Boolean wrapExceptions)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at MicroElements.Swashbuckle.FluentValidation.FluentValidationSchemaBuilder.GetValidatorGeneric[T](IChildValidatorAdaptor childValidatorAdapter) in /home/runner/work/MicroElements.Swashbuckle.FluentValidation/MicroElements.Swashbuckle.FluentValidation/src/MicroElements.Swashbuckle.FluentValidation/FluentValidationSchemaBuilder.cs:line 202
+   --- End of inner exception stack trace ---
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Span`1& arguments, Signature sig, Boolean constructor, Boolean wrapExceptions)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at MicroElements.Swashbuckle.FluentValidation.FluentValidationSchemaBuilder.GetValidatorFromChildValidatorAdapter(IChildValidatorAdaptor childValidatorAdapter) in /home/runner/work/MicroElements.Swashbuckle.FluentValidation/MicroElements.Swashbuckle.FluentValidation/src/MicroElements.Swashbuckle.FluentValidation/FluentValidationSchemaBuilder.cs:line 183
+   at MicroElements.Swashbuckle.FluentValidation.FluentValidationSchemaBuilder.AddRulesFromIncludedValidators(IValidator validator, ILogger logger, SchemaGenerationContext schemaGenerationContext) in /home/runner/work/MicroElements.Swashbuckle.FluentValidation/MicroElements.Swashbuckle.FluentValidation/src/MicroElements.Swashbuckle.FluentValidation/FluentValidationSchemaBuilder.cs:line 120
+   at MicroElements.Swashbuckle.FluentValidation.FluentValidationRules.Apply(OpenApiSchema schema, SchemaFilterContext context) in /home/runner/work/MicroElements.Swashbuckle.FluentValidation/MicroElements.Swashbuckle.FluentValidation/src/MicroElements.Swashbuckle.FluentValidation/Swashbuckle/FluentValidationRules.cs:line 116
+[13:10:30 INF] HTTP GET /api/lookups responded 200 in 6557.7234 ms
+[13:10:30 INF] HTTP GET /api/lookups responded 200 in 6557.7355 ms
+[13:10:57 INF] HTTP GET /api/lookups responded 200 in 176.7788 ms
+[13:10:57 INF] HTTP GET /api/lookups responded 200 in 40.3443 ms
+[13:11:03 INF] HTTP GET /api/lookups responded 200 in 264.7973 ms
+[13:11:03 INF] HTTP GET /api/lookups responded 200 in 45.9402 ms
+[13:11:04 INF] HTTP GET /api/parties responded 200 in 864.4924 ms
+[13:11:05 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[13:11:07 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 2489.6798 ms
+[13:11:10 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 125.7687 ms
+[13:11:16 INF] ### AuthorizePartyBeforeHandleAsync
+[13:11:17 INF] HTTP PUT /api/parties/1012/organization-details responded 204 in 582.3028 ms
+[13:11:17 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 88.7935 ms
+[13:11:20 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 91.0694 ms
+[13:11:20 INF] HTTP GET /api/parties/1012/user-type responded 200 in 58.4321 ms
+[13:16:38 INF] HTTP GET /api/lookups responded 200 in 454.1560 ms
+[13:16:39 INF] HTTP GET /api/lookups responded 200 in 135.9211 ms
+[13:16:40 INF] HTTP GET /api/parties responded 200 in 15.9076 ms
+[13:16:40 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 339.3726 ms
+[13:16:40 INF] HTTP GET /api/parties/1012/user-type responded 200 in 24.0646 ms
+[13:17:36 INF] HTTP GET /api/lookups responded 200 in 284.6420 ms
+[13:17:37 INF] HTTP GET /api/lookups responded 200 in 96.3231 ms
+[13:17:38 INF] HTTP GET /api/parties responded 200 in 544.1209 ms
+[13:17:39 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 120.4748 ms
+[13:17:39 INF] HTTP GET /api/parties/1012/user-type responded 200 in 86.1409 ms
+[13:17:51 INF] HTTP GET /api/lookups responded 200 in 70.8883 ms
+[13:17:53 INF] HTTP GET /api/lookups responded 200 in 69.9658 ms
+[13:17:53 INF] HTTP GET /api/parties responded 200 in 11.8419 ms
+[13:17:53 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 101.1078 ms
+[13:17:54 INF] HTTP GET /api/parties/1012/user-type responded 200 in 20.2108 ms
+[13:19:26 INF] HTTP GET /api/lookups responded 200 in 58.7074 ms
+[13:19:28 INF] HTTP GET /api/lookups responded 200 in 63.3729 ms
+[13:19:29 INF] HTTP GET /api/parties responded 200 in 10.6119 ms
+[13:19:29 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 210.2636 ms
+[13:19:29 INF] HTTP GET /api/parties/1012/user-type responded 200 in 17.7317 ms
+[13:19:56 INF] HTTP GET /api/lookups responded 200 in 53.2010 ms
+[13:19:59 INF] HTTP GET /api/lookups responded 200 in 62.4945 ms
+[13:20:00 INF] HTTP GET /api/parties responded 200 in 28.3222 ms
+[13:20:00 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 239.8853 ms
+[13:20:01 INF] HTTP GET /api/parties/1012/user-type responded 200 in 41.9400 ms
+[13:21:22 INF] HTTP GET /api/lookups responded 200 in 84.1385 ms
+[13:21:24 INF] HTTP GET /api/lookups responded 200 in 43.1006 ms
+[13:21:24 INF] HTTP GET /api/parties responded 200 in 6.8781 ms
+[13:21:24 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 183.0543 ms
+[13:21:25 INF] HTTP GET /api/parties/1012/user-type responded 200 in 15.3414 ms
+[13:22:14 INF] HTTP GET /api/lookups responded 200 in 77.4172 ms
+[13:22:18 INF] HTTP GET /api/lookups responded 200 in 36.4017 ms
+[13:22:18 INF] HTTP GET /api/parties responded 200 in 13.1685 ms
+[13:22:19 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 277.7821 ms
+[13:22:19 INF] HTTP GET /api/parties/1012/user-type responded 200 in 16.1270 ms
+[13:22:30 INF] HTTP GET /api/lookups responded 200 in 55.6282 ms
+[13:22:31 INF] HTTP GET /api/lookups responded 200 in 35.2454 ms
+[13:22:32 INF] HTTP GET /api/parties responded 200 in 6.4600 ms
+[13:22:32 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 82.4044 ms
+[13:22:32 INF] HTTP GET /api/parties/1012/user-type responded 200 in 19.8252 ms
+[13:22:49 INF] HTTP GET /api/lookups responded 200 in 87.0492 ms
+[13:22:50 INF] HTTP GET /api/lookups responded 200 in 47.4583 ms
+[13:22:56 INF] HTTP GET /api/lookups responded 200 in 46.9103 ms
+[13:23:03 INF] HTTP GET /api/lookups responded 200 in 117.9238 ms
+[13:23:04 INF] HTTP GET /api/parties responded 200 in 10.0382 ms
+[13:23:04 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 140.3154 ms
+[13:23:04 INF] HTTP GET /api/parties/1012/user-type responded 200 in 22.9988 ms
+[13:24:06 INF] HTTP GET /api/lookups responded 200 in 67.7872 ms
+[13:24:07 INF] HTTP GET /api/lookups responded 200 in 52.9723 ms
+[13:24:08 INF] HTTP GET /api/parties responded 200 in 10.2537 ms
+[13:24:08 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 245.0980 ms
+[13:24:10 INF] HTTP GET /api/parties/1012/user-type responded 200 in 50.9583 ms
+[13:24:25 INF] HTTP GET /api/lookups responded 200 in 71.2474 ms
+[13:24:28 INF] HTTP GET /api/lookups responded 200 in 53.8541 ms
+[13:24:28 INF] HTTP GET /api/parties responded 200 in 5.9983 ms
+[13:24:28 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 166.9226 ms
+[13:24:29 INF] HTTP GET /api/parties/1012/user-type responded 200 in 81.1464 ms
+[13:24:32 INF] HTTP GET /api/lookups responded 200 in 87.5744 ms
+[13:24:35 INF] HTTP GET /api/lookups responded 200 in 62.2690 ms
+[13:24:36 INF] HTTP GET /api/lookups responded 200 in 65.8415 ms
+[13:24:37 INF] HTTP GET /api/parties responded 200 in 7.2328 ms
+[13:24:37 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 99.5989 ms
+[13:24:39 INF] HTTP GET /api/parties/1012/user-type responded 200 in 23.2563 ms
+[13:24:43 INF] HTTP GET /api/lookups responded 200 in 36.7762 ms
+[13:24:44 INF] HTTP GET /api/lookups responded 200 in 48.6342 ms
+[13:24:44 INF] HTTP GET /api/parties responded 200 in 8.0099 ms
+[13:24:44 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 102.9163 ms
+[13:24:46 INF] HTTP GET /api/parties/1012/user-type responded 200 in 28.8644 ms
+[13:25:01 INF] HTTP GET /api/lookups responded 200 in 78.7106 ms
+[13:25:02 INF] HTTP GET /api/lookups responded 200 in 64.8812 ms
+[13:25:04 INF] HTTP GET /api/parties responded 200 in 13.4385 ms
+[13:25:04 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 107.5750 ms
+[13:25:06 INF] HTTP GET /api/lookups responded 200 in 45.7096 ms
+[13:25:08 INF] HTTP GET /api/lookups responded 200 in 57.1153 ms
+[13:25:09 INF] HTTP GET /api/parties responded 200 in 10.7930 ms
+[13:25:09 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 101.8915 ms
+[13:25:16 INF] HTTP GET /api/parties/1012/user-type responded 200 in 23.5492 ms
+[13:25:19 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 209.4071 ms
+[13:25:21 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 26.4321 ms
+[13:25:23 INF] ### AuthorizePartyBeforeHandleAsync
+[13:25:23 INF] HTTP PUT /api/parties/1012/organization-details responded 204 in 112.3312 ms
+[13:25:23 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 94.2292 ms
+[13:25:24 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 87.0396 ms
+[13:25:25 INF] HTTP GET /api/parties/1012/user-type responded 200 in 18.2655 ms
+[13:26:16 INF] HTTP GET /api/lookups responded 200 in 80.7531 ms
+[13:26:18 INF] HTTP GET /api/lookups responded 200 in 113.7081 ms
+[13:26:18 INF] HTTP GET /api/parties responded 200 in 9.3479 ms
+[13:26:19 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 119.8395 ms
+[13:26:19 INF] HTTP GET /api/parties/1012/user-type responded 200 in 39.9330 ms
+[13:26:33 INF] HTTP GET /api/lookups responded 200 in 65.8274 ms
+[13:26:35 INF] HTTP GET /api/lookups responded 200 in 47.6749 ms
+[13:26:35 INF] HTTP GET /api/parties responded 200 in 14.2530 ms
+[13:26:35 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 179.8987 ms
+[13:26:36 INF] HTTP GET /api/parties/1012/user-type responded 200 in 29.9844 ms
+[13:27:20 INF] HTTP GET /api/lookups responded 200 in 152.2765 ms
+[13:27:21 INF] HTTP GET /api/lookups responded 200 in 96.1324 ms
+[13:27:22 INF] HTTP GET /api/parties responded 200 in 16.1889 ms
+[13:27:22 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 104.4148 ms
+[13:27:22 INF] HTTP GET /api/parties/1012/user-type responded 200 in 30.6960 ms
+[13:27:44 INF] HTTP GET /api/lookups responded 200 in 370.0124 ms
+[13:27:46 INF] HTTP GET /api/lookups responded 200 in 97.2448 ms
+[13:27:47 INF] HTTP GET /api/parties responded 200 in 47.7116 ms
+[13:27:47 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 182.7401 ms
+[13:27:48 INF] HTTP GET /api/parties/1012/user-type responded 200 in 108.3346 ms
+[13:28:07 INF] HTTP GET /api/lookups responded 200 in 70.5975 ms
+[13:28:09 INF] HTTP GET /api/lookups responded 200 in 80.0711 ms
+[13:28:13 INF] HTTP GET /api/lookups responded 200 in 44.3051 ms
+[13:28:14 INF] HTTP GET /api/lookups responded 200 in 50.2670 ms
+[13:28:14 INF] HTTP GET /api/parties responded 200 in 8.6197 ms
+[13:28:14 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 101.0353 ms
+[13:28:15 INF] HTTP GET /api/parties/1012/user-type responded 200 in 31.8241 ms
+[13:28:49 INF] HTTP GET /api/lookups responded 200 in 65.1729 ms
+[13:28:51 INF] HTTP GET /api/lookups responded 200 in 114.0149 ms
+[13:28:52 INF] HTTP GET /api/parties responded 200 in 11.6409 ms
+[13:28:52 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 287.4164 ms
+[13:28:52 INF] HTTP GET /api/parties/1012/user-type responded 200 in 26.8454 ms
+[13:29:57 INF] HTTP GET /api/lookups responded 200 in 74.4057 ms
+[13:29:58 INF] HTTP GET /api/lookups responded 200 in 55.2711 ms
+[13:29:58 INF] HTTP GET /api/parties responded 200 in 35.4289 ms
+[13:29:59 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 203.2068 ms
+[13:29:59 INF] HTTP GET /api/parties/1012/user-type responded 200 in 34.5103 ms
+[13:30:16 INF] HTTP GET /api/lookups responded 200 in 207.9384 ms
+[13:30:17 INF] HTTP GET /api/lookups responded 200 in 35.9056 ms
+[13:30:18 INF] HTTP GET /api/parties responded 200 in 11.0756 ms
+[13:30:18 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 158.0201 ms
+[13:30:18 INF] HTTP GET /api/parties/1012/user-type responded 200 in 35.1314 ms
+[13:30:27 INF] HTTP GET /api/lookups responded 200 in 95.2004 ms
+[13:30:29 INF] HTTP GET /api/lookups responded 200 in 59.0735 ms
+[13:30:29 INF] HTTP GET /api/parties responded 200 in 9.5821 ms
+[13:30:29 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 86.7762 ms
+[13:30:30 INF] HTTP GET /api/parties/1012/user-type responded 200 in 54.5363 ms
+[13:30:42 INF] HTTP GET /api/lookups responded 200 in 119.9017 ms
+[13:30:44 INF] HTTP GET /api/lookups responded 200 in 182.0027 ms
+[13:30:45 INF] HTTP GET /api/lookups responded 200 in 47.1173 ms
+[13:30:46 INF] HTTP GET /api/parties responded 200 in 8.9024 ms
+[13:30:46 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 378.5430 ms
+[13:30:48 INF] HTTP GET /api/parties/1012/user-type responded 200 in 45.9285 ms
+[13:30:56 INF] HTTP GET /api/lookups responded 200 in 89.5561 ms
+[13:30:59 INF] HTTP GET /api/lookups responded 200 in 787.0512 ms
+[13:31:02 INF] HTTP GET /api/parties responded 200 in 9.7551 ms
+[13:31:02 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 230.4654 ms
+[13:31:03 INF] HTTP GET /api/parties/1012/user-type responded 200 in 26.4753 ms
+[13:31:14 INF] HTTP GET /api/lookups responded 200 in 170.3000 ms
+[13:31:15 INF] HTTP GET /api/lookups responded 200 in 54.9819 ms
+[13:31:16 INF] HTTP GET /api/parties responded 200 in 7.8762 ms
+[13:31:16 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 118.3493 ms
+[13:31:16 ERR] HTTP GET /api/parties/1012/crown-region/0/user-orgunit responded 500 in 110.9727 ms
+[13:31:16 INF] HTTP GET /api/parties/1012/user-type responded 200 in 18.0108 ms
+[13:31:28 INF] HTTP GET /api/lookups responded 200 in 113.9976 ms
+[13:31:29 INF] HTTP GET /api/lookups responded 200 in 43.8325 ms
+[13:31:30 INF] HTTP GET /api/parties responded 200 in 6.9593 ms
+[13:31:30 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 101.7364 ms
+[13:31:30 ERR] HTTP GET /api/parties/1012/crown-region/0/user-orgunit responded 500 in 2.3569 ms
+[13:31:30 INF] HTTP GET /api/parties/1012/user-type responded 200 in 47.0254 ms
+[13:31:48 INF] HTTP GET /api/lookups responded 200 in 71.0950 ms
+[13:31:49 INF] HTTP GET /api/lookups responded 200 in 66.3085 ms
+[13:31:49 INF] HTTP GET /api/parties responded 200 in 7.0132 ms
+[13:31:50 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 126.5270 ms
+[13:31:50 INF] HTTP GET /api/parties/1012/user-type responded 200 in 40.5941 ms
+[13:31:54 INF] HTTP GET /api/lookups responded 200 in 49.3296 ms
+[13:31:55 INF] HTTP GET /api/lookups responded 200 in 59.6304 ms
+[13:31:55 INF] HTTP GET /api/parties responded 200 in 6.9882 ms
+[13:31:56 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 101.6082 ms
+[13:31:56 INF] HTTP GET /api/parties/1012/user-type responded 200 in 36.9699 ms
+[13:31:56 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 158.9099 ms
+[13:32:20 INF] HTTP GET /api/lookups responded 200 in 371.9439 ms
+[13:32:22 INF] HTTP GET /api/lookups responded 200 in 111.2992 ms
+[13:32:23 INF] HTTP GET /api/parties responded 200 in 11.8471 ms
+[13:32:23 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 108.7968 ms
+[13:32:25 INF] HTTP GET /api/parties/1012/user-type responded 200 in 20.7228 ms
+[13:32:25 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 95.1672 ms
+[13:32:32 INF] HTTP GET /api/lookups responded 200 in 585.7768 ms
+[13:32:33 INF] HTTP GET /api/lookups responded 200 in 65.1104 ms
+[13:32:34 INF] HTTP GET /api/parties responded 200 in 7.5034 ms
+[13:32:34 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 153.2690 ms
+[13:32:34 INF] HTTP GET /api/parties/1012/user-type responded 200 in 30.0789 ms
+[13:32:34 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 84.5461 ms
+[13:38:49 INF] HTTP GET /api/lookups responded 200 in 115.7023 ms
+[13:38:50 INF] HTTP GET /api/lookups responded 200 in 96.2392 ms
+[13:38:57 INF] HTTP GET /api/lookups responded 200 in 102.9372 ms
+[13:38:58 INF] HTTP GET /api/parties responded 200 in 9.1505 ms
+[13:38:58 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 327.4935 ms
+[13:38:58 INF] HTTP GET /api/parties/1012/user-type responded 200 in 21.2565 ms
+[13:38:59 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 99.4819 ms
+[13:41:25 INF] HTTP GET /api/lookups responded 200 in 118.4324 ms
+[13:41:26 INF] HTTP GET /api/lookups responded 200 in 261.3078 ms
+[13:41:27 INF] HTTP GET /api/parties responded 200 in 8.2603 ms
+[13:41:27 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 203.6020 ms
+[13:41:27 INF] HTTP GET /api/parties/1012/user-type responded 200 in 29.7433 ms
+[13:41:27 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 83.4309 ms
+[13:43:09 INF] HTTP GET /api/lookups responded 200 in 108.7205 ms
+[13:43:11 INF] HTTP GET /api/lookups responded 200 in 65.1712 ms
+[13:43:11 INF] HTTP GET /api/parties responded 200 in 6.1911 ms
+[13:43:12 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 196.3488 ms
+[13:43:14 INF] HTTP GET /api/parties/1012/user-type responded 200 in 24.4124 ms
+[13:43:14 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 92.9328 ms
+[13:44:31 INF] HTTP GET /api/lookups responded 200 in 91.3787 ms
+[13:44:32 INF] HTTP GET /api/lookups responded 200 in 53.7753 ms
+[13:44:33 INF] HTTP GET /api/parties responded 200 in 6.6198 ms
+[13:44:33 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 196.5237 ms
+[13:44:38 INF] HTTP GET /api/parties/1012/user-type responded 200 in 18.3165 ms
+[13:44:38 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 77.0035 ms
+[13:44:44 INF] HTTP GET /api/lookups responded 200 in 67.2525 ms
+[13:44:45 INF] HTTP GET /api/lookups responded 200 in 98.7949 ms
+[13:44:45 INF] HTTP GET /api/parties responded 200 in 7.1918 ms
+[13:44:45 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 83.9634 ms
+[13:44:50 INF] HTTP GET /api/parties/1012/user-type responded 200 in 14.6396 ms
+[13:44:50 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 98.0173 ms
+[13:45:43 INF] HTTP GET /api/lookups responded 200 in 95.2909 ms
+[13:45:44 INF] HTTP GET /api/lookups responded 200 in 64.6418 ms
+[13:45:44 INF] HTTP GET /api/parties responded 200 in 6.8217 ms
+[13:45:44 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 167.3161 ms
+[13:45:55 INF] HTTP GET /api/parties/1012/user-type responded 200 in 18.7634 ms
+[13:45:55 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 79.8819 ms
+[13:46:38 INF] HTTP GET /api/lookups responded 200 in 97.2812 ms
+[13:46:39 INF] HTTP GET /api/lookups responded 200 in 38.9761 ms
+[13:46:39 INF] HTTP GET /api/parties responded 200 in 8.7436 ms
+[13:46:40 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 179.7805 ms
+[13:46:41 INF] HTTP GET /api/parties/1012/user-type responded 200 in 26.6201 ms
+[13:46:41 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 81.4731 ms
+[13:47:30 INF] HTTP GET /api/lookups responded 200 in 87.3230 ms
+[13:47:32 INF] HTTP GET /api/lookups responded 200 in 62.7306 ms
+[13:47:32 INF] HTTP GET /api/parties responded 200 in 6.8806 ms
+[13:47:33 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 91.4574 ms
+[13:47:34 INF] HTTP GET /api/parties/1012/user-type responded 200 in 22.3114 ms
+[13:47:34 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 100.5752 ms
+[13:48:05 INF] HTTP GET /api/lookups responded 200 in 70.6177 ms
+[13:48:11 INF] HTTP GET /api/lookups responded 200 in 123.4096 ms
+[13:48:15 INF] HTTP GET /api/lookups responded 200 in 549.9372 ms
+[13:48:17 INF] HTTP GET /api/lookups responded 200 in 45.0783 ms
+[13:48:17 INF] HTTP GET /api/parties responded 200 in 8.1271 ms
+[13:48:17 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 101.4249 ms
+[13:48:19 INF] HTTP GET /api/parties/1012/user-type responded 200 in 24.1463 ms
+[13:48:20 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 86.8992 ms
+[13:49:38 INF] HTTP GET /api/lookups responded 200 in 48.5981 ms
+[13:49:39 INF] HTTP GET /api/lookups responded 200 in 75.4377 ms
+[13:49:39 INF] HTTP GET /api/parties responded 200 in 6.8108 ms
+[13:49:40 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 222.8975 ms
+[13:49:41 INF] HTTP GET /api/parties/1012/user-type responded 200 in 17.2251 ms
+[13:49:41 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 81.7250 ms
+[13:51:15 INF] HTTP GET /api/lookups responded 200 in 63.8991 ms
+[13:51:16 INF] HTTP GET /api/lookups responded 200 in 52.2908 ms
+[13:51:17 INF] HTTP GET /api/parties responded 200 in 13.5002 ms
+[13:51:17 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 208.3796 ms
+[13:53:11 INF] HTTP GET /api/parties/1012/user-type responded 200 in 51.2688 ms
+[13:53:11 INF] HTTP GET /api/lookups responded 200 in 63.1813 ms
+[13:53:12 INF] HTTP GET /api/lookups responded 200 in 84.9476 ms
+[13:53:13 INF] HTTP GET /api/parties responded 200 in 10.3308 ms
+[13:53:13 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 225.5605 ms
+[13:53:15 INF] HTTP GET /api/parties/1012/user-type responded 200 in 21.0181 ms
+[13:53:15 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 83.2114 ms
+[13:53:34 INF] HTTP GET /api/lookups responded 200 in 63.7555 ms
+[13:53:35 INF] HTTP GET /api/lookups responded 200 in 66.3409 ms
+[13:53:35 INF] HTTP GET /api/parties responded 200 in 7.6926 ms
+[13:53:35 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 89.4141 ms
+[13:53:52 INF] HTTP GET /api/parties/1012/user-type responded 200 in 35.2852 ms
+[13:53:52 INF] HTTP GET /api/lookups responded 200 in 53.4281 ms
+[13:53:53 INF] HTTP GET /api/lookups responded 200 in 54.9667 ms
+[13:53:53 INF] HTTP GET /api/parties responded 200 in 10.2516 ms
+[13:53:54 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 103.8951 ms
+[13:53:55 INF] HTTP GET /api/parties/1012/user-type responded 200 in 17.6498 ms
+[13:53:56 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 76.1249 ms
+[13:54:24 INF] HTTP GET /api/lookups responded 200 in 58.9062 ms
+[13:54:25 INF] HTTP GET /api/lookups responded 200 in 61.4526 ms
+[13:54:25 INF] HTTP GET /api/parties responded 200 in 7.4767 ms
+[13:54:26 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 91.2102 ms
+[13:54:28 INF] HTTP GET /api/parties/1012/user-type responded 200 in 25.0945 ms
+[13:54:28 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 80.1890 ms
+[13:55:44 INF] HTTP GET /api/lookups responded 200 in 500.2632 ms
+[13:55:47 INF] HTTP GET /api/lookups responded 200 in 60.3131 ms
+[13:55:50 INF] HTTP GET /api/lookups responded 200 in 58.7631 ms
+[13:55:52 INF] HTTP GET /api/lookups responded 200 in 48.0779 ms
+[13:55:53 INF] HTTP GET /api/parties responded 200 in 29.2391 ms
+[13:55:53 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 236.9668 ms
+[13:55:54 INF] HTTP GET /api/parties/1012/user-type responded 200 in 18.4806 ms
+[13:55:54 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 87.6967 ms
+[13:56:34 INF] HTTP GET /api/lookups responded 200 in 124.8123 ms
+[13:56:35 INF] HTTP GET /api/lookups responded 200 in 85.7983 ms
+[13:56:36 INF] HTTP GET /api/parties responded 200 in 10.1222 ms
+[13:56:36 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 94.7989 ms
+[13:56:37 INF] HTTP GET /api/parties/1012/user-type responded 200 in 22.3417 ms
+[13:56:37 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 111.6454 ms
+[13:57:42 INF] HTTP GET /api/lookups responded 200 in 51.9740 ms
+[13:57:43 INF] HTTP GET /api/lookups responded 200 in 91.2875 ms
+[13:57:43 INF] HTTP GET /api/parties responded 200 in 8.4741 ms
+[13:57:44 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 176.9464 ms
+[13:57:44 INF] HTTP GET /api/parties/1012/user-type responded 200 in 55.5681 ms
+[13:57:44 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 122.7219 ms
+[13:58:10 INF] HTTP GET /api/lookups responded 200 in 664.7582 ms
+[13:58:11 INF] HTTP GET /api/lookups responded 200 in 56.5462 ms
+[13:58:12 INF] HTTP GET /api/parties responded 200 in 8.6979 ms
+[13:58:13 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 250.6368 ms
+[13:58:13 INF] HTTP GET /api/parties/1012/user-type responded 200 in 28.0423 ms
+[13:58:13 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 105.0026 ms
+[13:58:34 INF] HTTP GET /api/lookups responded 200 in 48.6092 ms
+[13:58:34 INF] HTTP GET /api/lookups responded 200 in 60.3426 ms
+[13:58:34 INF] HTTP GET /api/parties responded 200 in 7.1433 ms
+[13:58:35 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 105.0042 ms
+[13:58:35 INF] HTTP GET /api/parties/1012/user-type responded 200 in 24.0025 ms
+[13:58:35 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 79.0039 ms
+[13:58:47 INF] HTTP GET /api/lookups responded 200 in 31.9987 ms
+[13:58:47 INF] HTTP GET /api/lookups responded 200 in 40.1016 ms
+[13:58:47 INF] HTTP GET /api/parties responded 200 in 5.9341 ms
+[13:58:48 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 83.1225 ms
+[13:58:48 INF] HTTP GET /api/parties/1012/user-type responded 200 in 21.7742 ms
+[13:58:48 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 84.6366 ms
+[13:59:22 INF] HTTP GET /api/lookups responded 200 in 59.0333 ms
+[13:59:22 INF] HTTP GET /api/lookups responded 200 in 49.5180 ms
+[13:59:23 INF] HTTP GET /api/lookups responded 200 in 45.3945 ms
+[13:59:23 INF] HTTP GET /api/parties responded 200 in 16.7029 ms
+[13:59:23 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 85.3025 ms
+[13:59:23 INF] HTTP GET /api/parties/1012/user-type responded 200 in 27.4818 ms
+[13:59:23 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 80.1557 ms
+[13:59:31 INF] HTTP GET /api/lookups responded 200 in 53.2910 ms
+[13:59:32 INF] HTTP GET /api/lookups responded 200 in 41.0348 ms
+[13:59:32 INF] HTTP GET /api/parties responded 200 in 7.2200 ms
+[13:59:33 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 103.9025 ms
+[13:59:33 INF] HTTP GET /api/parties/1012/user-type responded 200 in 35.0638 ms
+[13:59:33 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 84.4153 ms
+[13:59:35 INF] HTTP GET /api/lookups responded 200 in 51.6479 ms
+[13:59:36 INF] HTTP GET /api/lookups responded 200 in 47.4109 ms
+[13:59:36 INF] HTTP GET /api/parties responded 200 in 7.9901 ms
+[13:59:36 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 81.8692 ms
+[13:59:36 INF] HTTP GET /api/parties/1012/user-type responded 200 in 19.2266 ms
+[13:59:36 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 86.6826 ms
+[14:00:13 INF] HTTP GET /api/lookups responded 200 in 80.8692 ms
+[14:00:13 INF] HTTP GET /api/lookups responded 200 in 74.2500 ms
+[14:00:14 INF] HTTP GET /api/parties responded 200 in 8.2396 ms
+[14:00:14 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 341.7232 ms
+[14:00:14 INF] HTTP GET /api/parties/1012/user-type responded 200 in 38.1019 ms
+[14:00:15 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 97.7312 ms
+[14:05:54 INF] HTTP GET /api/lookups responded 200 in 91.6217 ms
+[14:05:54 INF] HTTP GET /api/lookups responded 200 in 39.0705 ms
+[14:05:55 INF] HTTP GET /api/parties responded 200 in 6.8262 ms
+[14:05:55 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 208.5026 ms
+[14:05:55 INF] HTTP GET /api/parties/1012/user-type responded 200 in 20.1352 ms
+[14:05:55 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 80.4412 ms
+[14:29:05 INF] HTTP GET /api/lookups responded 200 in 98.3968 ms
+[14:29:06 INF] HTTP GET /api/lookups responded 200 in 63.6064 ms
+[14:29:06 INF] HTTP GET /api/parties responded 200 in 12.3161 ms
+[14:29:07 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 268.4170 ms
+[14:29:07 INF] HTTP GET /api/parties/1012/user-type responded 200 in 49.6190 ms
+[14:29:07 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 93.0760 ms
+[14:29:21 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 481.0036 ms
+[14:29:24 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 29.3083 ms
+[14:29:25 INF] ### AuthorizePartyBeforeHandleAsync
+[14:29:26 INF] HTTP PUT /api/parties/1012/organization-details responded 204 in 120.7403 ms
+[14:29:26 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 116.3778 ms
+[14:29:27 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 88.8732 ms
+[14:29:27 INF] HTTP GET /api/parties/1012/user-type responded 200 in 21.4512 ms
+[14:29:28 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 88.0592 ms
+[14:33:26 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 505.8393 ms
+[14:33:52 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 62.1962 ms
+[14:33:59 INF] ### AuthorizePartyBeforeHandleAsync
+[14:34:00 INF] HTTP PUT /api/parties/1012/organization-details responded 204 in 201.6413 ms
+[14:34:00 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 233.2889 ms
+[14:34:04 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 163.4884 ms
+[14:34:04 INF] HTTP GET /api/parties/1012/user-type responded 200 in 26.5023 ms
+[14:34:04 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 183.1953 ms
+[14:38:31 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 364.6928 ms
+[14:38:34 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 37.1806 ms
+[14:38:37 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 116.7350 ms
+[14:38:43 INF] HTTP GET /api/parties/1012/demographics responded 200 in 149.3094 ms
+[14:39:01 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 127.0822 ms
+[14:39:16 INF] HTTP GET /api/lookups responded 200 in 718.7002 ms
+[14:39:17 INF] HTTP GET /api/lookups responded 200 in 373.6753 ms
+[14:39:17 INF] HTTP GET /api/parties responded 200 in 28.0668 ms
+[14:39:18 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 189.2968 ms
+[14:39:31 INF] HTTP GET /api/lookups responded 200 in 607.0186 ms
+[14:39:32 INF] HTTP GET /api/lookups responded 200 in 156.5304 ms
+[14:41:16 INF] HTTP GET /api/lookups responded 200 in 1032.6938 ms
+[14:41:17 INF] HTTP GET /api/parties responded 200 in 18.6812 ms
+[14:41:18 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 610.0588 ms
+[14:42:42 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 268.5505 ms
+[14:42:42 INF] HTTP GET /api/parties/1012/user-type responded 200 in 48.4038 ms
+[14:42:42 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 106.0477 ms
+[14:43:09 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 480.8526 ms
+[14:43:10 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 50.2252 ms
+[14:43:15 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 331.8504 ms
+[14:43:16 INF] HTTP GET /api/parties/1012/demographics responded 200 in 49.2136 ms
+[14:44:13 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 317.5713 ms
+[14:44:19 INF] HTTP GET /api/access-requests/1012 responded 200 in 215.1981 ms
+[14:44:22 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 151.6513 ms
+[14:44:24 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 120.6911 ms
+[14:44:29 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 114.7478 ms
+[14:46:27 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 288.1248 ms
+[14:46:27 INF] HTTP GET /api/parties/1012/user-type responded 200 in 52.1358 ms
+[14:46:27 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 109.0991 ms
+[14:46:49 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 128.8370 ms
+[14:50:09 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 217.1002 ms
+[14:50:12 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 460.8719 ms
+[14:50:15 INF] HTTP GET /api/parties/1012/demographics responded 200 in 16.2195 ms
+[14:51:41 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 349.2789 ms
+[14:51:42 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 327.3911 ms
+[14:51:43 INF] HTTP GET /api/parties/1012/user-type responded 200 in 43.7817 ms
+[14:51:43 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 107.8537 ms
+[14:53:24 INF] HTTP GET /api/lookups responded 200 in 133.2563 ms
+[14:53:25 INF] HTTP GET /api/lookups responded 200 in 78.7091 ms
+[14:53:26 INF] HTTP GET /api/parties responded 200 in 65.1563 ms
+[14:53:29 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 2497.0088 ms
+[14:53:30 INF] HTTP GET /api/lookups responded 200 in 86.5143 ms
+[14:53:30 INF] HTTP GET /api/lookups responded 200 in 74.1351 ms
+[14:53:31 INF] HTTP GET /api/parties responded 200 in 11.8434 ms
+[14:53:31 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 551.6848 ms
+[15:10:10 INF] Starting web host
+[15:10:12 INF] ### App Version:1.0.0.0 ###
+[15:10:12 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[15:10:15 INF] Now listening on: https://localhost:5051
+[15:10:15 INF] Now listening on: http://localhost:5050
+[15:10:15 INF] Application started. Press Ctrl+C to shut down.
+[15:10:15 INF] Hosting environment: Development
+[15:10:15 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[15:11:51 INF] HTTP GET /api/lookups responded 200 in 3414.1752 ms
+[15:11:51 INF] HTTP GET /api/lookups responded 200 in 3704.0823 ms
+[15:11:53 INF] HTTP GET /api/parties responded 200 in 1082.6778 ms
+[15:11:54 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[15:12:11 ERR] Response content was null.
+[15:12:11 ERR] Justin user not found.
+[15:12:11 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 17984.6258 ms
+[15:13:37 INF] HTTP GET /api/lookups responded 200 in 40.8047 ms
+[15:13:37 INF] HTTP GET /api/lookups responded 200 in 48.2196 ms
+[15:13:38 INF] HTTP GET /api/parties responded 200 in 15.0435 ms
+[15:13:47 INF] HTTP GET /api/lookups responded 200 in 41.2457 ms
+[15:13:47 INF] HTTP GET /api/lookups responded 200 in 47.2480 ms
+[15:13:48 INF] HTTP GET /api/parties responded 200 in 6.7772 ms
+[15:13:54 ERR] Response content was null.
+[15:13:54 ERR] Justin user not found.
+[15:13:54 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 16499.3063 ms
+[15:14:04 ERR] Response content was null.
+[15:14:04 ERR] Justin user not found.
+[15:14:04 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 16569.8296 ms
+[15:15:56 INF] HTTP GET /api/lookups responded 200 in 56.6681 ms
+[15:15:56 INF] HTTP GET /api/lookups responded 200 in 79.3064 ms
+[15:15:57 INF] HTTP GET /api/parties responded 200 in 6.8250 ms
+[15:16:14 ERR] Response content was null.
+[15:16:14 ERR] Justin user not found.
+[15:16:14 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 16709.0808 ms
+[15:58:34 INF] HTTP GET /api/lookups responded 200 in 91.3549 ms
+[15:58:34 INF] HTTP GET /api/lookups responded 200 in 43.2903 ms
+[15:58:35 INF] HTTP GET /api/parties responded 200 in 17.6004 ms
+[15:58:51 ERR] Response content was null.
+[15:58:51 ERR] Justin user not found.
+[15:58:51 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 16663.8660 ms
+[15:59:08 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 151.5568 ms
+[15:59:10 INF] ### AuthorizePartyBeforeHandleAsync
+[15:59:26 ERR] Response content was null.
+[15:59:26 ERR] User not a valid Justin User or does not meeting all prerequisites.
+[15:59:26 INF] HTTP PUT /api/parties/1012/organization-details responded 204 in 16839.0048 ms
+[15:59:43 ERR] Response content was null.
+[15:59:43 ERR] Justin user not found.
+[15:59:43 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 16458.1206 ms
+[16:01:56 INF] HTTP GET /api/lookups responded 200 in 57.1135 ms
+[16:01:56 INF] HTTP GET /api/lookups responded 200 in 45.8909 ms
+[16:01:57 INF] HTTP GET /api/parties responded 200 in 5.1963 ms
+[16:02:13 ERR] Response content was null.
+[16:02:13 ERR] Justin user not found.
+[16:02:13 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 16512.4332 ms
+[16:02:32 INF] Starting web host
+[16:02:34 INF] ### App Version:1.0.0.0 ###
+[16:02:34 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[16:02:38 INF] Now listening on: https://localhost:5051
+[16:02:38 INF] Now listening on: http://localhost:5050
+[16:02:38 INF] Application started. Press Ctrl+C to shut down.
+[16:02:38 INF] Hosting environment: Development
+[16:02:38 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[16:02:49 INF] HTTP GET /api/lookups responded 200 in 3202.7433 ms
+[16:02:49 INF] HTTP GET /api/lookups responded 200 in 3515.3049 ms
+[16:02:50 INF] HTTP GET /api/parties responded 200 in 727.7173 ms
+[16:02:51 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[16:03:09 ERR] Response content was null.
+[16:03:09 ERR] Justin user not found.
+[16:03:09 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 18542.8889 ms
+[16:28:41 INF] Starting web host
+[16:28:49 INF] ### App Version:1.0.0.0 ###
+[16:28:49 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[16:28:56 INF] Now listening on: https://localhost:5051
+[16:28:56 INF] Now listening on: http://localhost:5050
+[16:28:56 INF] Application started. Press Ctrl+C to shut down.
+[16:28:56 INF] Hosting environment: Development
+[16:28:56 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[16:30:10 INF] HTTP GET /api/lookups responded 200 in 7817.9348 ms
+[16:30:12 INF] HTTP GET /api/lookups responded 200 in 184.9607 ms
+[16:30:25 INF] HTTP GET /api/lookups responded 200 in 109.0709 ms
+[16:30:26 INF] HTTP GET /api/parties responded 200 in 876.7194 ms
+[16:30:27 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[16:30:30 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 3367.0519 ms
+[16:30:35 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 160.3177 ms
+[16:30:35 INF] HTTP GET /api/parties/1012/user-type responded 200 in 102.0738 ms
+[16:30:35 ERR] HTTP GET /api/parties/1012/crown-region/0/user-orgunit responded 500 in 75.4525 ms
+[16:30:38 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 125.9523 ms
+[16:30:41 INF] HTTP GET /api/parties/1012/organization-details responded 200 in 57.9661 ms
+[16:30:42 INF] ### AuthorizePartyBeforeHandleAsync
+[16:30:43 INF] HTTP PUT /api/parties/1012/organization-details responded 204 in 524.7777 ms
+[16:30:43 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 100.3350 ms
+[16:30:45 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 89.4379 ms
+[16:30:45 INF] HTTP GET /api/parties/1012/user-type responded 200 in 15.5290 ms
+[16:30:45 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 109.9801 ms
+[16:31:01 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:31:01 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 421.2525 ms
+[16:31:01 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:31:01 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 126.9027 ms
+[16:36:07 INF] Starting web host
+[16:36:13 INF] ### App Version:1.0.0.0 ###
+[16:36:13 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[16:36:17 INF] Now listening on: https://localhost:5051
+[16:36:17 INF] Now listening on: http://localhost:5050
+[16:36:17 INF] Application started. Press Ctrl+C to shut down.
+[16:36:17 INF] Hosting environment: Development
+[16:36:17 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[16:37:44 INF] HTTP GET /api/lookups responded 200 in 4232.7982 ms
+[16:37:44 INF] HTTP GET /api/lookups responded 200 in 3539.6621 ms
+[16:37:47 INF] HTTP GET /api/lookups responded 200 in 166.9785 ms
+[16:37:48 INF] HTTP GET /api/lookups responded 200 in 53.8418 ms
+[16:37:49 INF] HTTP GET /api/parties responded 200 in 894.7516 ms
+[16:37:50 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[16:37:51 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 1225.1092 ms
+[16:37:57 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 115.1304 ms
+[16:37:57 INF] HTTP GET /api/parties/1012/user-type responded 200 in 97.2665 ms
+[16:37:57 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 205.5364 ms
+[16:38:05 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:38:05 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 396.4149 ms
+[16:38:06 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:38:06 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 91.9158 ms
+[16:40:22 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 194.9447 ms
+[16:40:41 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 131.4496 ms
+[16:40:41 INF] HTTP GET /api/parties/1012/user-type responded 200 in 15.5084 ms
+[16:40:42 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 93.9365 ms
+[16:41:57 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:41:57 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 70108.5536 ms
+[16:43:54 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:43:54 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 116892.1977 ms
+[16:44:06 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 4627.7029 ms
+[16:44:10 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 1498.2029 ms
+[16:44:10 INF] HTTP GET /api/parties/1012/user-type responded 200 in 202.2249 ms
+[16:44:11 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 854.9248 ms
+[16:44:21 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:44:21 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 3002.0142 ms
+[16:44:23 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:44:23 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 1739.9291 ms
+[16:45:51 INF] HTTP GET /api/lookups responded 200 in 69.5863 ms
+[16:45:51 INF] HTTP GET /api/lookups responded 200 in 73.2263 ms
+[16:45:51 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 27170.1079 ms
+[16:45:51 INF] HTTP GET /api/parties responded 200 in 7.2064 ms
+[16:45:52 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 84.3135 ms
+[16:46:02 INF] HTTP GET /api/parties/1012/endorsements responded 200 in 55.4484 ms
+[16:46:05 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 95.3020 ms
+[16:46:09 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 162.5672 ms
+[16:46:09 INF] HTTP GET /api/parties/1012/user-type responded 200 in 18.6948 ms
+[16:46:10 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 116.9365 ms
+[16:46:18 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:46:18 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 215.5200 ms
+[16:46:18 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:46:18 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 70.8866 ms
+[16:47:08 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 2395.3677 ms
+[16:47:15 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 92.7468 ms
+[16:47:15 INF] HTTP GET /api/parties/1012/user-type responded 200 in 20.4403 ms
+[16:47:16 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 79.6762 ms
+[16:48:43 INF] Starting web host
+[16:48:45 INF] ### App Version:1.0.0.0 ###
+[16:48:45 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[16:48:51 INF] Now listening on: https://localhost:5051
+[16:48:51 INF] Now listening on: http://localhost:5050
+[16:48:51 INF] Application started. Press Ctrl+C to shut down.
+[16:48:51 INF] Hosting environment: Development
+[16:48:51 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[16:49:12 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:50:24 INF] Starting web host
+[16:50:26 INF] ### App Version:1.0.0.0 ###
+[16:50:26 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[16:50:30 INF] Now listening on: https://localhost:5051
+[16:50:30 INF] Now listening on: http://localhost:5050
+[16:50:30 INF] Application started. Press Ctrl+C to shut down.
+[16:50:30 INF] Hosting environment: Development
+[16:50:30 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[16:50:46 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:50:46 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 9989.5964 ms
+[16:51:09 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:52:42 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 115781.8399 ms
+[16:54:31 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[16:54:31 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 1124.5755 ms
+[16:54:34 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 121.6481 ms
+[16:54:34 INF] HTTP GET /api/parties/1012/user-type responded 200 in 85.2065 ms
+[16:54:34 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 202.3539 ms
+[16:54:44 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:54:44 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 6403.7842 ms
+[16:55:07 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[16:55:09 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 25409.2158 ms
+[16:57:08 INF] Starting web host
+[16:57:09 INF] ### App Version:1.0.0.0 ###
+[16:57:09 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[16:57:18 INF] Now listening on: https://localhost:5051
+[16:57:18 INF] Now listening on: http://localhost:5050
+[16:57:18 INF] Application started. Press Ctrl+C to shut down.
+[16:57:18 INF] Hosting environment: Development
+[16:57:18 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[16:57:32 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[16:57:33 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 3779.8698 ms
+[16:57:34 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 182.1887 ms
+[16:57:35 INF] HTTP GET /api/parties/1012/user-type responded 200 in 85.7755 ms
+[16:57:35 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 191.7912 ms
+[16:57:49 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:00:35 INF] Starting web host
+[17:00:37 INF] ### App Version:1.0.0.0 ###
+[17:00:37 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:00:45 INF] Now listening on: https://localhost:5051
+[17:00:45 INF] Now listening on: http://localhost:5050
+[17:00:45 INF] Application started. Press Ctrl+C to shut down.
+[17:00:45 INF] Hosting environment: Development
+[17:00:45 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:01:11 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:01:11 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 10649.3706 ms
+[17:01:17 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:01:17 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 6443.1813 ms
+[17:02:28 INF] Starting web host
+[17:02:29 INF] ### App Version:1.0.0.0 ###
+[17:02:29 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:02:42 INF] Now listening on: https://localhost:5051
+[17:02:42 INF] Now listening on: http://localhost:5050
+[17:02:42 INF] Application started. Press Ctrl+C to shut down.
+[17:02:42 INF] Hosting environment: Development
+[17:02:42 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:03:00 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[17:03:00 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 3246.5687 ms
+[17:03:02 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 128.8472 ms
+[17:03:02 INF] HTTP GET /api/parties/1012/user-type responded 200 in 74.0100 ms
+[17:03:03 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 166.8344 ms
+[17:03:21 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:04:31 INF] Starting web host
+[17:04:32 INF] ### App Version:1.0.0.0 ###
+[17:04:32 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:04:55 INF] Now listening on: https://localhost:5051
+[17:04:55 INF] Now listening on: http://localhost:5050
+[17:04:55 INF] Application started. Press Ctrl+C to shut down.
+[17:04:55 INF] Hosting environment: Development
+[17:04:55 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:05:36 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:06:06 INF] Starting web host
+[17:06:06 INF] ### App Version:1.0.0.0 ###
+[17:06:06 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:07:23 INF] Now listening on: https://localhost:5051
+[17:07:23 INF] Now listening on: http://localhost:5050
+[17:07:23 INF] Application started. Press Ctrl+C to shut down.
+[17:07:23 INF] Hosting environment: Development
+[17:07:23 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:07:33 INF] HTTP GET /api/lookups responded 200 in 2270.8764 ms
+[17:07:33 INF] HTTP GET /api/lookups responded 200 in 2486.6975 ms
+[17:07:57 INF] HTTP GET /api/lookups responded 200 in 88.9549 ms
+[17:07:58 INF] HTTP GET /api/parties responded 200 in 443.3361 ms
+[17:07:58 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[17:07:59 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 1510.0934 ms
+[17:08:03 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 146.9924 ms
+[17:08:03 INF] HTTP GET /api/parties/1012/user-type responded 200 in 96.7246 ms
+[17:08:03 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 149.8220 ms
+[17:08:13 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:08:21 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 15935.8878 ms
+[17:08:45 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:09:13 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 52275.5599 ms
+[17:09:18 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 193.4370 ms
+[17:09:20 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 87.5119 ms
+[17:09:20 INF] HTTP GET /api/parties/1012/user-type responded 200 in 12.6439 ms
+[17:09:21 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 85.7221 ms
+[17:09:30 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:12:01 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 158721.2474 ms
+[17:12:10 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:14:02 INF] Starting web host
+[17:14:04 INF] ### App Version:1.0.0.0 ###
+[17:14:04 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:14:57 INF] Now listening on: https://localhost:5051
+[17:14:57 INF] Now listening on: http://localhost:5050
+[17:14:57 INF] Application started. Press Ctrl+C to shut down.
+[17:14:57 INF] Hosting environment: Development
+[17:14:57 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:18:23 INF] Starting web host
+[17:18:24 INF] ### App Version:1.0.0.0 ###
+[17:18:24 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:18:48 INF] Now listening on: https://localhost:5051
+[17:18:48 INF] Now listening on: http://localhost:5050
+[17:18:48 INF] Application started. Press Ctrl+C to shut down.
+[17:18:48 INF] Hosting environment: Development
+[17:18:48 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:23:34 INF] Starting web host
+[17:23:36 INF] ### App Version:1.0.0.0 ###
+[17:23:36 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:23:40 INF] Now listening on: https://localhost:5051
+[17:23:40 INF] Now listening on: http://localhost:5050
+[17:23:40 INF] Application started. Press Ctrl+C to shut down.
+[17:23:40 INF] Hosting environment: Development
+[17:23:40 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:24:20 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:25:21 INF] Starting web host
+[17:25:22 INF] ### App Version:1.0.0.0 ###
+[17:25:22 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:25:27 INF] Now listening on: https://localhost:5051
+[17:25:27 INF] Now listening on: http://localhost:5050
+[17:25:27 INF] Application started. Press Ctrl+C to shut down.
+[17:25:27 INF] Hosting environment: Development
+[17:25:27 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:25:51 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:25:51 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:29:02 INF] Starting web host
+[17:29:05 INF] ### App Version:1.0.0.0 ###
+[17:29:05 INF] ### PIdP Configuration:{"ApplicationUrl":"http://localhost:4200","AddressAutocompleteClient":{"ApiKey":"\u003Credacted\u003E","Url":"https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/"},"ConnectionStrings":{"PidpDatabase":"Host=fedora;Port=5444;Database=pipd;Username=postgres;Password=Pa55w0rd"},"ChesClient":{"Enabled":true,"Url":"https://ches-dev.apps.silver.devops.gov.bc.ca/api/v1","ClientId":"PSP_SERVICE_CLIENT","ClientSecret":"\u003Credacted\u003E","TokenUrl":"https://dev.oidc.gov.bc.ca/auth/realms/jbd6rnxw/protocol/openid-connect/token"},"KafkaCluster":{"Url":"","ClientId":"","ClientSecret":"","BoostrapServers":"pidp-kafka-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca:443","SecurityProtocol":"","SaslMechanism":"","ConsumerTopicName":"dems-notification-ack","ProducerTopicName":"dems-access-request","SaslOauthbearerTokenEndpointUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","SaslOauthbearerProducerClientId":"kafka-producer","SaslOauthbearerProducerClientSecret":"AwtHq6XXnoLZKcMdtXDohpIhfTHsMGe2","SaslOauthbearerConsumerClientId":"kafka-consumer","SaslOauthbearerConsumerClientSecret":"vwwQ3erVkBzVX3i1P6le5DiEYhUd6kDh","SslCaLocation":"C:\\certs\\pidp\\ca.crt","SslCertificateLocation":"C:\\certs\\pidp\\client\\ca.crt","SslKeyLocation":"C:\\certs\\pidp\\client\\ca.key"},"Keycloak":{"RealmUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST","WellKnownConfig":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/.well-known/openid-configuration","TokenUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST/protocol/openid-connect/token","AdministrationUrl":"https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/admin/realms/DEMSTEST","AdministrationClientId":"PIDP-SERVICE","AdministrationClientSecret":"3s8dwnqNHyDdtG1ZhhERgqXFK4WY7cyO","HcimClientId":"HCIMWEB"},"LdapClient":{"Url":"https://common-logon-dev.hlth.gov.bc.ca/"},"MailServer":{"Url":"localhost","Port":1025},"PlrClient":{"Url":"http://localhost:5060/api"},"JumClient":{"Url":"https://localhost:7215/api","RealmUrl":"","TokenUrl":"protocol/openid-connect/token","AdministrationUrl":"","AdministrationClientId":"","AdministrationClientSecret":""}} ###
+[17:29:10 INF] Now listening on: https://localhost:5051
+[17:29:10 INF] Now listening on: http://localhost:5050
+[17:29:10 INF] Application started. Press Ctrl+C to shut down.
+[17:29:10 INF] Hosting environment: Development
+[17:29:10 INF] Content root path: C:\Development\jps-pidp\backend\webapi
+[17:29:56 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[17:29:56 ERR] Received non-success status code "Forbidden" with message: {"error":"unknown_error"}.
+[18:15:31 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 2771254.6221 ms
+[18:15:32 INF] HTTP GET /api/lookups responded 200 in 625.7513 ms
+[18:15:32 INF] HTTP GET /api/lookups responded 200 in 625.7513 ms
+[18:15:44 INF] HTTP GET /api/lookups responded 200 in 87.0423 ms
+[18:15:45 INF] HTTP GET /api/parties responded 200 in 66.8089 ms
+[18:15:45 WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+[18:15:46 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 1165.0180 ms
+[18:15:48 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 89.1414 ms
+[18:15:48 INF] HTTP GET /api/parties/1012/user-type responded 200 in 59.0137 ms
+[18:15:49 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 159.6562 ms
+[18:16:18 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 26666.4971 ms
+[18:16:27 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 8784.0596 ms
+[18:17:54 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 215.8594 ms
+[18:18:21 INF] HTTP GET /api/lookups responded 200 in 36.1166 ms
+[18:18:22 INF] HTTP GET /api/lookups responded 200 in 59.1263 ms
+[18:18:35 INF] HTTP GET /api/parties responded 200 in 6.4145 ms
+[18:18:36 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 171.4626 ms
+[18:18:39 INF] HTTP POST /api/parties/1012/profile-status responded 200 in 87.4753 ms
+[18:18:39 INF] HTTP GET /api/parties/1012/user-type responded 200 in 17.9741 ms
+[18:18:39 INF] HTTP GET /api/parties/1012/crown-region/122207.0734/user-orgunit responded 200 in 97.0109 ms
+[18:19:40 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 58945.7481 ms
+[18:20:19 INF] HTTP POST /api/access-requests/digital-evidence responded 400 in 38349.8124 ms
