@@ -47,8 +47,18 @@ spec:
           env:
             - name: PlrClient__Url
               value: http://{{ $release }}-plr-intake:8080/api
+            - name: KafkaCluster__SslCaLocation
+              value: /opt/kafka/certificates/server-ca.crt
+            - name: KafkaCluster__SslCertificateLocation
+              value: /opt/kafka/certificates/client-ca.crt
+            - name: KafkaCluster__SslKeyLocation
+              value: /opt/kafka/certificates/client.key
+            - name: KafkaCluster__SaslOauthbearerProducerClientId
+              value: "kafka-producer"
+            - name: KafkaCluster__SaslOauthbearerConsumerClientId
+              value: "kafka-consumer"
             - name: JumClient__Url
-              value: https://jum-api-e27db1-dev.apps.gold.devops.gov.bc.ca/api
+              value: {{ .Values.jumClientURL }}
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspnetcore.environment }}
             - name: DB_HOST
@@ -92,23 +102,31 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
                   key: KafkaCluster__ProducerTopicName
-            - name: KafkaCluster__ClientId
+
+            - name: KafkaCluster__SaslOauthbearerConsumerClientSecret
               valueFrom:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
-                  key: KafkaCluster__ClientId
-            - name: KafkaCluster__ClientSecret
+                  key: KafkaCluster__SaslOauthbearerConsumerClientSecret
+            - name: KafkaCluster__SaslOauthbearerProducerClientSecret
               valueFrom:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
-                  key: KafkaCluster__ClientSecret
-            - name: KafkaCluster__SslCaLocation
+                  key: KafkaCluster__SaslOauthbearerProducerClientSecret
+
+            - name: KafkaCluster__SaslOauthbearerTokenEndpointUrl
               valueFrom:
-                 secretKeyRef:
-                   name: kafka-client-truststore
-                   key: kafka-client-truststore.cer.pem
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__SaslOauthbearerTokenEndpointUrl
+
+
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
+          volumeMounts:
+            - name: kafka-truststore
+              mountPath: "/opt/kafka/certificates"
+              readOnly: true
           envFrom:
             - secretRef:
                 name: keycloak-secrets
@@ -157,3 +175,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: kafka-truststore
+          secret:
+            secretName: kafka-cluster-client-truststore

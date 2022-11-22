@@ -129,6 +129,23 @@
           <mat-error>Required</mat-error>
         </mat-form-field>
       </div>
+
+      <div class="col-12">
+        <table mat-table [dataSource]="assignedRegions">
+          <ng-container matColumnDef="regionName">
+            <th *matHeaderCellDef mat-header-cell>Region Name</th>
+            <td *matCellDef="let element" mat-cell>{{ element.regionName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="assignedAgency">
+            <th *matHeaderCellDef mat-header-cell>Crown Office</th>
+            <td *matCellDef="let element" mat-cell>{{ element.assignedAgency }}</td>
+          </ng-container>
+          <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+          <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+        </table>
+
+      </div>
+
     </ui-page-section>
   </ng-container>
 

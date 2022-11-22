@@ -1,4 +1,5 @@
 namespace edt.service.HttpClients.Services.EdtCore;
+using System.Text.Json;
 
 public class EdtUserDto
 {
@@ -11,4 +12,8 @@ public class EdtUserDto
     public string? Role { get; set; }
     public bool? IsActive => true;
     public string? AccountType { get; set; }
+
+    // tostring that provides details of the object
+    public override string ToString() => JsonSerializer.Serialize(this);
+
 }

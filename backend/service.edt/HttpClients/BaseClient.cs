@@ -134,7 +134,7 @@ public class BaseClient
                 this.Logger.LogNonSuccessStatusCode(response.StatusCode, responseMessage);
                 return DomainResult.Failed<T>(response.StatusCode == HttpStatusCode.NotFound
                     ? $"The URL {url} was not found"
-                    : "Did not receive a successful status code");
+                    : $"Did not receive a successful status code {responseMessage}");
             }
 
             if (ignoreResponseContent)

@@ -38,24 +38,39 @@ spec:
       serviceAccountName: {{ include "edt-service.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.global.image.registry }}/{{ .Values.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+
           env:
             - name: DB_HOST
               value: jum-database
+            - name: KafkaCluster__SslCaLocation
+              value: /opt/kafka/certificates/server-ca.crt
+            - name: KafkaCluster__SslCertificateLocation
+              value: /opt/kafka/certificates/client-ca.crt
+            - name: KafkaCluster__SslKeyLocation
+              value: /opt/kafka/certificates/client.key
+            - name: KafkaCluster__SaslOauthbearerProducerClientId
+              value: "kafka-producer"
+            - name: KafkaCluster__SaslOauthbearerConsumerClientId
+              value: "kafka-consumer"
+            - name: KafkaCluster__ConsumerGroupId
+              value: {{ include "edt-service.fullname" . }}-{{}}-consumer-group
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: jum-database
+                  name: {{ include "edt-service.fullname" . }}-jum-database
                   key: DB_PASSWORD
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: jum-database
+                  name: {{ include "edt-service.fullname" . }}-jum-database
                   key: DB_USER
             - name: DATABASE_NAME
               value: jum
@@ -81,21 +96,25 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-edt
                   key: KafkaCluster__ProducerTopicName
-            - name: KafkaCluster__ClientId
+
+
+            - name: KafkaCluster__SaslOauthbearerConsumerClientSecret
               valueFrom:
                 secretKeyRef:
                   name: kafkaconfig-edt
-                  key: KafkaCluster__ClientId
-            - name: KafkaCluster__ClientSecret
+                  key: KafkaCluster__SaslOauthbearerConsumerClientSecret
+            - name: KafkaCluster__SaslOauthbearerProducerClientSecret
               valueFrom:
                 secretKeyRef:
                   name: kafkaconfig-edt
-                  key: KafkaCluster__ClientSecret
-            - name: KafkaCluster__SslCaLocation
+                  key: KafkaCluster__SaslOauthbearerProducerClientSecret
+
+            - name: KafkaCluster__SaslOauthbearerTokenEndpointUrl
               valueFrom:
-                 secretKeyRef:
-                   name: kafka-client-truststore
-                   key: kafka-client-truststore.cer.pem
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__SaslOauthbearerTokenEndpointUrl
+
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
             - name: EdtCLient__Url
@@ -108,6 +127,10 @@ spec:
                 secretKeyRef:
                   name: edt-client
                   key: Apikey          
+          volumeMounts:
+          - name: truststore
+            mountPath: "/opt/kafka/certificates"
+            readOnly: true
           envFrom:
             - secretRef:
                 name: keycloak-secrets
@@ -121,6 +144,15 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
         #  livenessProbe: //turn this on for TEST and PROD
          #   httpGet:
         #      path: /health/liveness
@@ -142,6 +174,7 @@ spec:
           #   httpGet:
           #     path: /
           #     port: http
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -156,3 +189,11 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: truststore
+          secret:
+            secretName: kafka-cluster-client-truststore
+        - name: truststore-key
+          secret:
+            secretName: kafka-cluster-client-key
+

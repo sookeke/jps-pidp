@@ -20,7 +20,7 @@ public class DigitalEvidence
         public string OrganizationType { get; set; } = string.Empty;
         public string OrganizationName { get; set; } = string.Empty;
         public string ParticipantId { get; set; } = string.Empty;
-        public List<AssignedRegion> AssignedRegion { get; set; } = new List<AssignedRegion>();
+        public List<AssignedRegion> AssignedRegions { get; set; } = new List<AssignedRegion>();
     }
     public enum UserType
     {
@@ -38,7 +38,7 @@ public class DigitalEvidence
             this.RuleFor(x => x.OrganizationName).NotEmpty();
             this.RuleFor(x => x.OrganizationType).NotEmpty();
             this.RuleFor(x => x.ParticipantId).NotEmpty();
-            this.RuleFor(x => x.AssignedRegion).ForEach(x => x.NotEmpty());
+            this.RuleFor(x => x.AssignedRegions).ForEach(x => x.NotEmpty());
             this.RuleFor(x => x.PartyId).GreaterThan(0);
         }
     }
@@ -79,7 +79,7 @@ public class DigitalEvidence
                 return DomainResult.Failed();
             }
 
-            if (!await this.UpdateKeycloakUser(dto.UserId, command.AssignedRegion, command.ParticipantId))
+            if (!await this.UpdateKeycloakUser(dto.UserId, command.AssignedRegions, command.ParticipantId))
             {
                 return DomainResult.Failed();
             }
@@ -140,7 +140,7 @@ public class DigitalEvidence
                 FullName = $"{dto.FirstName} {dto.LastName}",
                 AccountType = "Saml",
                 Role = "User",
-                AssignedRegion = command.AssignedRegion
+                AssignedRegion = command.AssignedRegions
             });
         }
 
@@ -155,7 +155,7 @@ public class DigitalEvidence
                 ParticipantId = command.ParticipantId,
                 AccessTypeCode = AccessTypeCode.DigitalEvidence,
                 RequestedOn = this.clock.GetCurrentInstant(),
-                AssignedRegions = command.AssignedRegion
+                AssignedRegions = command.AssignedRegions
             };
             this.context.DigitalEvidences.Add(digitalEvident);
 
@@ -179,7 +179,7 @@ public class DigitalEvidence
                     FullName = $"{dto.FirstName} {dto.LastName}",
                     AccountType = "Saml",
                     Role = "User",
-                    AssignedRegion = command.AssignedRegion
+                    AssignedRegion = command.AssignedRegions
                 }
             });
             return Task.FromResult(exportedEvent.Entity);
@@ -195,6 +195,7 @@ public class DigitalEvidence
             {
                 if (!await this.keycloakClient.AddGrouptoUser(userId, group.RegionName))
                 {
+                   
                     return false;
                 }
             }

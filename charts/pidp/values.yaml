@@ -240,3 +240,18 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+postgresql:
+  enabled: true
+  auth:
+    username: postgres
+    password: postgres
+    database: postgres
+  primary:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
+    persistence:
+      size: 1Gi
