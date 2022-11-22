@@ -62,7 +62,7 @@ public class PidpConfiguration
         public string Url { get; set; } = string.Empty;
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
-        public string BoostrapServers { get; set; } = string.Empty;
+        public string BootstrapServers { get; set; } = string.Empty;
         public string ConsumerTopicName { get; set; } = string.Empty;
         public string ProducerTopicName { get; set; } = string.Empty;
         public string SaslOauthbearerTokenEndpointUrl { get; set; } = string.Empty;

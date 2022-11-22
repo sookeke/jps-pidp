@@ -4,11 +4,15 @@ using Confluent.Kafka;
 using edt.service.Kafka.Interfaces;
 using EdtService.Kafka;
 using IdentityModel.Client;
+using Serilog;
 using System.Globalization;
 
 public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDisposable, IKafkaProducer<TKey, TValue> where TValue : class
 {
     private readonly IProducer<TKey, TValue> producer;
+    private const string EXPIRY_CLAIM = "exp";
+    private const string SUBJECT_CLAIM = "sub";
+
     /// <summary>
     /// for production use of sasl/oauthbearer
     /// implement authentication callbackhandler for token retrival
@@ -31,6 +35,8 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
     {
         try
         {
+
+
             var clusterConfig = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json").Build();
@@ -38,6 +44,10 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
             var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientId");
             var clientSecret = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientSecret");
             var accessTokenClient = new HttpClient();
+
+            Log.Logger.Information("Producer getting token {0}", tokenEndpoint);
+
+
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = tokenEndpoint,
@@ -46,12 +56,17 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
                 GrantType = "client_credentials"
             });
             var tokenTicks = GetTokenExpirationTime(accessToken.AccessToken);
+            var subject = GetTokenSubject(accessToken.AccessToken);
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
+            var timeSpan = new DateTime() - tokenDate;
+            var ms = tokenDate.ToUnixTimeMilliseconds();
+            Log.Logger.Information("Producer got token {0}", ms);
 
-            client.OAuthBearerSetToken(accessToken.AccessToken, tokenDate.ToUnixTimeMilliseconds(), null);
+            client.OAuthBearerSetToken(accessToken.AccessToken, ms, subject);
         }
         catch (Exception ex)
         {
+            Log.Logger.Error(ex.Message);
             client.OAuthBearerSetTokenFailure(ex.ToString());
         }
     }
@@ -59,9 +74,18 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
     {
         var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
         var jwtSecurityToken = handler.ReadJwtToken(token);
-        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp", StringComparison.Ordinal)).Value;
+
+        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals(KafkaProducer<TKey, TValue>.EXPIRY_CLAIM, StringComparison.Ordinal)).Value;
         var ticks = long.Parse(tokenExp, CultureInfo.InvariantCulture);
         return ticks;
+    }
+
+    private static string GetTokenSubject(string token)
+    {
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(token);
+        return jwtSecurityToken.Claims.First(claim => claim.Type.Equals(KafkaProducer<TKey, TValue>.SUBJECT_CLAIM, StringComparison.Ordinal)).Value;
+
     }
 }
 

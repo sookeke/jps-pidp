@@ -124,6 +124,7 @@ public partial class ProfileStatus
 
             protected override void SetAlertsAndStatus(ProfileStatusDto profile)
             {
+                // LJW - remove
                 if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard || profile.UserIsBcps || profile.UserIsIdir))
                 {
                     this.StatusCode = StatusCode.Hidden;

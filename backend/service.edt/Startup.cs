@@ -127,7 +127,11 @@ public class Startup
         app.UseCors("CorsPolicy");
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapHealthChecks("/health/liveness").AllowAnonymous();
+        });
 
     }
 }

@@ -61,7 +61,7 @@ spec:
             - name: KafkaCluster__SaslOauthbearerConsumerClientId
               value: "kafka-consumer"
             - name: KafkaCluster__ConsumerGroupId
-              value: {{ include "edt-service.fullname" . }}-{{}}-consumer-group
+              value: {{ include "edt-service.fullname" . }}-consumer-group
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -81,11 +81,11 @@ spec:
                 configMapKeyRef:
                   name: jum-api-database
                   key: CONNECTION_STRINGS_JUM          
-            - name: KafkaCluster__BoostrapServers
+            - name: KafkaCluster__BootstrapServers
               valueFrom:
                 secretKeyRef:
                   name: kafkaconfig-edt
-                  key: KafkaCluster__BoostrapServers
+                  key: KafkaCluster__BootstrapServers
             - name: KafkaCluster__ConsumerTopicName
               valueFrom:
                 secretKeyRef:

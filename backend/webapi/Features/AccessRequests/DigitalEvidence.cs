@@ -140,7 +140,7 @@ public class DigitalEvidence
                 FullName = $"{dto.FirstName} {dto.LastName}",
                 AccountType = "Saml",
                 Role = "User",
-                AssignedRegion = command.AssignedRegions
+                AssignedRegions = command.AssignedRegions
             });
         }
 
@@ -179,7 +179,7 @@ public class DigitalEvidence
                     FullName = $"{dto.FirstName} {dto.LastName}",
                     AccountType = "Saml",
                     Role = "User",
-                    AssignedRegion = command.AssignedRegions
+                    AssignedRegions = command.AssignedRegions
                 }
             });
             return Task.FromResult(exportedEvent.Entity);

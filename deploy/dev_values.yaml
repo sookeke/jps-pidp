@@ -48,11 +48,16 @@ nginx:
   replicaCount: 1
 
 frontend:
+  image: 
+  repository: frontend
+  pullPolicy: Always
+  tag: "develop"
   replicaCount: 1
   settings:
     environmentName: dev
     keycloak:
-      url: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
+      url: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+      realm: DEMSPOC
 
 
 webapi:

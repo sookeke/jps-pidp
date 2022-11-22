@@ -49,7 +49,7 @@ public static class HttpClientSetup
 
         var clientConfig = new ClientConfig()
         {
-            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            BootstrapServers = config.KafkaCluster.BootstrapServers,
             SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
@@ -63,7 +63,7 @@ public static class HttpClientSetup
 
         var producerConfig = new ProducerConfig
         {
-            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            BootstrapServers = config.KafkaCluster.BootstrapServers,
             Acks = Acks.All,
             SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl,
@@ -90,7 +90,7 @@ public static class HttpClientSetup
             SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerConsumerClientSecret,
             EnableAutoOffsetStore = false,
             AutoCommitIntervalMs = 4000,
-            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            BootstrapServers = config.KafkaCluster.BootstrapServers,
             SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl
         };
