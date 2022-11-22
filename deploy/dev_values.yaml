@@ -5,10 +5,38 @@ global:
   image:
     tag: develop
 
+
+jumClientURL: https://jum-api-e27db1-test.apps.gold.devops.gov.bc.ca/api
+
+
+postgresql:
+  postgresqlDatabase: jps-pidp
+  auth:
+    postgresPassword: "postgres"
+    username: postgres
+  existingSecret: postgresql
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: jps-password
+  primary:
+    initdb:
+      scriptsConfigMap: pipd-postgres-init
+
+
 database:
   autoCreate: false
   # databaseHost: dev-patroni
   # existingSecret: dev-patroni-secret
+  # trigger
+
+keycloak:
+  realm: DEMSPOC
+  auth: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
+  base: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+
+edt-service:
+  image:
+    tag: develop
 
 redis:
   enabled: false
@@ -24,9 +52,11 @@ frontend:
   settings:
     environmentName: dev
     keycloak:
-      url: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+      url: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
+
 
 webapi:
+  jumClientURL: https://jum-api-e27db1-dev.apps.gold.devops.gov.bc.ca/api
   replicaCount: 1
   aspnetcore:
     environment: Staging

@@ -1,9 +1,56 @@
 # PR Helm values
 global:
-  vanityURL: "healthprovideridentityportal.gov.bc.ca"
+  vanityURL: "pidp-e27db1-test.apps.gold.devops.gov.bc.ca"
   commit_sha: ""
   image:
-    tag: test
+    tag: build-test
+
+
+#postgresql:
+#  createSecret: true
+#  database: pidpdb
+#  auth:
+#    postgresPassword: "postgres"
+#    username: postgres
+#  secretKeys:
+#    adminPasswordKey: admin-password
+#    userPasswordKey: jps-password
+#  primary:
+#    database: pidpdb
+#    initdb:
+#      scriptsConfigMap: pipd-postgres-init
+
+postgresql:
+  createSecret: true
+  database: pidpdb
+  auth:
+    postgresPassword: "postgres"
+    username: postgres
+    database: pidpdb
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: jps-password
+  primary:
+    database: pidpdb
+    auth:
+      postgresPassword: "postgres"
+      username: postgres
+#    initdb:
+#      scriptsConfigMap: pipd-postgres-init
+
+edt-service:
+  image:
+    tag: build-test
+
+pidp-sso:
+  keycloak:
+    realm: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
+
+
+keycloak:
+  realmName: DEMSTEST
+  auth: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
+  base: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
 
 database:
   autoCreate: false
@@ -20,16 +67,20 @@ nginx:
   replicaCount: 2
 
 frontend:
-  replicaCount: 3
+  replicaCount: 1
   settings:
     environmentName: test
     keycloak:
-      url: https://common-logon-test.hlth.gov.bc.ca/auth
+      url: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
+      realm: "DEMSTEST"
 
 webapi:
-  replicaCount: 3
+  jumClientURL: https://jum-api-e27db1-test.apps.gold.devops.gov.bc.ca/api
+  replicaCount: 1
   aspnetcore:
     environment: Staging
 
+
 plr-intake:
-  replicaCount: 2
+  replicaCount: 1
+
