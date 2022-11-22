@@ -133,14 +133,15 @@ export class PortalStateBuilder {
           this.insertSection('administratorInfo', profileStatus),
         () => [new AdministratorInfoPortalSection(profileStatus, this.router)]
       ),
-      ...ArrayUtils.insertResultIf<IPortalSection>(
-        // TODO remove permissions when API exists and ready for production, or
-        // TODO replace || with && to keep it flagged when API exists
-        //this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
-        this.permissionsService.hasRole([Role.USER]) ||
-          this.insertSection('endorsements', profileStatus),
-        () => [new EndorsementsPortalSection(profileStatus, this.router)]
-      ),
+      // TODO - temporarily removed the endorsements section
+      //...ArrayUtils.insertResultIf<IPortalSection>(
+      //  // TODO remove permissions when API exists and ready for production, or
+      //  // TODO replace || with && to keep it flagged when API exists
+      //  //this.permissionsService.hasRole([Role.FEATURE_PIDP_DEMO]) ||
+      //  this.permissionsService.hasRole([Role.USER]) ||
+      //    this.insertSection('endorsements', profileStatus),
+      //  () => [new EndorsementsPortalSection(profileStatus, this.router)]
+      //),
     ];
   }
 

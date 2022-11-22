@@ -1,0 +1,19 @@
+{{- if .Values.route.enabled -}}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ include "pidp.fullname" . }}-route
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+spec:
+  host: {{ include "pidp.fullname" . }}-{{ .Values.global.licenseplate }}-{{ .Values.global.environment }}.apps.gold.devops.gov.bc.ca
+  to:
+    kind: Service
+    name: {{ include "pidp.fullname" . }}
+    weight: 100
+  port:
+    targetPort: https
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
+  wildcardPolicy: None
+{{- end }}

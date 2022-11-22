@@ -44,7 +44,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    - host: {{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ .Values.global.vanityURL }}
+    - host: {{ .Values.global.vanityURL }}
       http:
         paths:
           - path: ''
@@ -60,22 +60,5 @@ spec:
               {{- else }}
               serviceName: {{ $release }}-ingress
               servicePort: 8443
-              {{- end }}
-    - host: 'mauth{{ if $isProd }}{{else}}-{{ $release }}{{end}}.{{ .Values.global.vanityURL }}'
-      http:
-        paths:
-          - path: ''
-            {{- if (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: ImplementationSpecific
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $release }}-ingress
-                port:
-                  number: 8543
-              {{- else }}
-              serviceName: {{ $release }}-ingress
-              servicePort: 8543
               {{- end }}
 {{- end }}

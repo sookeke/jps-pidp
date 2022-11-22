@@ -8,7 +8,7 @@ public class EdtUserProvisioning
     public string? Email { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
     public string? Role { get; set; }
-    public List<AssignedRegion> AssignedRegion { get; set; } = new List<AssignedRegion>();
+    public List<AssignedRegion> AssignedRegions { get; set; } = new List<AssignedRegion>();
     public bool? IsActive => true;
     public string? AccountType { get; set; }
 }

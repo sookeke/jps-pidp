@@ -2,9 +2,7 @@
   <ui-page-header>{{ title }}</ui-page-header>
 
   <ui-page-section>
-    <ui-page-section-subheader
-      icon="corporate_fare"
-      heading="Organization Details">
+    <ui-page-section-subheader icon="corporate_fare" heading="Organization Details">
       <ng-container uiPageSectionSubheaderDesc>
         Provide your organization's details.
       </ng-container>
@@ -19,13 +17,9 @@
         </span> -->
 
         <mat-form-field class="w-100">
-          <mat-select
-            placeholder="Organization Type"
-            formControlName="organizationCode"
+          <mat-select placeholder="Organization Type" formControlName="organizationCode"
             (selectionChange)="onChange($event.value)">
-            <mat-option
-              *ngFor="let organization of organizations"
-              [value]="organization.code"
+            <mat-option *ngFor="let organization of organizations" [value]="organization.code"
               [disabled]="organization.disabled">
               {{ organization.name }}
             </mat-option>
@@ -40,12 +34,8 @@
           <p>Select what Health Authority you work in.</p>
 
           <mat-form-field class="w-100">
-            <mat-select
-              placeholder="Health Authority"
-              formControlName="healthAuthorityCode">
-              <mat-option
-                *ngFor="let healthAuthority of healthAuthorities"
-                [value]="healthAuthority.code">
+            <mat-select placeholder="Health Authority" formControlName="healthAuthorityCode">
+              <mat-option *ngFor="let healthAuthority of healthAuthorities" [value]="healthAuthority.code">
                 {{ healthAuthority.name }}
               </mat-option>
             </mat-select>
@@ -58,10 +48,7 @@
           <p>Provide your Health Authority employee ID.</p>
 
           <mat-form-field class="w-100">
-            <input
-              matInput
-              placeholder="Health Authority Employee ID"
-              formControlName="employeeIdentifier" />
+            <input matInput placeholder="Health Authority Employee ID" formControlName="employeeIdentifier" />
             <mat-error>Required</mat-error>
           </mat-form-field>
         </section>
@@ -73,12 +60,8 @@
           <p>Select which law enforcement you work in.</p>
 
           <mat-form-field class="w-100">
-            <mat-select
-              placeholder="Law Enforcement"
-              formControlName="lawEnforcementCode">
-              <mat-option
-                *ngFor="let lawEnforcement of lawEnforcements"
-                [value]="lawEnforcement.code">
+            <mat-select placeholder="Law Enforcement" formControlName="lawEnforcementCode">
+              <mat-option *ngFor="let lawEnforcement of lawEnforcements" [value]="lawEnforcement.code">
                 {{ lawEnforcement.name }}
               </mat-option>
             </mat-select>
@@ -91,10 +74,7 @@
           <p>Provide your Law Enforecment employee ID.</p>
 
           <mat-form-field class="w-100">
-            <input
-              matInput
-              placeholder="Law Enforcement Employee ID"
-              formControlName="employeeIdentifier" />
+            <input matInput placeholder="Law Enforcement Employee ID" formControlName="employeeIdentifier" />
             <mat-error>Required</mat-error>
           </mat-form-field>
         </section>
@@ -106,12 +86,8 @@
           <p>Select which correction service best describes you.</p>
 
           <mat-form-field class="w-100">
-            <mat-select
-              placeholder="Corrections Service"
-              formControlName="correctionServiceCode">
-              <mat-option
-                *ngFor="let correctionService of correctionServices"
-                [value]="correctionService.code">
+            <mat-select placeholder="Corrections Service" formControlName="correctionServiceCode">
+              <mat-option *ngFor="let correctionService of correctionServices" [value]="correctionService.code">
                 {{ correctionService.name }}
               </mat-option>
             </mat-select>
@@ -124,10 +100,7 @@
           <p>Provide your Out of Custody Personal Identification Number.</p>
 
           <mat-form-field class="w-100">
-            <input
-              matInput
-              placeholder="Out of Custody Personal ID"
-              formControlName="employeeIdentifier" />
+            <input matInput placeholder="Out of Custody Personal ID" formControlName="employeeIdentifier" />
             <mat-error>Required</mat-error>
           </mat-form-field>
         </section>
@@ -135,16 +108,12 @@
 
       <ng-container *ngIf="formState.organizationCode.value === 1">
         <section>
-          <ui-page-subheader>Justic Sector</ui-page-subheader>
-          <p>Select what JPSS Department you work in.</p>
+          <ui-page-subheader>Justice Sector</ui-page-subheader>
+          <p>Select the JPSS department you work in.</p>
 
           <mat-form-field class="w-100">
-            <mat-select
-              placeholder="Justice Sector"
-              formControlName="justiceSectorCode">
-              <mat-option
-                *ngFor="let justiceSector of justiceSectors"
-                [value]="justiceSector.code">
+            <mat-select placeholder="Justice Sector" formControlName="justiceSectorCode">
+              <mat-option *ngFor="let justiceSector of justiceSectors" [value]="justiceSector.code">
                 {{ justiceSector.name }}
               </mat-option>
             </mat-select>
@@ -154,14 +123,11 @@
 
         <ng-container *ngIf="formState.justiceSectorCode.value === 1">
           <section>
-            <ui-page-subheader>BCPS Justin User ID</ui-page-subheader>
-            <p>Provide your BCPS Justin Username</p>
+            <ui-page-subheader>BCPS JUSTIN User ID</ui-page-subheader>
+            <p>Provide your BCPS JUSTIN Username</p>
 
             <mat-form-field class="w-100">
-              <input
-                matInput
-                placeholder="Justin BCPS user ID"
-                formControlName="employeeIdentifier" />
+              <input matInput placeholder="JUSTIN BCPS user ID" formControlName="employeeIdentifier" />
               <mat-error>Required</mat-error>
             </mat-form-field>
           </section>
@@ -171,12 +137,7 @@
   </ui-page-section>
 
   <ui-page-footer>
-    <button
-      mat-stroked-button
-      uiPageFooterAction
-      type="button"
-      color="primary"
-      (click)="onBack()">
+    <button mat-stroked-button uiPageFooterAction type="button" color="primary" (click)="onBack()">
       Back Home
     </button>
     <button mat-flat-button uiPageFooterAction type="submit" color="primary">

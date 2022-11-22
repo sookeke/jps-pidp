@@ -43,6 +43,8 @@ import {
   digitalEvidenceSupportEmail,
   digitalEvidenceUrl,
 } from './digital-evidence.constants';
+import { AssignedRegion } from './digital-evidence-account.model';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-digital-evidence',
@@ -55,8 +57,12 @@ export class DigitalEvidencePage
 {
   public formState: DigitalEvidenceFormState;
   public title: string;
+
   public organizationType: OrganizationUserType;
+  public assignedRegions: AssignedRegion[] = [];
   public digitalEvidenceUrl: string;
+  public dataSource: MatTableDataSource<AssignedRegion>;
+
   public identityProvider$: Observable<IdentityProvider>;
   //public userType$: Observable<OrganizationUserType[]>;
   public IdentityProvider = IdentityProvider;
@@ -71,6 +77,10 @@ export class DigitalEvidencePage
   //@Input() public form!: FormGroup;
   public formControlNames: string[];
   public selectedOption = 0;
+  public displayedColumns: string[] = [
+    'regionName',
+    'assignedAgency'
+  ];
   public userTypes = [
     { id: 0, name: '--Select User Type--', disable: true },
     { id: 1, name: 'CorrectionService', disable: false },
@@ -101,6 +111,8 @@ export class DigitalEvidencePage
     this.digitalEvidenceUrl = digitalEvidenceUrl;
     this.organizationType = new OrganizationUserType();
     const partyId = this.partyService.partyId;
+    this.dataSource = new MatTableDataSource();
+
     //this.userType$ = this.usertype.getUserType(partyId);
     this.identityProvider$ = this.authorizedUserService.identityProvider$;
     this.result = '';
@@ -120,13 +132,25 @@ export class DigitalEvidencePage
       this.formState.OrganizationName.patchValue(
         this.organizationType.organizationName
       );
+
+
+
       this.formState.OrganizationType.patchValue(
         this.organizationType.organizationType
       );
       this.formState.ParticipantId.patchValue(
         this.organizationType.participantId
       );
+
+      this.userOrgunit.getUserOrgUnit(partyId,Number(this.organizationType.participantId )).subscribe((data:any) => {
+        this.assignedRegions = data;
+        this.formState.AssignedRegions.patchValue(this.assignedRegions);
+      });
+
     });
+
+
+
     this.formState = new DigitalEvidenceFormState(fb);
     this.collectionNotice =
       documentService.getDigitalEvidenceCollectionNotice();
@@ -138,6 +162,7 @@ export class DigitalEvidencePage
     this.formControlNames = [
       'OrganizationType',
       'OrganizationName',
+      'AssignedRegions',
       'ParticipantId',
     ];
   }
@@ -155,7 +180,8 @@ export class DigitalEvidencePage
             partyId,
             this.formState.OrganizationType.value,
             this.formState.OrganizationName.value,
-            this.formState.ParticipantId.value
+            this.formState.ParticipantId.value,
+            this.formState.AssignedRegions.value
           )
         : EMPTY;
     }
@@ -165,7 +191,9 @@ export class DigitalEvidencePage
           partyId,
           this.formState.OrganizationType.value,
           this.formState.OrganizationName.value,
-          this.formState.ParticipantId.value
+          this.formState.ParticipantId.value,
+          this.formState.AssignedRegions.value
+
         )
       : EMPTY;
   }
@@ -218,7 +246,8 @@ export class DigitalEvidencePage
           this.partyService.partyId,
           this.formState.OrganizationType.value,
           this.formState.OrganizationName.value,
-          this.formState.ParticipantId.value
+          this.formState.ParticipantId.value,
+          this.formState.AssignedRegions.value
         )
         .pipe(
           tap(() => (this.completed = true)),
@@ -237,7 +266,9 @@ export class DigitalEvidencePage
           this.partyService.partyId,
           this.formState.OrganizationType.value,
           this.formState.OrganizationName.value,
-          this.formState.ParticipantId.value
+          this.formState.ParticipantId.value,
+          this.formState.AssignedRegions.value
+
         )
         .pipe(
           tap(() => (this.completed = true)),

@@ -2,7 +2,7 @@ export interface DemsAccount {
   organizationType: string;
   organizationName: string;
   participantId: string;
-  assignedRegion: AssignedRegion[];
+  assignedRegions: AssignedRegion[];
 }
 export interface AssignedRegion {
   regionId: number;

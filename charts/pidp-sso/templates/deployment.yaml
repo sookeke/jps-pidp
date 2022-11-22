@@ -1,0 +1,188 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sso.fullname" . }}
+  labels:
+    {{- include "sso.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "sso.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "sso.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.global.licenseplate }}-vault
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: 75
+      volumes:
+      - name: sso-x509-https-volume
+        secret:
+          secretName: sso-x509-https-secret
+      - name: sso-x509-jgroups-volume
+        secret:
+          secretName: sso-x509-jgroups-secret
+      - name: {{ .Values.application_name }}-service-ca
+        configMap:
+          name: config-service-cabundle
+      - name: sso-standalone-openshift-xml-test
+        configMap:
+          name: sso-test
+          defaultMode: 420
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.global.image.registry }}/{{ .Values.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
+          ## we can modify the below if we want to use a different configuration.xml file on startup
+#          command:
+#            - /bin/sh
+#            - '-c'
+#            - >-
+#              cp /provisioning/standalone-openshift.xml
+#              /opt/eap/standalone/configuration/standalone-openshift.xml &&
+#              /opt/eap/bin/openshift-launch.sh
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+#            - name: SSO_HOSTNAME
+#              value: {{ .Values.sso_hostname }}
+#            - name: DB_SERVICE_PREFIX_MAPPING
+#              value: {{ .Values.application_name }}
+            - name: DB_POSTGRESQL_SERVICE_HOST
+              value: {{ include "sso.fullname" . }}-postgresql
+            - name: DB_SERVICE_PREFIX_MAPPING
+              value: {{ include "sso.fullname" . }}-postgresql=DB
+            - name: DB_POSTGRESQL_SERVICE_PORT
+              value: '5432'
+            - name: DB_JNDI
+              value: java:jboss/datasources/KeycloakDS
+            - name: DB_USERNAME
+              value: keycloak
+            - name: DB_DRIVER_NAME
+              value: postgres
+            - name: DRIVER_NAME
+              value: postgres
+            - name: DB_DRIVER
+              value: postgres
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso.fullname" . }}-postgres
+                  key: password         
+            - name: DB_JDBC_URL
+              value: 'jdbc:postgresql://{{- include "sso.fullname" . }}-postgresql/keycloak'
+            - name: DB_DATABASE
+              value: keycloak
+            - name: TEST
+              value: {{ include "sso.fullname" . }}-https
+            - name: TX_DATABASE_PREFIX_MAPPING
+              value: {{ include "sso.fullname" . }}-postgresql=DB
+            - name: DB_MIN_POOL_SIZE
+              value: '5'
+            - name: DB_MAX_POOL_SIZE
+              value: '15'
+            - name: KEYCLOAK_EXTRA_ARGS
+            - name: JAVA_OPTS_APPEND
+              value: '-Dkeycloak.profile.feature.authorization=enabled -Dkeycloak.profile.feature.upload_scripts=enabled -Djboss.persistent.log.dir=/var/log/eap'
+            - name: DB_TX_ISOLATION
+              value: {{ .Values.db_tx_isolation }}
+            - name: JGROUPS_PING_PROTOCOL
+              value: dns.DNS_PING
+            - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+              value: sso-ping-test
+            - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+              value: '8888'
+            - name: X509_CA_BUNDLE
+              value: '/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt'
+            - name: JGROUPS_CLUSTER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso.fullname" . }}-jgroups
+                  key: password
+            - name: SSO_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso.fullname" . }}-keycloak-secrets
+                  key: keycloak-admin-user
+            - name: SSO_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso.fullname" . }}-keycloak-secrets
+                  key: keycloak-admin-password
+          ports:
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+            - containerPort: 8888
+              name: ping
+              protocol: TCP
+
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - /opt/eap/bin/livenessProbe.sh
+            initialDelaySeconds: 240
+            timeoutSeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            initialDelaySeconds: 180
+            timeoutSeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - /opt/eap/bin/readinessProbe.sh
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+#            - name: sso-standalone-openshift-xml-test
+#              readOnly: true
+#              mountPath: /provisioning
+            - mountPath: /etc/x509/https
+              name: sso-x509-https-volume
+              readOnly: true
+            - mountPath: /etc/x509/jgroups
+              name: sso-x509-jgroups-volume
+              readOnly: true
+#            - mountPath: /var/run/configmaps/service-ca
+#              name: service-ca
+#              readOnly: true
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

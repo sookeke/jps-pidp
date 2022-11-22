@@ -3,6 +3,7 @@ namespace edt.service.Kafka;
 using Confluent.Kafka;
 using edt.service.Kafka.Interfaces;
 using IdentityModel.Client;
+using Serilog;
 using System.Globalization;
 
 public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TValue : class
@@ -11,6 +12,9 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
     private IKafkaHandler<TKey, TValue> handler;
     private IConsumer<TKey, TValue> consumer;
     private string topic;
+    private const string EXPIRY_CLAIM = "exp";
+    private const string SUBJECT_CLAIM = "sub";
+
 
     private readonly IServiceScopeFactory serviceScopeFactory;
 
@@ -18,6 +22,7 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
     {
         this.serviceScopeFactory = serviceScopeFactory;
         this.config = config;
+
         //this.handler = handler;
         //this.consumer = consumer;
         //this.topic = topic;
@@ -94,13 +99,19 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
     {
         try
         {
+
+
             var clusterConfig = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json").Build();
             var tokenEndpoint = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
-            var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
-            var clientSecret = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientSecret");
+            var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientId");
+            var clientSecret = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientSecret");
             var accessTokenClient = new HttpClient();
+
+            Log.Logger.Information("Producer getting token {0}", tokenEndpoint);
+
+
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = tokenEndpoint,
@@ -109,12 +120,17 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
                 GrantType = "client_credentials"
             });
             var tokenTicks = GetTokenExpirationTime(accessToken.AccessToken);
+            var subject = GetTokenSubject(accessToken.AccessToken);
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
+            var timeSpan = new DateTime() - tokenDate;
+            var ms = tokenDate.ToUnixTimeMilliseconds();
+            Log.Logger.Information("Producer got token {0}", ms);
 
-            client.OAuthBearerSetToken(accessToken.AccessToken, tokenDate.ToUnixTimeMilliseconds(), null);
+            client.OAuthBearerSetToken(accessToken.AccessToken, ms, subject);
         }
         catch (Exception ex)
         {
+            Log.Logger.Error(ex.Message);
             client.OAuthBearerSetTokenFailure(ex.ToString());
         }
     }
@@ -122,9 +138,18 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
     {
         var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
         var jwtSecurityToken = handler.ReadJwtToken(token);
-        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp", StringComparison.Ordinal)).Value;
+
+        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals(KafkaConsumer<TKey, TValue>.EXPIRY_CLAIM, StringComparison.Ordinal)).Value;
         var ticks = long.Parse(tokenExp, CultureInfo.InvariantCulture);
         return ticks;
+    }
+
+    private static string GetTokenSubject(string token)
+    {
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(token);
+        return jwtSecurityToken.Claims.First(claim => claim.Type.Equals(KafkaConsumer<TKey, TValue>.SUBJECT_CLAIM, StringComparison.Ordinal)).Value;
+
     }
 }
 

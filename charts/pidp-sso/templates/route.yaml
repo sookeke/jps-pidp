@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    description: Route for application's https service.
+  labels:
+    application: {{ .Values.application_name }}
+  name: {{ include "sso.fullname" . }}
+spec:
+  tls:
+    termination: reencrypt
+  to:
+    kind: Service
+    name: {{ include "sso.fullname" . }}-https
+  wildcardPolicy: None

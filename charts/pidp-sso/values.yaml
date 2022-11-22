@@ -1,0 +1,132 @@
+# Default values for sso.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+global:
+  vanityURL: ""
+  commit_sha: ""
+  licenseplate: "e27db1"
+  environment: "dev"
+  image:
+    registry: image-registry.openshift-image-registry.svc:5000/e27db1-tools
+    tag: latest
+
+
+image:
+  repository: pidp-sso
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+
+application_name: sso
+db_database: keycloak
+db_jndi: java:jboss/datasources/KeycloakDS
+db_max_pool_size: '5'
+db_min_pool_size: '10'
+db_password: postgres
+#db_tx_isolation: '# TODO: must define a default value for .db_tx_isolation'
+db_username: postgres
+image_stream_namespace: 5b7aa5-tools
+jgroups_cluster_password: '# TODO: must define a default value for .jgroups_cluster_password'
+memory_limit: 1Gi
+postgresql_image_stream_tag: 13-el8
+postgresql_max_connections: '20'
+postgresql_shared_buffers: '# TODO: must define a default value for .postgresql_shared_buffers'
+sso_admin_password: keycloak
+sso_admin_username: keycloak
+sso_hostname: pidp-sso
+sso_realm: DEMS
+sso_service_password: sso
+sso_service_username: keycloak
+volume_capacity: 1Gi
+
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+
+postgresql:
+  enabled: true
+  auth:
+    username: keycloak
+    password: keycloak
+    database: keycloak
+  primary:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
+    persistence:
+      size: 1Gi
