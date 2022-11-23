@@ -124,7 +124,7 @@ public partial class ProfileStatus
 
             protected override void SetAlertsAndStatus(ProfileStatusDto profile)
             {
-                // LJW - remove
+                // LJW - remove access to Idir for BCPS
                 if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard || profile.UserIsBcps || profile.UserIsIdir))
                 {
                     this.StatusCode = StatusCode.Hidden;

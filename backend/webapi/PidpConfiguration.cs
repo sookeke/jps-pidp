@@ -73,6 +73,9 @@ public class PidpConfiguration
         public string SslCaLocation { get; set; } = string.Empty;
         public string SslCertificateLocation { get; set; } = string.Empty;
         public string SslKeyLocation { get; set; } = string.Empty;
+        public string Scope { get; set; } = "openid";
+        public string ConsumerGroupId { get; set; } = "dems-notification-ack";
+
     }
     public class JumClientConfiguration
     {
