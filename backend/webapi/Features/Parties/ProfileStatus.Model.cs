@@ -3,6 +3,7 @@ namespace Pidp.Features.Parties;
 using NodaTime;
 using Pidp.Models;
 using Pidp.Models.Lookups;
+using Serilog;
 
 public partial class ProfileStatus
 {
@@ -125,7 +126,8 @@ public partial class ProfileStatus
             protected override void SetAlertsAndStatus(ProfileStatusDto profile)
             {
                 // LJW - remove access to Idir for BCPS - re-enable for testing if necessary
-                if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard || profile.UserIsBcps )) //|| profile.UserIsIdir))
+                Log.Logger.Information("*** IDIR Currentl permits BCPS access for testing ***");
+                if (!(profile.UserIsPhsa || profile.UserIsBcServicesCard || profile.UserIsBcps || profile.UserIsIdir))
                 {
                     this.StatusCode = StatusCode.Hidden;
                     return;

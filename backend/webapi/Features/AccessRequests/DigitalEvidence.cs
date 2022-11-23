@@ -131,6 +131,7 @@ public class DigitalEvidence
 
         private async Task PublishAccessRequest(Command command, PartyDto dto, Models.DigitalEvidence digitalEvidence)
         {
+            Serilog.Log.Logger.Information("Adding message to topic {0} {1}", this.config.KafkaCluster.ProducerTopicName, command.ParticipantId);
             await this.kafkaProducer.ProduceAsync(this.config.KafkaCluster.ProducerTopicName, $"{digitalEvidence.Id}", new EdtUserProvisioning
             {
                 Key = $"{command.ParticipantId}",
@@ -146,6 +147,7 @@ public class DigitalEvidence
 
         private async Task<Models.DigitalEvidence> SubmitDigitalEvidenceRequest(Command command)
         {
+
             var digitalEvident = new Models.DigitalEvidence
             {
                 PartyId = command.PartyId,
@@ -189,13 +191,15 @@ public class DigitalEvidence
         {
             if (!await this.keycloakClient.UpdateUser(userId, (user) => user.SetPartId(partId)))
             {
+                Serilog.Log.Logger.Error("Failed to set user {0} partId in keycloak", partId);
+
                 return false;
             }
             foreach (var group in assignedGroup)
             {
                 if (!await this.keycloakClient.AddGrouptoUser(userId, group.RegionName))
                 {
-                   
+                    Serilog.Log.Logger.Error("Failed to add user {0} group {1} to keycloak", partId, group.RegionName);
                     return false;
                 }
             }
@@ -213,4 +217,5 @@ public static partial class DigitalEvidenceLoggingExtensions
     public static partial void LogDigitalEvidenceAccessRequestDenied(this ILogger logger);
     [LoggerMessage(2, LogLevel.Warning, "Digital Evidence Access Request Transaction failed due to the Party Record not meeting all prerequisites.")]
     public static partial void LogDigitalEvidenceAccessTrxFailed(this ILogger logger, string ex);
+    
 }
