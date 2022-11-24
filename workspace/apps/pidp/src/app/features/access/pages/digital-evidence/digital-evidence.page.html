@@ -56,20 +56,18 @@
       type="success"
       icon="check_circle"
       iconType="outlined"
-      heading="You have access">
+      heading="Access request submitted">
       <ng-container uiAlertContent>
         <p>
           Thank you for submitting your request. We will let you know via email
           once your request has been processed.<br />
         </p>
         <p>
-          After confirmation email, you can login to DEMS using your registered
-          IDP via this link:<br />
-          <a uiAnchor [attr.href]="digitalEvidenceUrl"></a>
+          If there are any problems processing your request you will also receive an email with details.
         </p>
         <p>
-          You will need to visit this link each time you want to access DEMS
-          System. It may be helpful to bookmark this link for future use.
+          Once you have received the confirmation mail you will be able to login to DEMS at :<br />
+          <a uiAnchor [attr.href]="digitalEvidenceUrl"></a>
         </p>
       </ng-container>
     </ui-alert>

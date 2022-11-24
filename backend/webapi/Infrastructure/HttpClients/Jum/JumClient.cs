@@ -1,6 +1,7 @@
 namespace Pidp.Infrastructure.HttpClients.Jum;
 
 using System.Globalization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using NodaTime;
 using Pidp.Models;
@@ -130,11 +131,15 @@ public class JumClient : BaseClient, IJumClient
         {
             return Task.FromResult(true);
         }
+
+        this.Logger.LogJustinUserNotMatching(JsonSerializer.Serialize(justinUser), JsonSerializer.Serialize(party));
         return Task.FromResult(false);
     }
 }
 public static partial class JumClientLoggingExtensions
 {
+    [LoggerMessage(1, LogLevel.Warning, "Provided User information does not match = {expected} {provided}.")]
+    public static partial void LogJustinUserNotMatching(this ILogger logger, string expected, string provided);
     [LoggerMessage(1, LogLevel.Warning, "No User found in JUM with Username = {username}.")]
     public static partial void LogNoUserFound(this ILogger logger, string username);
     [LoggerMessage(2, LogLevel.Warning, "No User found in JUM with PartId = {partId}.")]
