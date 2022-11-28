@@ -46,7 +46,7 @@ redis:
     existingSecretPasswordKey: database-password
 
 nginx:
-  replicaCount: 1
+  replicaCount: 2
 
 frontend:
   image: 
