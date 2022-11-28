@@ -27,7 +27,7 @@ metadata:
     application: {{ .Values.application_name }}-db
     rhsso: 7.6.0.GA
     template: sso76-ocp4-x509-postgresql-persistent
-  name: {{ .Values.application_name }}-postgresql
+  name: {{ include "sso.fullname" . }}-postgresql
 spec:
   ports:
     - port: 5432
@@ -45,7 +45,7 @@ metadata:
     application: {{ .Values.application_name }}
     rhsso: 7.6.0.GA
     template: sso76-ocp4-x509-postgresql-persistent
-  name: {{ .Values.application_name }}-ping
+  name: {{ include "sso.fullname" . }}-ping
 spec:
   clusterIP: None
   ports:

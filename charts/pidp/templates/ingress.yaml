@@ -44,7 +44,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    - host: {{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ .Values.global.vanityURL }}
+    - host: {{ .Values.global.vanityURL }}
       http:
         paths:
           - path: ''

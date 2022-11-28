@@ -24,7 +24,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "sso.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.global.licenseplate }}-vault
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       terminationGracePeriodSeconds: 75
@@ -80,7 +80,7 @@ spec:
             - name: DB_PASSWORD
               value: keycloak
             - name: DB_JDBC_URL
-              value: 'jdbc:postgresql://pidp-sso-postgresql/keycloak'
+              value: 'jdbc:postgresql://{{- include "sso.fullname" . }}-postgresql/keycloak'
             - name: DB_DATABASE
               value: keycloak
             - name: TEST
@@ -107,17 +107,17 @@ spec:
             - name: JGROUPS_CLUSTER_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: sso-jgroups-test
+                  name: {{ include "sso.fullname" . }}-jgroups
                   key: password
             - name: SSO_ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-secrets
+                  name: {{ include "sso.fullname" . }}-keycloak-secrets
                   key: keycloak-admin-user
             - name: SSO_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-secrets
+                  name: {{ include "sso.fullname" . }}-keycloak-secrets
                   key: keycloak-admin-password
           ports:
             - containerPort: 8778

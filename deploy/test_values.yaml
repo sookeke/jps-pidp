@@ -2,10 +2,24 @@
 global:
   vanityURL: "pidp-e27db1-test.apps.gold.devops.gov.bc.ca"
   commit_sha: ""
+  licenseplate: "e27db1"
+  environment: "test"
   image:
     tag: build-test
 
 
+route:
+  enabled: false
+
+ingress:
+  enabled: true
+  annotations:
+    route.openshift.io/termination: "passthrough" 
+
+  tls: {}
+    #- hosts:
+      #- "pidp-e27db1-test.apps.gold.devops.gov.bc.ca"
+      #secretName: tls-secret
 #postgresql:
 #  createSecret: true
 #  database: pidpdb
@@ -66,6 +80,7 @@ redis:
 nginx:
   replicaCount: 2
 
+    
 frontend:
   replicaCount: 1
   settings:

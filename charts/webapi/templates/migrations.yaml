@@ -15,6 +15,7 @@ metadata:
   labels:
     {{- include "webapi.labels" . | nindent 4 }}
 spec:
+  ttlSecondsAfterFinished: 30
   template:
     spec:
       containers:

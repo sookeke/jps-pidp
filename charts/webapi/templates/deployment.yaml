@@ -87,11 +87,11 @@ spec:
                 configMapKeyRef:
                   name: pidp-api-database
                   key: CONNECTION_STRINGS_PIDP
-            - name: KafkaCluster__BoostrapServers
+            - name: KafkaCluster__BootstrapServers
               valueFrom:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
-                  key: KafkaCluster__BoostrapServers
+                  key: KafkaCluster__BootstrapServers
             - name: KafkaCluster__ConsumerTopicName
               valueFrom:
                 secretKeyRef:

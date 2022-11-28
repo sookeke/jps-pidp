@@ -15,7 +15,7 @@ metadata:
   labels:
     {{- include "edt-service.labels" . | nindent 4 }}
 spec:
-  ttlSecondsAfterFinished: 100
+  ttlSecondsAfterFinished: 30
   template:
     spec:
       containers:
