@@ -58,7 +58,12 @@ spec:
             - name: KafkaCluster__SaslOauthbearerConsumerClientId
               value: "kafka-consumer"
             - name: JumClient__Url
-              value: {{ .Values.jumClientURL }}
+              valueFrom:
+                secretKeyRef:
+                  name: pidp-jum-backend-jum-api
+                  key: url
+            #- name: JumClient__Url
+            #  value: {{ .Values.jumClientURL }}
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspnetcore.environment }}
             - name: DB_HOST
