@@ -74,11 +74,12 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
                 var result = this.consumer.Consume(cancellationToken);
                 if (result != null)
                 {
-                    var consumerResult = await this.handler.HandleAsync(this.consumer.Name, result.Message.Key, result.Message.Value);
+                    var consumerResult = await this.handler.HandleAsync(this.consumer.MemberId, result.Message.Key, result.Message.Value);
 
                     if (consumerResult.Status == TaskStatus.RanToCompletion && consumerResult.Exception == null)
                     {
                         this.consumer.Commit(result);
+                        this.consumer.StoreOffset(result);
                     }
                 }
             }
@@ -167,7 +168,7 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
         using var scope = this.serviceScopeFactory.CreateScope();
 
         this.handler = scope.ServiceProvider.GetRequiredService<IKafkaHandler<TKey, TValue>>();
-        this.retryConsumer = new ConsumerBuilder<TKey, TValue>(this.config).SetValueDeserializer(new KafkaDeserializer<TValue>()).Build();
+        this.retryConsumer = new ConsumerBuilder<TKey, TValue>(this.config).SetOAuthBearerTokenRefreshHandler(OauthTokenRefreshCallback).SetValueDeserializer(new KafkaDeserializer<TValue>()).Build();
         this.retryTopics = retryTopics;
 
         await Task.Run(() => this.StartRetryConsumerLoop(stoppingToken), stoppingToken);
