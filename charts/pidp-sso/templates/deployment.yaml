@@ -78,7 +78,10 @@ spec:
             - name: DB_DRIVER
               value: postgres
             - name: DB_PASSWORD
-              value: keycloak
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sso.fullname" . }}-postgres
+                  key: password         
             - name: DB_JDBC_URL
               value: 'jdbc:postgresql://{{- include "sso.fullname" . }}-postgresql/keycloak'
             - name: DB_DATABASE

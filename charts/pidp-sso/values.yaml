@@ -8,6 +8,7 @@ global:
   vanityURL: ""
   commit_sha: ""
   licenseplate: "e27db1"
+  environment: "dev"
   image:
     registry: image-registry.openshift-image-registry.svc:5000/e27db1-tools
     tag: latest

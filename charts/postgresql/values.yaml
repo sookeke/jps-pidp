@@ -2,7 +2,7 @@
 ## Please, note that this will override the parameters, including dependencies, configured to use the global value
 ##
 global:
-  vanityURL: "pidp-db-e27db1-dev.apps.gold.devops.gov.bc.ca"
+  vanityURL: ""
 
   ## @param global.imageRegistry Global Docker image registry
   ##

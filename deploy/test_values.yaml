@@ -56,9 +56,6 @@ edt-service:
   image:
     tag: build-test
 
-pidp-sso:
-  keycloak:
-    realm: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
 
 
 keycloak:

@@ -17,23 +17,23 @@ spec:
       targetPort: 8443
   selector:
     {{- include "sso.selectorLabels" . | nindent 4 }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    description: The database server's port.
-  labels:
-    application: {{ .Values.application_name }}-db
-    rhsso: 7.6.0.GA
-    template: sso76-ocp4-x509-postgresql-persistent
-  name: {{ include "sso.fullname" . }}-postgresql
-spec:
-  ports:
-    - port: 5432
-      targetPort: 5432
-  selector:
-    {{- include "sso.selectorLabels" . | nindent 4 }}
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  annotations:
+#    description: The database server's port.
+#  labels:
+#    application: {{ .Values.application_name }}-db
+#    rhsso: 7.6.0.GA
+#    template: sso76-ocp4-x509-postgresql-persistent
+#  name: {{ include "sso.fullname" . }}-postgresql
+#spec:
+#  ports:
+#    - port: 5432
+#      targetPort: 5432
+#  selector:
+#    {{- include "sso.selectorLabels" . | nindent 4 }}
 ---
 apiVersion: v1
 kind: Service

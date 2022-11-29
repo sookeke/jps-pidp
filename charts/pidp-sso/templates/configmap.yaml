@@ -8,4 +8,4 @@ metadata:
     application: {{ .Values.application_name }}
     rhsso: 7.6.0.GA
     template: sso76-ocp4-x509-postgresql-persistent
-  name: {{ .Values.application_name }}-service-ca
+  name: {{ include "sso.fullname" . }}-service-ca

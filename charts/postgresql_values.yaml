@@ -2,7 +2,7 @@
 ## Please, note that this will override the parameters, including dependencies, configured to use the global value
 ##
 global:
-  vanityURL: "pidp-db-e27db1-test.apps.gold.devops.gov.bc.ca"
+  vanityURL: "pidp-db-sso-e27db1-test.apps.gold.devops.gov.bc.ca"
 
   ## @param global.imageRegistry Global Docker image registry
   ##
@@ -31,7 +31,7 @@ global:
       postgresPassword: ""
       username: ""
       password: ""
-      database: "pidp"
+      database: "pidp-sso"
       existingSecret: "pidp-postgres"
       secretKeys:
         adminPasswordKey: "admin-password"
@@ -130,7 +130,7 @@ auth:
   postgresPassword: ""
   ## @param auth.username Name for a custom user to create
   ##
-  username: ""
+  username: "keycloak"
   ## @param auth.password Password for the custom user to create. Ignored if `auth.existingSecret` with key `password` is provided
   ##
   password: ""
