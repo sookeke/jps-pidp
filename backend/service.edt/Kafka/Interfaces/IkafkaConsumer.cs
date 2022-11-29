@@ -1,4 +1,7 @@
 namespace edt.service.Kafka.Interfaces;
+
+using System.Collections.Generic;
+
 public interface IKafkaConsumer<TKey, TValue> where TValue : class
 {
     /// <summary>
@@ -17,4 +20,10 @@ public interface IKafkaConsumer<TKey, TValue> where TValue : class
     /// Releases all resources used by the current instance of the consumer
     /// </summary>
     void Dispose();
+    Task RetryConsume(List<string> retryTopics, CancellationToken stoppingToken);
+    void CloseRetry();
+    /// <summary>
+    /// Releases all resources used by the current instance of the consumer
+    /// </summary>
+    void DisposeRetry();
 }

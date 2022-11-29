@@ -1,8 +1,9 @@
 namespace edt.service.HttpClients.Services.EdtCore;
 
 using System.Text.Json;
+using edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
 
-public class EdtUserProvisioningModel
+public class EdtUserProvisioningModel : UserProvisoningRetry
 {
     public string? Id { get; set; }
     public string? Key { get; set; }

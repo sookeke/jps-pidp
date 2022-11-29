@@ -2,27 +2,36 @@ namespace edt.service.Kafka;
 
 using Confluent.Kafka;
 using edt.service.Kafka.Interfaces;
+using edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
 using IdentityModel.Client;
+using Microsoft.Identity.Client;
 using Serilog;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 
 public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TValue : class
 {
     private readonly ConsumerConfig config;
     private IKafkaHandler<TKey, TValue> handler;
     private IConsumer<TKey, TValue> consumer;
+    private IConsumer<TKey, TValue> retryConsumer;
     private string topic;
+    private readonly RetryPolicy retryPolicy;
+    private readonly EdtServiceConfiguration configuration;
+    private IEnumerable<string> retryTopics;
     private const string EXPIRY_CLAIM = "exp";
     private const string SUBJECT_CLAIM = "sub";
 
 
     private readonly IServiceScopeFactory serviceScopeFactory;
 
-    public KafkaConsumer(ConsumerConfig config, IServiceScopeFactory serviceScopeFactory)
+    public KafkaConsumer(ConsumerConfig config, IServiceScopeFactory serviceScopeFactory, RetryPolicy retryPolicy, EdtServiceConfiguration configuration)
     {
         this.serviceScopeFactory = serviceScopeFactory;
         this.config = config;
-
+        this.retryPolicy = retryPolicy;
+        this.configuration = configuration;
         //this.handler = handler;
         //this.consumer = consumer;
         //this.topic = topic;
@@ -151,5 +160,95 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
         return jwtSecurityToken.Claims.First(claim => claim.Type.Equals(KafkaConsumer<TKey, TValue>.SUBJECT_CLAIM, StringComparison.Ordinal)).Value;
 
     }
+
+    public async Task RetryConsume(List<string> retryTopics, CancellationToken stoppingToken)
+    {
+        this.config.GroupId = this.configuration.KafkaCluster.RetryConsumerGroupId;
+        using var scope = this.serviceScopeFactory.CreateScope();
+
+        this.handler = scope.ServiceProvider.GetRequiredService<IKafkaHandler<TKey, TValue>>();
+        this.retryConsumer = new ConsumerBuilder<TKey, TValue>(this.config).SetValueDeserializer(new KafkaDeserializer<TValue>()).Build();
+        this.retryTopics = retryTopics;
+
+        await Task.Run(() => this.StartRetryConsumerLoop(stoppingToken), stoppingToken);
+
+    }
+
+    private async Task StartRetryConsumerLoop(CancellationToken cancellationToken)
+    {
+        this.retryConsumer.Subscribe(this.retryTopics);
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                var result = this.retryConsumer.Consume(cancellationToken);
+                await this.RetryConsumerResult(result);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+            catch (ConsumeException e)
+            {
+                // Consumer errors should generally be ignored (or logged) unless fatal.
+                Console.WriteLine($"Consume error: {e.Error.Reason}");
+
+                if (e.Error.IsFatal)
+                {
+                    break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unexpected error: {e}");
+                break;
+            }
+        }
+    }
+
+    private async Task RetryConsumerResult(ConsumeResult<TKey, TValue> result)
+    {
+        if (result != null)
+        {
+            if (result.Topic == this.configuration.KafkaCluster.InitialRetryTopicName)
+            {
+                var retryContext = new Polly.Context { { "retrycount", 0 } };
+                var consumerResult = await this.retryPolicy.ImmediateConsumerRetry.ExecuteAsync(
+                    async context => await this.handler.HandleRetryAsync(this.retryConsumer.MemberId, result.Message.Key, result.Message.Value, (int)context["retrycount"], result.Topic), retryContext);
+
+                if (consumerResult.Status == TaskStatus.RanToCompletion && consumerResult.Exception == null)
+                {
+                    this.retryConsumer.Commit(result);
+                    this.retryConsumer.StoreOffset(result);
+                }
+            }
+            else if (result.Topic == this.configuration.KafkaCluster.MidRetryTopicName)
+            {
+                var retryContext = new Polly.Context { { "retrycount", 0 } };
+                var consumerResult = await this.retryPolicy.WaitForConsumerRetry.ExecuteAsync(
+                    async context => await this.handler.HandleRetryAsync(this.retryConsumer.MemberId, result.Message.Key, result.Message.Value, (int)context["retrycount"], result.Topic), retryContext);
+
+                if (consumerResult.Status == TaskStatus.RanToCompletion && consumerResult.Exception == null)
+                {
+                    this.retryConsumer.Commit(result);
+                    this.retryConsumer.StoreOffset(result);
+                }
+            }
+            else if (result.Topic == this.configuration.KafkaCluster.FinalRetryTopicName)
+            {
+                var retryContext = new Polly.Context { { "retrycount", 0 } };
+                var consumerResult = await this.retryPolicy.FinalWaitForConsumerRetry.ExecuteAsync(
+                    async context => await this.handler.HandleRetryAsync(this.retryConsumer.MemberId, result.Message.Key, result.Message.Value, (int)context["retrycount"], result.Topic), retryContext);
+
+                if (consumerResult.Status == TaskStatus.RanToCompletion && consumerResult.Exception == null)
+                {
+                    this.retryConsumer.Commit(result);
+                    this.retryConsumer.StoreOffset(result);
+                }
+            }
+        }
+    }
+    public void CloseRetry() => this.retryConsumer.Close();
+    public void DisposeRetry() => this.retryConsumer.Dispose();
 }
 
