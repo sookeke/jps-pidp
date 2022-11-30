@@ -104,14 +104,17 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             var clusterConfig = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json").Build();
-            var tokenEndpoint = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
-            var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
+
+            var tokenEndpoint = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerTokenEndpointUrl");
+            var clientId = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerConsumerClientId");
             var clientSecret = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerConsumerClientSecret");
+
             clientSecret ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientSecret");
+            clientId ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
+            tokenEndpoint ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
+            Log.Logger.Information("EDT Kafka Consumer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
+
             var accessTokenClient = new HttpClient();
-
-            Log.Logger.Information("Producer getting token {0}", tokenEndpoint);
-
 
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
@@ -125,7 +128,7 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
             var timeSpan = new DateTime() - tokenDate;
             var ms = tokenDate.ToUnixTimeMilliseconds();
-            Log.Logger.Information("Producer got token {0}", ms);
+            Log.Logger.Information("Consumer got token {0}", ms);
 
             client.OAuthBearerSetToken(accessToken.AccessToken, ms, subject);
         }
