@@ -42,7 +42,8 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
                 .AddJsonFile("appsettings.json").Build();
             var tokenEndpoint = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
             var clientId = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientId");
-            var clientSecret = clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientSecret");
+            var clientSecret = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerProducerClientSecret");
+            clientSecret ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientSecret");
             var accessTokenClient = new HttpClient();
 
             Log.Logger.Information("Producer getting token {0}", tokenEndpoint);
