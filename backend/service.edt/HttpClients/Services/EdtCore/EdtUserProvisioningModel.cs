@@ -28,3 +28,18 @@ public class AssignedRegion
     public override string ToString() => JsonSerializer.Serialize(this);
 
 }
+
+
+/// <summary>
+/// Represents a response from EDT API for group assignment for a user
+/// </summary>
+public class EdtUserGroup
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = String.Empty;
+    public override string ToString() => JsonSerializer.Serialize(this);
+
+}
+
+
+

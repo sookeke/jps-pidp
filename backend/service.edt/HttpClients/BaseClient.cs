@@ -47,6 +47,7 @@ public class BaseClient
     /// <param name="data"></param>
     protected StringContent CreateStringContent(object data) => new(JsonSerializer.Serialize(data, this.serializationOptions), Encoding.UTF8, "application/json");
 
+
     protected async Task<IDomainResult<T>> GetAsync<T>(string url) => await this.SendCoreAsync<T>(HttpMethod.Get, url, null, default);
     protected async Task<IDomainResult<T>> GetAsync<T>(string url, string accessToken) => await this.SendCoreAsync<T>(HttpMethod.Get, url, accessToken, null, default);
     /// <summary>
@@ -78,6 +79,14 @@ public class BaseClient
     /// <param name="url"></param>
     /// <param name="data"></param>
     protected async Task<IDomainResult> PutAsync(string url, object? data = null) => await this.SendCoreAsync(HttpMethod.Put, url, data == null ? null : this.CreateStringContent(data), default);
+
+
+    /// <summary>
+    /// Performs a DELETE to the supplier URL
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    protected async Task<IDomainResult> DeleteAsync(string url) => await this.SendCoreAsync(HttpMethod.Delete, url, null, default);
 
     /// <summary>
     /// Sends an HTTP message to the API; returning:
