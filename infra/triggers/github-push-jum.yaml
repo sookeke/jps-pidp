@@ -1,0 +1,89 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: github-push-jum
+  namespace: e27db1-tools
+spec:
+  namespaceSelector: {}
+  resources:
+    kubernetesResource:
+      spec:
+        template:
+          metadata:
+            creationTimestamp: null
+          spec:
+            containers:
+              - name: ''
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 128Mi
+                  requests:
+                    cpu: 250m
+                    memory: 64Mi
+            serviceAccountName: pipeline
+  serviceAccountName: pipeline
+  triggers:
+    - bindings:
+        - kind: TriggerBinding
+          ref: github-push-binding
+        - kind: TriggerBinding
+          name: release-namespace
+          value: e27db1-dev
+        - kind: TriggerBinding
+          name: release-name
+          value: pidp-jum
+        - kind: TriggerBinding
+          name: values-file
+          value: deploy/dev_values.yaml
+      interceptors:
+        - params:
+            - name: filter
+              value: >-
+                header.match('X-GitHub-Event', 'push') &&
+                body.repository.full_name == 'sookeke/JUM' && body.ref ==
+                'refs/heads/develop'
+            - name: overlays
+              value:
+                - expression: body.head_commit.id.truncate(7)
+                  key: truncated_sha
+                - expression: 'body.ref.replace(''refs/heads/'', '''')'
+                  key: branch_name
+          ref:
+            kind: ClusterInterceptor
+            name: cel
+      name: github-test
+      template:
+        ref: github-push-jum-trigger-template
+    - bindings:
+        - kind: TriggerBinding
+          ref: github-push-binding
+        - kind: TriggerBinding
+          name: release-namespace
+          value: e27db1-test
+        - kind: TriggerBinding
+          name: release-name
+          value: pidp-jum
+        - kind: TriggerBinding
+          name: values-file
+          value: deploy/test_values.yaml
+      interceptors:
+        - params:
+            - name: filter
+              value: >-
+                header.match('X-GitHub-Event', 'push') &&
+                body.repository.full_name == 'sookeke/JUM' && body.ref ==
+                'refs/heads/test'
+            - name: overlays
+              value:
+                - expression: body.head_commit.id.truncate(7)
+                  key: truncated_sha
+                - expression: 'body.ref.replace(''refs/heads/'', '''')'
+                  key: branch_name
+          ref:
+            kind: ClusterInterceptor
+            name: cel
+      name: github-test
+      template:
+        ref: github-push-jum-trigger-template
+

@@ -1,0 +1,7 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: {{ include "pidp-kafka.fullname" . }}-kafka-user
+spec:
+  authentication:
+    type: tls

@@ -20,6 +20,9 @@ export class DigitalEvidenceFormState extends AbstractFormState<DemsAccount> {
   public get ParticipantId(): FormControl {
     return this.formInstance.get('ParticipantId') as FormControl;
   }
+  public get AssignedRegions(): FormControl {
+    return this.formInstance.get('AssignedRegions') as FormControl;
+  }
 
   public get json(): DemsAccount | undefined {
     if (!this.formInstance) {
@@ -42,6 +45,7 @@ export class DigitalEvidenceFormState extends AbstractFormState<DemsAccount> {
       OrganizationType: ['', [Validators.required]],
       OrganizationName: ['', [Validators.required]],
       ParticipantId: ['', [Validators.required]],
+     AssignedRegions: ['', [Validators.required]],
     });
   }
 }

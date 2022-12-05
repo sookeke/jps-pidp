@@ -15,6 +15,7 @@ metadata:
   labels:
     {{- include "plr-intake.labels" . | nindent 4 }}
 spec:
+  ttlSecondsAfterFinished: 30
   template:
     spec:
       containers:
@@ -24,16 +25,16 @@ spec:
         command: ['./efbundle', '--connection', '$(ConnectionStrings__PlrDatabase)']
         env:
           - name: DB_HOST
-            value: postgresql
+            value: pidp-postgresql
           - name: POSTGRESQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: postgresql
+                name: pidp-postgresql
                 key: database-password
           - name: POSTGRESQL_USER
             valueFrom:
               secretKeyRef:
-                name: postgresql
+                name: pidp-postgresql
                 key: database-user
           - name: POSTGRESQL_DATABASE
             {{- if $isPR }}
@@ -41,7 +42,7 @@ spec:
             {{ else }}
             valueFrom:
               secretKeyRef:
-                name: postgresql
+                name: pidp-postgresql
                 key: database-name
             {{- end }}
           - name: DOTNET_BUNDLE_EXTRACT_BASE_DIR

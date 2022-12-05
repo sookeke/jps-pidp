@@ -56,21 +56,17 @@
       type="success"
       icon="check_circle"
       iconType="outlined"
-      heading="You have access">
+      heading="Access request submitted">
       <ng-container uiAlertContent>
         <p>
           Thank you for submitting your request. We will let you know via email
           once your request has been processed.<br />
         </p>
         <p>
-          After confirmation email, you can login to DEMS using your registered
-          IDP via this link:<br />
-          <a uiAnchor [attr.href]="digitalEvidenceUrl"></a>
+          If there are any problems processing your request you will receive an email with details.
         </p>
         <p>
-          You will need to visit this link each time you want to access DEMS
-          System. It may be helpful to bookmark this link for future use.
-        </p>
+    
       </ng-container>
     </ui-alert>
   </ng-container>
@@ -129,6 +125,23 @@
           <mat-error>Required</mat-error>
         </mat-form-field>
       </div>
+
+      <div class="col-12">
+        <table mat-table [dataSource]="assignedRegions">
+          <ng-container matColumnDef="regionName">
+            <th *matHeaderCellDef mat-header-cell>Region Name</th>
+            <td *matCellDef="let element" mat-cell>{{ element.regionName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="assignedAgency">
+            <th *matHeaderCellDef mat-header-cell>Crown Office</th>
+            <td *matCellDef="let element" mat-cell>{{ element.assignedAgency }}</td>
+          </ng-container>
+          <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+          <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+        </table>
+
+      </div>
+
     </ui-page-section>
   </ng-container>
 

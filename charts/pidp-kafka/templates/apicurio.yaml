@@ -1,0 +1,37 @@
+apiVersion: registry.apicur.io/v1
+kind: ApicurioRegistry
+metadata:
+  name: {{ include "pidp-kafka.fullname" . }}-apicurioregistry-pgsql
+spec:
+  configuration:
+    env:
+      - name: AUTH_ENABLED
+        value: 'true'
+      - name: QUARKUS_PROFILE
+        value: prod
+      - name: ROLES_ENABLED
+        value: 'true'
+      - name: REGISTRY_AUTH_OWNER_ONLY_AUTHORIZATION
+        value: 'true'
+      - name: KEYCLOAK_URL
+        value: {{ .Values.keycloak.base }}
+      - name: KEYCLOAK_REALM
+        value: {{ .Values.keycloak.realmName }}
+      - name: KEYCLOAK_API_CLIENT_ID
+        value: registry-client-api
+      - name: KEYCLOAK_UI_CLIENT_ID
+        value: registry-client-ui
+      - name: ROLE_BASED_AUTHZ_ENABLED
+        value: 'true'
+      - name: REGISTRY_DATASOURCE_URL
+        value: jdbc:postgresql://{{ include "pidp-kafka.fullname" . }}-postgresql.5b7aa5-test.svc.cluster.local:5432/pidpdb
+      - name: REGISTRY_DATASOURCE_PASSWORD
+        value: postgres
+      - name: REGISTRY_DATASOURCE_USERNAME
+        value: postgres
+    kafkasql:
+      bootstrapServers: '{{ include "pidp-kafka.fullname" . }}-cluster-bootstrap.5b7aa5-test.svc.cluster.local:9092'
+    persistence: "sql"
+  deployment:
+    host: >-
+      {{ include "pidp-kafka.fullname" . }}-apicurioregistry-pgsql.5b7aa5-dev.router-default.apps.silver.devops.gov.bc.ca

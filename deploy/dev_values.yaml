@@ -2,13 +2,52 @@
 global:
   vanityURL: "pidp-e27db1-dev.apps.gold.devops.gov.bc.ca"
   commit_sha: ""
+  licenseplate: "e27db1"
+  environment: "dev"
   image:
     tag: develop
+
+route:
+  enabled: false
+
+pidp-sso:
+  keycloak:
+    realm: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth/realms/DEMSDEV
+  auth:
+  existingSecret: pidp-sso-postgresql
+  secretKeys:
+    postgresPassword: password
+
+
+
+postgresql:
+  postgresqlDatabase: jps-pidp
+  auth:
+    postgresPassword: "postgres"
+    username: postgres
+  existingSecret: postgresql
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: jps-password
+  primary:
+    initdb:
+      scriptsConfigMap: pipd-postgres-init
+
 
 database:
   autoCreate: false
   # databaseHost: dev-patroni
   # existingSecret: dev-patroni-secret
+  # trigger
+
+keycloak:
+  realm: DEMSPOC
+  auth: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
+  base: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+
+edt-service:
+  image:
+    tag: develop
 
 redis:
   enabled: false
@@ -17,16 +56,23 @@ redis:
     existingSecretPasswordKey: database-password
 
 nginx:
-  replicaCount: 1
+  replicaCount: 2
 
 frontend:
+  image: 
+  repository: frontend
+  pullPolicy: Always
+  tag: "develop"
   replicaCount: 1
   settings:
     environmentName: dev
     keycloak:
       url: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+      realm: DEMSPOC
+
 
 webapi:
+  jumClientURL: https://jum-api-e27db1-dev.apps.gold.devops.gov.bc.ca/api
   replicaCount: 1
   aspnetcore:
     environment: Staging

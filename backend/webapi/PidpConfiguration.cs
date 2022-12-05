@@ -62,9 +62,20 @@ public class PidpConfiguration
         public string Url { get; set; } = string.Empty;
         public string ClientId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
-        public string BoostrapServers { get; set; } = string.Empty;
+        public string BootstrapServers { get; set; } = string.Empty;
         public string ConsumerTopicName { get; set; } = string.Empty;
         public string ProducerTopicName { get; set; } = string.Empty;
+        public string SaslOauthbearerTokenEndpointUrl { get; set; } = string.Empty;
+        public string SaslOauthbearerProducerClientId { get; set; } = string.Empty;
+        public string SaslOauthbearerProducerClientSecret { get; set; } = string.Empty;
+        public string SaslOauthbearerConsumerClientId { get; set; } = string.Empty;
+        public string SaslOauthbearerConsumerClientSecret { get; set; } = string.Empty;
+        public string SslCaLocation { get; set; } = string.Empty;
+        public string SslCertificateLocation { get; set; } = string.Empty;
+        public string SslKeyLocation { get; set; } = string.Empty;
+        public string Scope { get; set; } = "openid";
+        public string ConsumerGroupId { get; set; } = "dems-notification-ack";
+
     }
     public class JumClientConfiguration
     {

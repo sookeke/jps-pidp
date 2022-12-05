@@ -16,7 +16,9 @@ public class ExportedEvent
     [Required]
     public string EventType { get; set; } = string.Empty;
     [Required]
-    //public JsonNode? EventPayload { get; set; }
+    ///
+    /// replace with jsonb dataType see https://www.npgsql.org/efcore/mapping/json.html?tabs=data-annotations%2Cpoco
+    ///
     [NotMapped]
     public EdtUserProvisioning? EventPayload
     {

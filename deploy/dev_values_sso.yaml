@@ -1,0 +1,18 @@
+global:
+  vanityURL: "pidp-e27db1-dev-sso.apps.gold.devops.gov.bc.ca"
+  commit_sha: ""
+  licenseplate: "e27db1"
+  environment: "dev"
+
+
+keycloak:
+  realm: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
+
+
+postgresql:
+  enabled: true
+  auth:
+    username: keycloak
+    database: keycloak
+    existingSecret: "pidp-dev-sso-postgres"
+

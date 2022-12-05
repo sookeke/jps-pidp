@@ -1,14 +1,18 @@
 namespace edt.service.ServiceEvents;
 
 using Confluent.Kafka;
-using edt.service.HttpClients;
 using edt.service.Kafka.Interfaces;
 using EdtService.Kafka;
 using IdentityModel.Client;
+using Serilog;
+using System.Globalization;
 
-public class KafkaProducer<TKey, TValue> : IDisposable, IKafkaProducer<TKey, TValue> where TValue : class
+public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDisposable, IKafkaProducer<TKey, TValue> where TValue : class
 {
     private readonly IProducer<TKey, TValue> producer;
+    private const string EXPIRY_CLAIM = "exp";
+    private const string SUBJECT_CLAIM = "sub";
+
     /// <summary>
     /// for production use of sasl/oauthbearer
     /// implement authentication callbackhandler for token retrival
@@ -18,7 +22,7 @@ public class KafkaProducer<TKey, TValue> : IDisposable, IKafkaProducer<TKey, TVa
     /// https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/test/Confluent.Kafka.IntegrationTests/Tests/OauthBearerToken_PublishConsume.cs
     /// </summary>
     /// <param name="config"></param>
-    public KafkaProducer(ProducerConfig config) => this.producer = new ProducerBuilder<TKey, TValue>(config).SetValueSerializer(new KafkaSerializer<TValue>()).Build();
+    public KafkaProducer(ProducerConfig config) => this.producer = new ProducerBuilder<TKey, TValue>(config).SetOAuthBearerTokenRefreshHandler(OauthTokenRefreshCallback).SetValueSerializer(new KafkaSerializer<TValue>()).Build();
     public async Task ProduceAsync(string topic, TKey key, TValue value) => await this.producer.ProduceAsync(topic, new Message<TKey, TValue> { Key = key, Value = value });
     public void Dispose()
     {
@@ -26,27 +30,64 @@ public class KafkaProducer<TKey, TValue> : IDisposable, IKafkaProducer<TKey, TVa
         this.producer.Dispose();
         GC.SuppressFinalize(this);
     }
-    /// <summary>
-    /// create a reusable method for get accesstoken and refreshhandler for kafka clients in production
-    /// </summary>
-    /// <param name="producer"></param>
-    /// <param name="config"></param>
-    private async void TokenRefreshHandler(IProducer<TKey, TValue> producer, string config)
+
+    private static async void OauthTokenRefreshCallback(IClient client, string config)
     {
         try
         {
+            var clusterConfig = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json").Build();
+
+            var tokenEndpoint = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerTokenEndpointUrl");
+            var clientId = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerProducerClientId");
+            var clientSecret = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerProducerClientSecret");
+
+            clientSecret ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientSecret");
+            clientId ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientId");
+            tokenEndpoint ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
+
+            Log.Logger.Information("Pidp Kafka Producer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
             var accessTokenClient = new HttpClient();
+
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
-                Address = "https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC/protocol/openid-connect/token",
-                ClientId = "",
-                ClientSecret = "",
+                Address = tokenEndpoint,
+                ClientId = clientId,
+                ClientSecret = clientSecret,
+                GrantType = "client_credentials"
             });
-            producer.OAuthBearerSetToken(accessToken.AccessToken, accessToken.ExpiresIn, null);
+            var tokenTicks = GetTokenExpirationTime(accessToken.AccessToken);
+            var subject = GetTokenSubject(accessToken.AccessToken);
+            var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
+            var timeSpan = new DateTime() - tokenDate;
+            var ms = tokenDate.ToUnixTimeMilliseconds();
+            Log.Logger.Information("Producer got token {0}", ms);
+
+            client.OAuthBearerSetToken(accessToken.AccessToken, ms, subject);
         }
         catch (Exception ex)
         {
-            producer.OAuthBearerSetTokenFailure(ex.ToString());
+            Log.Logger.Error(ex.Message);
+            client.OAuthBearerSetTokenFailure(ex.ToString());
         }
     }
+    private static long GetTokenExpirationTime(string token)
+    {
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(token);
+
+        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals(KafkaProducer<TKey, TValue>.EXPIRY_CLAIM, StringComparison.Ordinal)).Value;
+        var ticks = long.Parse(tokenExp, CultureInfo.InvariantCulture);
+        return ticks;
+    }
+
+    private static string GetTokenSubject(string token)
+    {
+        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+        var jwtSecurityToken = handler.ReadJwtToken(token);
+        return jwtSecurityToken.Claims.First(claim => claim.Type.Equals(KafkaProducer<TKey, TValue>.SUBJECT_CLAIM, StringComparison.Ordinal)).Value;
+
+    }
 }
+

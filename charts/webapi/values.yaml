@@ -7,7 +7,7 @@ global:
   commit_sha: ""
   image:
     registry: image-registry.openshift-image-registry.svc:5000/e27db1-tools
-    tag: latest
+    tag: develop
 
 replicaCount: 1
 aspnetcore:
@@ -17,7 +17,7 @@ image:
   repository: pidp-webapi
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "develop"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -28,7 +28,7 @@ database:
   dbConnectionString: 'host=postgresql;port=5432;database=pidpdb;username=postgres;password=postgres'
   databaseHost: postgresql
   # If secret exists, it should contain key "database_url". specify the name of the secret below.
-  # existingSecret:
+  existingSecret: "pidp-postgresql"
 
 # Run migrations pre-install and pre-upgrade
 migrations:

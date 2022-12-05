@@ -10,6 +10,15 @@
 - Kafka Stream i.e Kafka KSQL Server
 
 
+##Pre-requisite
+
+- Openshift Red Hat Integration - AMQ Stream operator
+- Red Hat Inetgration - Camel K Operator
+- Red Hat Service Registry operator
+- Red Hat Knative operator
+- KEDA operator
+- KEDA http-ad-on Operator
+
 ```bash
 install kafka ui
 helm repo add kafka-ui https://provectus.github.io/kafka-ui
@@ -65,3 +74,10 @@ helm install ksqlserver --set kafka.enabled=false --set kafka.bootstrapServers=S
 ```
 
 <img align="center" width="1110" src="../docs/Solution Architecture.drawio.png">
+
+###Microservices
+- jpidp service
+- justin user manager service
+- edt service adapter
+- Email and paper mail template generator sevice
+- Notification Service (email and paper mail)

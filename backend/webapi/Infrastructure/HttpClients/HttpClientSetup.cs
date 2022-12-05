@@ -49,21 +49,33 @@ public static class HttpClientSetup
 
         var clientConfig = new ClientConfig()
         {
-            BootstrapServers = config.KafkaCluster.BoostrapServers,
-            SaslMechanism = SaslMechanism.Plain,
+            BootstrapServers = config.KafkaCluster.BootstrapServers,
+            SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl,
-            SaslUsername = config.KafkaCluster.ClientId,
-            SaslPassword = config.KafkaCluster.ClientSecret,
+            SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
+            SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
+            SaslOauthbearerScope = config.KafkaCluster.Scope,
+            SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
+            SslCaLocation = config.KafkaCluster.SslCaLocation,
+            SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
+            SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
 
         var producerConfig = new ProducerConfig
         {
-            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            BootstrapServers = config.KafkaCluster.BootstrapServers,
             Acks = Acks.All,
-            SaslMechanism = SaslMechanism.Plain,
+            SaslMechanism = SaslMechanism.OAuthBearer,
             SecurityProtocol = SecurityProtocol.SaslSsl,
-            SaslUsername = config.KafkaCluster.ClientId,
-            SaslPassword = config.KafkaCluster.ClientSecret,
+            SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
+            SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
+            SaslOauthbearerScope = config.KafkaCluster.Scope,
+            SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
+            SslCaLocation = config.KafkaCluster.SslCaLocation,
+            SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerProducerClientId,
+            SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerProducerClientSecret,
+            SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
+            SslKeyLocation = config.KafkaCluster.SslKeyLocation,
             EnableIdempotence = true,
             RetryBackoffMs = 1000,
             MessageSendMaxRetries = 3
@@ -71,16 +83,16 @@ public static class HttpClientSetup
 
         var consumerConfig = new ConsumerConfig(clientConfig)
         {
-            GroupId = "Dems-Notification-Ack",
+            GroupId = config.KafkaCluster.ConsumerGroupId,
             EnableAutoCommit = true,
             AutoOffsetReset = AutoOffsetReset.Earliest,
-            BootstrapServers = config.KafkaCluster.BoostrapServers,
+            SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerConsumerClientId,
+            SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerConsumerClientSecret,
             EnableAutoOffsetStore = false,
             AutoCommitIntervalMs = 4000,
-            SaslMechanism = SaslMechanism.Plain,
-            SecurityProtocol = SecurityProtocol.SaslSsl,
-            SaslUsername = config.KafkaCluster.ClientId,
-            SaslPassword = config.KafkaCluster.ClientSecret
+            BootstrapServers = config.KafkaCluster.BootstrapServers,
+            SaslMechanism = SaslMechanism.OAuthBearer,
+            SecurityProtocol = SecurityProtocol.SaslSsl
         };
 
         services.AddSingleton(consumerConfig);

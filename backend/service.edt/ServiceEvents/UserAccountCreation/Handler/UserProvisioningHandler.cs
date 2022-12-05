@@ -31,17 +31,18 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
         {
             return Task.CompletedTask;
         }
+        ///check weather edt service api is available before making any http request
+        ///
+        /// call version endpoint via get
+        ///
 
         //check wheather edt user already exist
-        var user = await this.edtClient.GetUser(value);
+        var user = await this.edtClient.GetUser(value.Key!);
         //create user account in EDT
 
-        var result = user != null
-            || await this.edtClient.CreateUser(value);
-
-        //await this.edtClient.UpdateUser(value);//update user (PUT)
-
-        //var result = await this.edtClient.CreateUser(value);
+        var result = user == null
+            ? await this.edtClient.CreateUser(value) //&& await this.edtClient.AddUserGroup($"Key:{value.Key!}", value.AssignedRegion) //create user
+            : await this.edtClient.UpdateUser(value, user);//update user
 
         if (result)
         {
@@ -54,6 +55,7 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                 await this.context.SaveChangesAsync();
                 //After successful operation, we can produce message for other service's consumption e.g. Notification service
 
+                // TODO - fix typo (is partyId used for anything?)
                 await this.producer.ProduceAsync(this.configuration.KafkaCluster.ProducerTopicName, key: key, new Notification
                 {
                     To = value.Email,
@@ -80,14 +82,22 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
 
         return Task.FromException(new InvalidOperationException()); //create specific exception handler later
     }
+
+    /// <summary>
+    ///
+    /// TODO This should come from a template
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <returns></returns>
     private static string MsgBody(string? firstName)
     {
+
         var msgBody = string.Format(CultureInfo.CurrentCulture, @"<html>
             <head>
                 <title>Digital Evidence Management System Enrolment Confirmation</title>
             </head>
                 <body> 
-                <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr'width='' height='50'/><br/><br/><div style='border-top: 3px solid #22BCE5'><span style = 'font-family: Arial; font-size: 10pt' ><br/> Hello {0},<br/><br/> Your Digital Evidence Management System Access Request has been processed and account succesfully provisioned.<br/><br/>
+                <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr'width='' height='50'/><br/><br/><div style='border-top: 3px solid #22BCE5'><span style = 'font-family: Arial; font-size: 10pt' ><br/> Hello {0},<br/><br/> Your Digital Evidence Management System Access Request has been processed and account successfully provisioned.<br/><br/>
                 You can Log in to the <a href='{1}'> EDT Portal </a> with your digital identity via SSO <b></b> to access the Digital Evidence Management System by clicking on the above link. <br/><br/> Thanks <br/> DEMS User Management.
                 </span></div></body></html> ",
                 firstName, "https://edtdems-poc.maple-edt.io/");

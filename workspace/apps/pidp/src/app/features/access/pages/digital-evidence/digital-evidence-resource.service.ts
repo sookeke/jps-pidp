@@ -28,7 +28,8 @@ export class DigitalEvidenceResource {
     partyId: number,
     organizationType: DemsAccount,
     organizationName: DemsAccount,
-    participantId: DemsAccount
+    participantId: DemsAccount,
+    assignedRegions: DemsAccount
   ): NoContent {
     return this.apiResource
       .post<NoContent>('access-requests/digital-evidence', {
@@ -36,6 +37,7 @@ export class DigitalEvidenceResource {
         organizationType,
         organizationName,
         participantId,
+        assignedRegions,
       })
       .pipe(
         NoContentResponse,
