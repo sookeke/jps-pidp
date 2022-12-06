@@ -117,12 +117,12 @@ spec:
 
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
-            - name: EdtCLient__Url
+            - name: EdtClient__Url
               valueFrom:
                 secretKeyRef:
                   name: edt-client
                   key: Url           
-            - name: EdtCLient__Apikey
+            - name: EdtClient__Apikey
               valueFrom:
                 secretKeyRef:
                   name: edt-client

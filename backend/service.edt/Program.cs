@@ -8,6 +8,8 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 public class Program
 {
+
+
     public static int Main(string[] args)
     {
         CreateLogger();
@@ -37,9 +39,24 @@ public class Program
             .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
             .UseSerilog();
 
-    private static void CreateLogger()
+    private static void CreateLogger(
+        )
     {
         var path = Environment.GetEnvironmentVariable("LogFilePath") ?? "logs";
+
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true)
+            .Build();
+
+        var seqEndpoint = Environment.GetEnvironmentVariable("Seq__Url");
+        seqEndpoint ??= config.GetValue<string>("Seq:Url");
+
+        if (string.IsNullOrEmpty(seqEndpoint))
+        {
+            Console.WriteLine("SEQ Log Host is not configured - check Seq environment");
+            Environment.Exit(100);
+        }
+
 
         try
         {
@@ -65,6 +82,7 @@ public class Program
             .Enrich.WithMachineName()
             .Enrich.WithProperty("Assembly", $"{name.Name}")
             .Enrich.WithProperty("Version", $"{name.Version}")
+            .WriteTo.Seq(seqEndpoint)
             .WriteTo.Console(
                 outputTemplate: outputTemplate,
                 theme: AnsiConsoleTheme.Code)

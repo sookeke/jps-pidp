@@ -1,4 +1,4 @@
-namespace edt.service.Extensions;
+namespace edt.service.Exceptions;
 using System.Runtime.Serialization;
 
 [Serializable]

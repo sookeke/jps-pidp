@@ -15,6 +15,8 @@ public class EdtUserProvisioningModel
     public bool? IsActive => true;
     public string? AccountType { get; set; }
 
+    public int AccessRequestId { get; set; }
+
     public override string ToString() => JsonSerializer.Serialize(this);
 
 }
@@ -36,7 +38,7 @@ public class AssignedRegion
 public class EdtUserGroup
 {
     public int Id { get; set; }
-    public string Name { get; set; } = String.Empty;
+    public string Name { get; set; } = string.Empty;
     public override string ToString() => JsonSerializer.Serialize(this);
 
 }

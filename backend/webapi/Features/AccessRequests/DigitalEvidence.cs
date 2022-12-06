@@ -141,7 +141,8 @@ public class DigitalEvidence
                 FullName = $"{dto.FirstName} {dto.LastName}",
                 AccountType = "Saml",
                 Role = "User",
-                AssignedRegions = command.AssignedRegions
+                AssignedRegions = command.AssignedRegions,
+                AccessRequestId = digitalEvidence.Id
             });
         }
 

@@ -1,13 +1,22 @@
 namespace edt.service.HttpClients.Services.EdtCore;
 
+using edt.service.Kafka.Model;
+using edt.service.ServiceEvents.UserAccountCreation.Models;
+
 public interface IEdtClient
 {
-    Task<bool> CreateUser(EdtUserProvisioningModel accessRequest);
-    Task<bool> UpdateUser(EdtUserProvisioningModel accessRequest, EdtUserDto previousRequest);
+    Task<UserModificationEvent> CreateUser(EdtUserProvisioningModel accessRequest);
+    Task<UserModificationEvent> UpdateUser(EdtUserProvisioningModel accessRequest, EdtUserDto previousRequest);
 
     Task<int> GetOuGroupId(string regionName);
 
     Task<EdtUserDto?> GetUser(string userKey);
+
+    /// <summary>
+    /// Get the version of EDT (also acts as a simple ping test)
+    /// </summary>
+    /// <returns></returns>
+    Task<string> GetVersion();
 
     /// <summary>
     /// Get EDT assigned groups for the user
@@ -24,7 +33,7 @@ public interface IEdtClient
     /// <param name="userIdOrKey"></param>
     /// <param name="assignedRegions"></param>
     /// <returns></returns>
-    Task<bool> UpdateUserAssignedGroups(string userIdOrKey, List<AssignedRegion> assignedRegions);
+    Task<bool> UpdateUserAssignedGroups(string userIdOrKey, List<AssignedRegion> assignedRegions, UserModificationEvent userModificationEvent);
 
     /// <summary>
     /// Remove the user from the group
@@ -33,4 +42,8 @@ public interface IEdtClient
     /// <param name="group"></param>
     /// <returns></returns>
     Task<bool> RemoveUserFromGroup(string userIdOrKey, EdtUserGroup group);
+
+
+    ///
+
 }
