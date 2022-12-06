@@ -2,27 +2,36 @@ namespace edt.service.Kafka;
 
 using Confluent.Kafka;
 using edt.service.Kafka.Interfaces;
+using edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
 using IdentityModel.Client;
+using Microsoft.Identity.Client;
 using Serilog;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 
 public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TValue : class
 {
     private readonly ConsumerConfig config;
     private IKafkaHandler<TKey, TValue> handler;
     private IConsumer<TKey, TValue> consumer;
+    private IConsumer<TKey, TValue> retryConsumer;
     private string topic;
+    private readonly RetryPolicy retryPolicy;
+    private readonly EdtServiceConfiguration configuration;
+    private IEnumerable<string> retryTopics;
     private const string EXPIRY_CLAIM = "exp";
     private const string SUBJECT_CLAIM = "sub";
 
 
     private readonly IServiceScopeFactory serviceScopeFactory;
 
-    public KafkaConsumer(ConsumerConfig config, IServiceScopeFactory serviceScopeFactory)
+    public KafkaConsumer(ConsumerConfig config, IServiceScopeFactory serviceScopeFactory, RetryPolicy retryPolicy, EdtServiceConfiguration configuration)
     {
         this.serviceScopeFactory = serviceScopeFactory;
         this.config = config;
-
+        this.retryPolicy = retryPolicy;
+        this.configuration = configuration;
         //this.handler = handler;
         //this.consumer = consumer;
         //this.topic = topic;
@@ -65,11 +74,12 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
                 var result = this.consumer.Consume(cancellationToken);
                 if (result != null)
                 {
-                    var consumerResult = await this.handler.HandleAsync(this.consumer.Name, result.Message.Key, result.Message.Value);
+                    var consumerResult = await this.handler.HandleAsync(this.consumer.MemberId, result.Message.Key, result.Message.Value);
 
                     if (consumerResult.Status == TaskStatus.RanToCompletion && consumerResult.Exception == null)
                     {
                         this.consumer.Commit(result);
+                        this.consumer.StoreOffset(result);
                     }
                 }
             }

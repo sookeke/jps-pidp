@@ -5,9 +5,9 @@ using edt.service.ServiceEvents.UserAccountCreation.Models;
 
 public interface IEdtClient
 {
-    Task<UserModificationEvent> CreateUser(EdtUserProvisioningModel accessRequest);
-    Task<UserModificationEvent> UpdateUser(EdtUserProvisioningModel accessRequest, EdtUserDto previousRequest);
-
+    Task<bool> CreateUser(EdtUserProvisioningModel accessRequest);
+    Task<bool> UpdateUser(EdtUserProvisioningModel accessRequest, EdtUserDto previousRequest);
+    Task<bool> AddUserGroups(string userIdOrKey, List<AssignedRegion> assignedRegions);
     Task<int> GetOuGroupId(string regionName);
 
     Task<EdtUserDto?> GetUser(string userKey);

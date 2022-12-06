@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using edt.service.Data;
 
@@ -11,9 +12,10 @@ using edt.service.Data;
 namespace edt.service.Data.Migrations
 {
     [DbContext(typeof(EdtDataStoreDbContext))]
-    partial class EdtDataStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221129204729_FailedEvent")]
+    partial class FailedEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

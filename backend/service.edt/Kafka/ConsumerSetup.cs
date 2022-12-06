@@ -5,6 +5,7 @@ using edt.service.HttpClients.Services.EdtCore;
 using edt.service.Kafka.Interfaces;
 using edt.service.ServiceEvents;
 using edt.service.ServiceEvents.UserAccountCreation;
+using edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
 using edt.service.ServiceEvents.UserAccountCreation.Handler;
 using EdtService.Extensions;
 
@@ -71,6 +72,7 @@ public static class ConsumerSetup
         services.AddScoped<IKafkaHandler<string, EdtUserProvisioningModel>, UserProvisioningHandler>();
         services.AddSingleton(typeof(IKafkaConsumer<,>), typeof(KafkaConsumer<,>));
         services.AddHostedService<EdtServiceConsumer>();
+        services.AddHostedService<ConsumerRetryService>();
 
         return services;
     }

@@ -12,6 +12,7 @@ public class EdtServiceConfiguration
     public KafkaClusterConfiguration KafkaCluster { get; set; } = new();
     public KeycloakConfiguration Keycloak { get; set; } = new();
     public MailServerConfiguration MailServer { get; set; } = new();
+    public RetryPolicyConfiguration RetryPolicy { get; set; } = new();
     public EdtClientConfiguration EdtClient { get; set; } = new();
 
     // ------- Configuration Objects -------
@@ -30,7 +31,29 @@ public class EdtServiceConfiguration
     {
         public string EdtDataStore { get; set; } = string.Empty;
     }
+    public class FinalRetryTopicName
+    {
+        public int RetryCount { get; set; }
+        public int WaitAfterInMins { get; set; }
+    }
+    public class MidRetryTopicName
+    {
+        public int RetryCount { get; set; }
+        public int WaitAfterInMins { get; set; }
+    }
 
+    public class InitialRetryTopicName
+    {
+        public int RetryCount { get; set; }
+        public int WaitAfterInMins { get; set; }
+    }
+
+    public class RetryPolicyConfiguration
+    {
+        public InitialRetryTopicName InitialRetryTopicName { get; set; } = new();
+        public FinalRetryTopicName FinalRetryTopicName { get; set; } = new();
+        public MidRetryTopicName MidRetryTopicName { get; set; } = new();
+    }
     public class ChesClientConfiguration
     {
         public bool Enabled { get; set; }
@@ -43,6 +66,9 @@ public class EdtServiceConfiguration
     {
         public string Url { get; set; } = string.Empty;
         public string BootstrapServers { get; set; } = string.Empty;
+        public string MidRetryTopicName { get; set; } = string.Empty;
+        public string InitialRetryTopicName { get; set; } = string.Empty;
+        public string FinalRetryTopicName { get; set; } = string.Empty;
         public string ConsumerTopicName { get; set; } = string.Empty;
         public string ProducerTopicName { get; set; } = string.Empty;
         public string UserModificationTopicName { get; set; } = string.Empty;
@@ -57,6 +83,7 @@ public class EdtServiceConfiguration
         public string SslKeyLocation { get; set; } = string.Empty;
         public string Scope { get; set; } = "openid";
         public string ConsumerGroupId { get; set; } = "accessrequest-consumer-group";
+        public string RetryConsumerGroupId { get; set; } = "accessrequest-retry-consumer-group";
 
 
 

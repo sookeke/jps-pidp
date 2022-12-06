@@ -12,6 +12,7 @@ public class EdtDataStoreDbContext : DbContext
     public DbSet<EmailLog> EmailLogs { get; set; } = default!;
     public DbSet<IdempotentConsumer> IdempotentConsumers { get; set; } = default!;
     public DbSet<NotificationAckModel> Notifications { get; set; } = default!;
+    public DbSet<FailedEventLog> FailedEventLogs { get; set; } = default!;
 
     public override int SaveChanges()
     {

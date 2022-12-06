@@ -35,6 +35,8 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
     {
         try
         {
+
+
             var clusterConfig = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json").Build();
@@ -49,6 +51,9 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
 
             Log.Logger.Information("Pidp Kafka Producer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
             var accessTokenClient = new HttpClient();
+
+            Log.Logger.Information("Producer getting token {0}", tokenEndpoint);
+
 
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
