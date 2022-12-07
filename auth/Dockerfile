@@ -7,6 +7,7 @@ MAINTAINER acme
 USER root
 
 COPY theme/ $JBOSS_HOME/themes/
+COPY configuration/standalone-openshift.xml $JBOSS_HOME/standalone/configuration/standalone-openshift.xml
 
 RUN chown -R jboss:root $JBOSS_HOME/themes/bcgov-with-local-login
 
