@@ -1,7 +1,10 @@
-namespace edt.service.ServiceEvents.UserAccountCreation.Models;
+namespace Pidp.Models;
 
 using System.ComponentModel.DataAnnotations;
 
+/// <summary>
+/// Represents an email (or other method later) notification model
+/// </summary>
 public class Notification
 {
     [EmailAddress(ErrorMessage = "Invalid Email Address")]

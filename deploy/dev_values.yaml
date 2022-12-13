@@ -5,7 +5,7 @@ global:
   licenseplate: "e27db1"
   environment: "dev"
   image:
-    tag: develop
+    tag: develop-clean
 
 route:
   enabled: false
@@ -47,7 +47,7 @@ keycloak:
 
 edt-service:
   image:
-    tag: develop
+    tag: develop-clean
 
 redis:
   enabled: false

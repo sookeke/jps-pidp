@@ -8,10 +8,10 @@ spec:
     userOperator: {}
   kafka:
     listeners:
-      - name: plain
-        port: 9092
-        type: internal
-        tls: false
+      #- name: plain
+      #  port: 9092
+      #  type: internal
+      #  tls: false
       - name: tls
         port: 9093
         type: internal
@@ -26,10 +26,10 @@ spec:
           enableOauthBearer: true
 #          checkAccessTokenType: true
 #          accessTokenIsJwt: true
-          clientId: kafka-broker-test
+          clientId: kafka-broker
           clientSecret:
             key: secret
-            secretName: {{ include "pidp-kafka.fullname" . }}-broker-secret-test
+            secretName: {{ include "pidp-kafka.fullname" . }}-broker-secret
           validIssuerUri: {{ .Values.keycloak.auth }}
           # introspectionEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token/introspect
           jwksEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/certs
@@ -41,7 +41,7 @@ spec:
               certificate: ca.crt
         configuration:
           bootstrap:
-            host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-test.apps.silver.devops.gov.bc.ca
+            host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-prod.apps.silver.devops.gov.bc.ca
           createBootstrapService: true
     storage:
       type: persistent-claim

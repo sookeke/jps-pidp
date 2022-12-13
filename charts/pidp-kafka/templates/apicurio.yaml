@@ -1,3 +1,4 @@
+{{- if .Values.apicurio.enabled }}
 apiVersion: registry.apicur.io/v1
 kind: ApicurioRegistry
 metadata:
@@ -24,14 +25,18 @@ spec:
       - name: ROLE_BASED_AUTHZ_ENABLED
         value: 'true'
       - name: REGISTRY_DATASOURCE_URL
-        value: jdbc:postgresql://{{ include "pidp-kafka.fullname" . }}-postgresql.5b7aa5-test.svc.cluster.local:5432/pidpdb
+        value: jdbc:postgresql://{{ include "pidp-kafka.fullname" . }}-postgresql.5b7aa5-{{ .Values.global.environment }}.svc.cluster.local:5432/pidpdb
       - name: REGISTRY_DATASOURCE_PASSWORD
-        value: postgres
+        valueFrom:
+          secretKeyRef:
+            name: pidp-kafka-postgresql
+            key: password
       - name: REGISTRY_DATASOURCE_USERNAME
-        value: postgres
+        value: kafka
     kafkasql:
-      bootstrapServers: '{{ include "pidp-kafka.fullname" . }}-cluster-bootstrap.5b7aa5-test.svc.cluster.local:9092'
+      bootstrapServers: '{{ include "pidp-kafka.fullname" . }}-cluster-bootstrap.5b7aa5-{{ .Values.global.environment }}.svc.cluster.local:9092'
     persistence: "sql"
   deployment:
     host: >-
-      {{ include "pidp-kafka.fullname" . }}-apicurioregistry-pgsql.5b7aa5-dev.router-default.apps.silver.devops.gov.bc.ca
+      {{ include "pidp-kafka.fullname" . }}-apicurioregistry-pgsql.5b7aa5-{{ .Values.global.environment }}.router-default.apps.silver.devops.gov.bc.ca
+{{- end }}

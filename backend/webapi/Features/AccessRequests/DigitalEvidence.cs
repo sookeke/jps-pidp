@@ -1,5 +1,6 @@
 namespace Pidp.Features.AccessRequests;
 
+using System.Globalization;
 using DomainResults.Common;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,8 @@ public class DigitalEvidence
         private readonly PidpConfiguration config;
         private readonly PidpDbContext context;
         private readonly IKafkaProducer<string, EdtUserProvisioning> kafkaProducer;
+        private readonly IKafkaProducer<string, Notification> kafkaNotificationProducer;
+
 
         public CommandHandler(
             IClock clock,
@@ -58,7 +61,8 @@ public class DigitalEvidence
             ILogger<CommandHandler> logger,
             PidpConfiguration config,
             PidpDbContext context,
-            IKafkaProducer<string, EdtUserProvisioning> kafkaProducer)
+            IKafkaProducer<string, EdtUserProvisioning> kafkaProducer,
+            IKafkaProducer<string, Notification> kafkaNotificationProducer)
         {
             this.clock = clock;
             this.keycloakClient = keycloakClient;
@@ -66,6 +70,7 @@ public class DigitalEvidence
             this.context = context;
             this.kafkaProducer = kafkaProducer;
             this.config = config;
+            this.kafkaNotificationProducer = kafkaNotificationProducer;
         }
 
         public async Task<IDomainResult> HandleAsync(Command command)
@@ -81,6 +86,7 @@ public class DigitalEvidence
 
             if (!await this.UpdateKeycloakUser(dto.UserId, command.AssignedRegions, command.ParticipantId))
             {
+
                 return DomainResult.Failed();
             }
 
@@ -89,6 +95,23 @@ public class DigitalEvidence
             try
             {
                 var digitalEvidence = await this.SubmitDigitalEvidenceRequest(command); //save all trx at once for production(remove this and handle using idempotent)
+                var key = Guid.NewGuid().ToString();
+                Serilog.Log.Logger.Information("Sending submission message for {0} to {1}", command.ParticipantId, dto.Email);
+                if (digitalEvidence != null)
+                {
+
+                    // send notification to user of sumission
+                    await this.kafkaNotificationProducer.ProduceAsync(this.config.KafkaCluster.NotificationTopicName, key: key, new Notification
+                    {
+                        To = dto.Email,
+                        From = "jpsprovideridentityportal@gov.bc.ca",
+                        FirstName = dto.FirstName,
+                        Subject = "Digital Evidence Management System Enrollment Request",
+                        MsgBody = MsgBodySubmissionReceived(dto.FirstName),
+                        PartyId = command.ParticipantId!,
+                        Tag = key
+                    });
+                }
 
                 //publish accessRequest Event (Sending Events to the Outbox)
 
@@ -109,6 +132,23 @@ public class DigitalEvidence
             }
 
             return DomainResult.Success();
+        }
+
+        private static string MsgBodySubmissionReceived(string? firstName)
+        {
+            var msgBody = string.Format(CultureInfo.CurrentCulture, @"<html>
+            <head>
+                <title>Digital Evidence Management System Enrollment Notification</title>
+            </head>
+                <body> 
+                <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr' width='' height='50'/><br/><br/>
+    <div style='border-top: 3px solid #22BCE5'><span style = 'font-family: Arial; font-size: 10pt' >
+<br/> Hello {0},<br/><br/>We have received your on-boarding request for DEMS.<br/>
+We will notify you when your account has been created<p/>
+<div style='border-top: 3px solid #22BCE5'>
+                </span></div></body></html> ",
+                    firstName);
+            return msgBody;
         }
 
         private async Task<PartyDto> GetPidpUser(Command command)
@@ -218,5 +258,5 @@ public static partial class DigitalEvidenceLoggingExtensions
     public static partial void LogDigitalEvidenceAccessRequestDenied(this ILogger logger);
     [LoggerMessage(2, LogLevel.Warning, "Digital Evidence Access Request Transaction failed due to the Party Record not meeting all prerequisites.")]
     public static partial void LogDigitalEvidenceAccessTrxFailed(this ILogger logger, string ex);
-    
+
 }

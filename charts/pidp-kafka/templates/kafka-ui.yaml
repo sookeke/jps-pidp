@@ -62,8 +62,6 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
-      serviceAccountName: kafka-ui
-      serviceAccount: kafka-ui
       securityContext: {}
       schedulerName: default-scheduler
       volumes:

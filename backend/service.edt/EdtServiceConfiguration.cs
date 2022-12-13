@@ -1,4 +1,7 @@
 namespace edt.service;
+
+using System.Text.Json;
+
 public class EdtServiceConfiguration
 {
     public static bool IsProduction() => EnvironmentName == Environments.Production;
@@ -31,28 +34,24 @@ public class EdtServiceConfiguration
     {
         public string EdtDataStore { get; set; } = string.Empty;
     }
-    public class FinalRetryTopicName
-    {
-        public int RetryCount { get; set; }
-        public int WaitAfterInMins { get; set; }
-    }
-    public class MidRetryTopicName
-    {
-        public int RetryCount { get; set; }
-        public int WaitAfterInMins { get; set; }
-    }
 
-    public class InitialRetryTopicName
+
+    public class RetryTopicModel
     {
         public int RetryCount { get; set; }
-        public int WaitAfterInMins { get; set; }
+        public int DelayMinutes { get; set; }
+        public bool NotifyUser { get; set; }
+        public bool NotifyOnEachRetry { get; set; } 
+        public int Order { get; set; }
+        public string TopicName { get; set; } = string.Empty;
+        public override string ToString() => JsonSerializer.Serialize(this);
+
     }
 
     public class RetryPolicyConfiguration
     {
-        public InitialRetryTopicName InitialRetryTopicName { get; set; } = new();
-        public FinalRetryTopicName FinalRetryTopicName { get; set; } = new();
-        public MidRetryTopicName MidRetryTopicName { get; set; } = new();
+        public string? DeadLetterTopic { get; set; }
+        public List<RetryTopicModel> RetryTopics { get; set; } = new List<RetryTopicModel>();
     }
     public class ChesClientConfiguration
     {
@@ -66,9 +65,6 @@ public class EdtServiceConfiguration
     {
         public string Url { get; set; } = string.Empty;
         public string BootstrapServers { get; set; } = string.Empty;
-        public string MidRetryTopicName { get; set; } = string.Empty;
-        public string InitialRetryTopicName { get; set; } = string.Empty;
-        public string FinalRetryTopicName { get; set; } = string.Empty;
         public string ConsumerTopicName { get; set; } = string.Empty;
         public string ProducerTopicName { get; set; } = string.Empty;
         public string UserModificationTopicName { get; set; } = string.Empty;

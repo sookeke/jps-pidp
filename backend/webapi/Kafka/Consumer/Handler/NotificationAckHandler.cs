@@ -39,7 +39,7 @@ public class NotificationAckHandler : IKafkaHandler<string, NotificationAckModel
             }
             catch (Exception)
             {
-                await trx.RollbackAsync();
+                //await trx.RollbackAsync();
                 return Task.FromException(new InvalidOperationException());
             }
         }

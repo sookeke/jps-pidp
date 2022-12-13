@@ -57,6 +57,11 @@ spec:
               value: "kafka-producer"
             - name: KafkaCluster__SaslOauthbearerConsumerClientId
               value: "kafka-consumer"
+            - name: Seq__Url
+              valueFrom:
+                secretKeyRef:
+                  name: datalust-seq
+                  key: url
             - name: JumClient__Url
               valueFrom:
                 secretKeyRef:
@@ -67,16 +72,16 @@ spec:
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspnetcore.environment }}
             - name: DB_HOST
-              value: postgresql
+              value: pidp-postgresql
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgresql
+                  name: pidp-postgresql
                   key: database-password
             - name: POSTGRESQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgresql
+                  name: pidp-postgresql
                   key: database-user
             - name: POSTGRESQL_DATABASE
               {{- if $isPR }}
@@ -84,7 +89,7 @@ spec:
               {{ else }}
               valueFrom:
                 secretKeyRef:
-                  name: postgresql
+                  name: pidp-postgresql
                   key: database-name
               {{- end }}
             - name: ConnectionStrings__PidpDatabase

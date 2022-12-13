@@ -50,6 +50,11 @@ spec:
           env:
             - name: DB_HOST
               value: jum-database
+            - name: Seq__Url
+              valueFrom:
+                secretKeyRef:
+                  name: datalust-seq
+                  key: url
             - name: KafkaCluster__SslCaLocation
               value: /opt/kafka/certificates/server-ca.crt
             - name: KafkaCluster__SslCertificateLocation
@@ -96,8 +101,21 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-edt
                   key: KafkaCluster__ProducerTopicName
-
-
+            - name: KafkaCluster__NotificationTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__NotificationTopicName
+            - name: KafkaCluster__UserCreationTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__UserCreationTopicName
+            - name: KafkaCluster__UserModificationTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__UserModificationTopicName
             - name: KafkaCluster__SaslOauthbearerConsumerClientSecret
               valueFrom:
                 secretKeyRef:
@@ -114,7 +132,6 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-edt
                   key: KafkaCluster__SaslOauthbearerTokenEndpointUrl
-
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
             - name: EdtClient__Url
@@ -126,7 +143,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: edt-client
-                  key: Apikey          
+                  key: Apikey 
           volumeMounts:
           - name: truststore
             mountPath: "/opt/kafka/certificates"
@@ -138,6 +155,8 @@ spec:
                 name: ches
             - configMapRef:
                 name: mail-settings
+            - configMapRef:
+                name: retry-policy
             - secretRef:
                 name: kafkaconfig
           ports:

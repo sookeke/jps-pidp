@@ -24,6 +24,7 @@ public static class ConsumerSetup
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
             SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
+            SocketKeepaliveEnable = true,
             SaslOauthbearerScope = config.KafkaCluster.Scope,
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
@@ -39,6 +40,7 @@ public static class ConsumerSetup
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
             SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
             SaslOauthbearerScope = config.KafkaCluster.Scope,
+            //RequestTimeoutMs = 60000,
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerProducerClientId,
@@ -50,6 +52,17 @@ public static class ConsumerSetup
             MessageSendMaxRetries = 3
         };
 
+        // consumers need to have timeouts set to match retry events
+        var retrySeconds = 0;
+        config.RetryPolicy.RetryTopics.ForEach(retryTopic =>
+        {
+            retrySeconds += retryTopic.RetryCount * retryTopic.DelayMinutes * 60;
+        });
+
+        // give an extra minute
+        retrySeconds += 60;
+        Serilog.Log.Information("Consumer max wait is set to {0} seconds", retrySeconds);
+
         var consumerConfig = new ConsumerConfig(clientConfig)
         {
             GroupId = config.KafkaCluster.ConsumerGroupId,
@@ -57,6 +70,9 @@ public static class ConsumerSetup
             AutoOffsetReset = AutoOffsetReset.Earliest,
             EnableAutoOffsetStore = false,
             AutoCommitIntervalMs = 4000,
+            MaxPollIntervalMs= retrySeconds * 1000,
+            ConnectionsMaxIdleMs = retrySeconds * 1000,
+            //SessionTimeoutMs = retrySeconds * 1000,
             BootstrapServers = config.KafkaCluster.BootstrapServers,
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerConsumerClientId,
             SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerConsumerClientSecret,
@@ -68,12 +84,12 @@ public static class ConsumerSetup
 
         services.AddSingleton(typeof(IKafkaProducer<,>), typeof(KafkaProducer<,>));
 
-
         services.AddScoped<IKafkaHandler<string, EdtUserProvisioningModel>, UserProvisioningHandler>();
+
         services.AddSingleton(typeof(IKafkaConsumer<,>), typeof(KafkaConsumer<,>));
+
         services.AddHostedService<EdtServiceConsumer>();
         services.AddHostedService<ConsumerRetryService>();
-
         return services;
     }
 }

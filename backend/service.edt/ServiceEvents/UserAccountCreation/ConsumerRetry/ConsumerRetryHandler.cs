@@ -1,5 +1,6 @@
-﻿namespace edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
+namespace edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
 
 public class ConsumerRetryHandler
 {
+
 }

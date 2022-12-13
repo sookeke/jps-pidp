@@ -1,13 +1,14 @@
 namespace edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
 
 using System.Net;
+using edt.service.HttpClients.Services.EdtCore;
 using edt.service.Kafka.Interfaces;
 
 public class ConsumerRetryService : BackgroundService
 {
-    private readonly IKafkaConsumer<string, UserProvisoningRetry> consumer;
+    private readonly IKafkaConsumer<string, EdtUserProvisioningModel> consumer;
     private readonly EdtServiceConfiguration config;
-    public ConsumerRetryService(IKafkaConsumer<string, UserProvisoningRetry> consumer, EdtServiceConfiguration config)
+    public ConsumerRetryService(IKafkaConsumer<string, EdtUserProvisioningModel> consumer, EdtServiceConfiguration config)
     {
         this.consumer = consumer;
         this.config = config;
@@ -16,8 +17,7 @@ public class ConsumerRetryService : BackgroundService
     {
         try
         {
-            var retryTopics = new List<string>() { this.config.KafkaCluster.InitialRetryTopicName, this.config.KafkaCluster.MidRetryTopicName, this.config.KafkaCluster.FinalRetryTopicName };
-            await this.consumer.RetryConsume(retryTopics, stoppingToken);
+            await this.consumer.RetryConsume(this.config.RetryPolicy.RetryTopics, stoppingToken);
         }
         catch (Exception ex)
         {
