@@ -129,8 +129,11 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
                   key: KafkaCluster__SaslOauthbearerTokenEndpointUrl
-
-
+            - name: KafkaCluster__NotificationTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__NotificationTopicName
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
           volumeMounts:

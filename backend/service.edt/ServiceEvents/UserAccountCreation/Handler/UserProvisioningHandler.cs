@@ -3,7 +3,9 @@ namespace edt.service.ServiceEvents.UserAccountCreation.Handler;
 using System.Globalization;
 using edt.service.Data;
 using edt.service.Exceptions;
+using edt.service.HttpClients;
 using edt.service.HttpClients.Services.EdtCore;
+using edt.service.Kafka;
 using edt.service.Kafka.Interfaces;
 using edt.service.Kafka.Model;
 using edt.service.ServiceEvents.UserAccountCreation.Models;
@@ -37,9 +39,11 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
         this.edtClient = edtClient;
         this.retryProducer = retryProducer;
     }
+
     public async Task<Task> HandleAsync(string consumerName, string key, EdtUserProvisioningModel accessRequestModel)
     {
-       Serilog.Log.Logger.Information("Db {0} {1}", this.context.Database.CanConnect(), this.context.Database.GetConnectionString());
+
+        Serilog.Log.Logger.Information("Db {0} {1}", this.context.Database.CanConnect(), this.context.Database.GetConnectionString());
 
         using var trx = this.context.Database.BeginTransaction();
         try
@@ -58,12 +62,6 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
             //check wheather edt user already exist
             var result = await this.CheckUser(accessRequestModel);
 
-            // TODO REMOVE THIS BLOCK ONCE TESTED
-            //await trx.RollbackAsync();
-            //Serilog.Log.Error("THROWING FAKE EXCEPTION!!!!!!!");
-            //throw new EdtServiceException("FAKE EXCEPTION!!!");
-            // TODO REMOVE THIS BLOCK ONCE TESTED
-
 
             if (result.Successful)
             {
@@ -71,6 +69,9 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                 await this.context.IdempotentConsumer(messageId: key, consumer: consumerName);
 
                 await this.context.SaveChangesAsync();
+
+                var msgKey = Guid.NewGuid().ToString();
+
 
                 // TODO - fix typo (is partyId used for anything?)
                 await this.producer.ProduceAsync(this.configuration.KafkaCluster.ProducerTopicName, key: key, new Notification
@@ -81,23 +82,36 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                     Subject = "Digital Evidence Management System Enrollment Confirmation",
                     MsgBody = MsgBody(accessRequestModel.FullName?.Split(' ').FirstOrDefault()),
                     PartyId = accessRequestModel.Key!,
-                    Tag = Guid.NewGuid().ToString()
+                    Tag = msgKey
                 });
 
 
-                await trx.CommitAsync();
-
+                var producer = new SchemaAwareProducer(ConsumerSetup.GetProducerConfig(), this.userModificationProducer);
                 // publish to the user creation topic for others to consume
+                bool publishResultOk;
                 if (result.Event == UserModificationEvent.UserEvent.Create)
                 {
-                    await this.userModificationProducer.ProduceAsync(this.configuration.KafkaCluster.UserCreationTopicName, key: key, result);
+                    Serilog.Log.Information("Publishing EDT user creation event {0}", msgKey);
+                    publishResultOk = await producer.ProduceAsync(this.configuration.KafkaCluster.UserCreationTopicName, key: msgKey, result);
                 }
                 else
                 {
-                    await this.userModificationProducer.ProduceAsync(this.configuration.KafkaCluster.UserModificationTopicName, key: key, result);
+                    Serilog.Log.Information("Publishing EDT user modification event {0}", msgKey);
+                    publishResultOk = await producer.ProduceAsync(this.configuration.KafkaCluster.UserModificationTopicName, key: msgKey, result);
                 }
 
-                return Task.CompletedTask;
+
+                if (publishResultOk)
+                {
+                    await trx.CommitAsync();
+                }
+                else
+                {
+                    Serilog.Log.Logger.Error("Failed to publish to user notification topic - rolling back transaction");
+                    await trx.RollbackAsync();
+                }
+
+                return Task.FromResult(publishResultOk);
 
             }
         }
@@ -348,6 +362,7 @@ We will inform you if we are unable to complete your request.<p/><p/>{2}<p/>
 
                     // publish to dead letter topic
                     await this.PublishToDeadLetterTopic(value, key, this.configuration.RetryPolicy.DeadLetterTopic);
+
 
                     // notify user
                     await this.NotifyUserFailure(value, key, this.configuration.KafkaCluster.ProducerTopicName);

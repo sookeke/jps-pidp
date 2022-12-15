@@ -6,7 +6,6 @@ using DomainResults.Common;
 using edt.service.Exceptions;
 using edt.service.Kafka.Model;
 using edt.service.ServiceEvents.UserAccountCreation.Models;
-using NodaTime;
 using Serilog;
 
 public class EdtClient : BaseClient, IEdtClient
@@ -26,7 +25,7 @@ public class EdtClient : BaseClient, IEdtClient
         {
             PartId = edtUserDto.Key,
             Event = UserModificationEvent.UserEvent.Create,
-            EventTime = SystemClock.Instance.GetCurrentInstant(),
+            EventTime = new DateTime(),
             AccessRequestId = accessRequest.AccessRequestId,
             Successful = true
         };
@@ -120,7 +119,7 @@ public class EdtClient : BaseClient, IEdtClient
         {
             PartId = edtUserDto.Key,
             Event = UserModificationEvent.UserEvent.Modify,
-            EventTime = SystemClock.Instance.GetCurrentInstant(),
+            EventTime = new DateTime(),
             AccessRequestId = accessRequest.AccessRequestId,
             Successful = true
     };

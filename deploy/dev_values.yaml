@@ -1,6 +1,6 @@
 # PR Helm values
 global:
-  vanityURL: "pidp-e27db1-dev.apps.gold.devops.gov.bc.ca"
+  vanityURL: "dev.jpidp.justice.gov.bc.ca"
   commit_sha: ""
   licenseplate: "e27db1"
   environment: "dev"

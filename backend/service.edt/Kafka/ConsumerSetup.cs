@@ -11,6 +11,9 @@ using EdtService.Extensions;
 
 public static class ConsumerSetup
 {
+
+    private static ProducerConfig? producerConfig;
+
     public static IServiceCollection AddKafkaConsumer(this IServiceCollection services, EdtServiceConfiguration config)
     {
         //Configuration = configuration;
@@ -31,7 +34,7 @@ public static class ConsumerSetup
             SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
             SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
-        var producerConfig = new ProducerConfig()
+        producerConfig = new ProducerConfig()
         {
             BootstrapServers = config.KafkaCluster.BootstrapServers,
             Acks = Acks.All,
@@ -91,5 +94,10 @@ public static class ConsumerSetup
         services.AddHostedService<EdtServiceConsumer>();
         services.AddHostedService<ConsumerRetryService>();
         return services;
+    }
+
+    public static ProducerConfig GetProducerConfig()
+    {
+        return producerConfig;
     }
 }
