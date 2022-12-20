@@ -42,13 +42,13 @@ export class GetSupportComponent implements OnInit {
   private setupSupport(): void {
     this.providedSupport = [
       {
-        name: 'JPS Provider Identity Portal',
+        name: 'Provider Identity Portal',
         email: this.config.emails.providerIdentitySupport,
       },
-      {
-        name: 'Digital Evidence Management System',
-        email: this.config.emails.digitalEvidenceSupport,
-      },
+      // {
+      //   name: 'Digital Evidence Management System',
+      //   email: this.config.emails.digitalEvidenceSupport,
+      // },
       {
         name: 'Driver Medical Fitness Transformation Program',
         email: this.config.emails.driverFitnessSupport,

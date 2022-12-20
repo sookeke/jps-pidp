@@ -4,7 +4,9 @@
       {{ property.label }}
       <ng-container [ngSwitch]="property.key">
         <ng-container *ngSwitchCase="'phone'">
-          {{ property.value | phone }}
+          <span *ngIf="property.value !== null">
+            {{ property.value | phone }}
+          </span>
         </ng-container>
         <ng-container *ngSwitchCase="'collegeCode'">
           {{ property.value | lookupCode: 'colleges' }}

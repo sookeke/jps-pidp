@@ -1,2 +1,2 @@
 export const digitalEvidenceUrl = 'https://edtdems-poc.maple-edt.io/';
-export const digitalEvidenceSupportEmail = 'support@dems.jps.com';
+export const digitalEvidenceSupportEmail = 'BCPS.Disclosure.Support@gov.bc.ca';

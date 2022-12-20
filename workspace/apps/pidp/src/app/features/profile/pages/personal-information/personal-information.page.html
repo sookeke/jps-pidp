@@ -1,9 +1,7 @@
 <ui-page [form]="formState.form" (submitted)="onSubmit()">
   <ui-page-header>{{ title }}</ui-page-header>
   <ui-page-section>
-    <ui-page-section-subheader
-      icon="assignment_ind"
-      heading="Personal Information">
+    <ui-page-section-subheader icon="assignment_ind" heading="Personal Information">
       <ng-container uiPageSectionSubheaderDesc>
         Provide the following information to complete your Provider Identity
         Profile.
@@ -11,7 +9,7 @@
     </ui-page-section-subheader>
   </ui-page-section>
 
-  <ui-page-section>
+  <ui-page-section *ngIf="(identityProvider$ | async) !== IdentityProvider.BCPS">
     <ui-page-section-subheader heading="Name">
       <ng-container uiPageSectionSubheaderDesc>
         <span *ngIf="(identityProvider$ | async) === IdentityProvider.BCSC">
@@ -24,10 +22,9 @@
 
     <app-user-info [user]="user$ | async"></app-user-info>
 
-    <ui-toggle-content
-      label="My name is different from the above captured"
-      [checked]="hasPreferredName"
-      (toggle)="onPreferredNameToggle($event)">
+    <ui-toggle-content *ngIf="(identityProvider$ | async) !== IdentityProvider.BCPS"
+                       label="My name is different from the above captured" [checked]="hasPreferredName"
+                       (toggle)="onPreferredNameToggle($event)">
       <ui-page-section-subheader heading="Preferred Name">
         <ng-container uiPageSectionSubheaderDesc>
           If you use a name professionally that is different from your legal
@@ -53,12 +50,7 @@
   </ui-page-section>
 
   <ui-page-footer>
-    <button
-      mat-stroked-button
-      uiPageFooterAction
-      type="button"
-      color="primary"
-      (click)="onBack()">
+    <button mat-stroked-button uiPageFooterAction type="button" color="primary" (click)="onBack()">
       Back Home
     </button>
 
