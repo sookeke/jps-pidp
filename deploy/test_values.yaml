@@ -1,11 +1,11 @@
 # PR Helm values
 global:
-  vanityURL: "pidp-e27db1-test.apps.gold.devops.gov.bc.ca"
+  vanityURL: "test.jpidp.justice.gov.bc.ca"
   commit_sha: ""
   licenseplate: "e27db1"
   environment: "test"
   image:
-    tag: build-test
+    tag: develop-clean
 
 
 route:
@@ -54,14 +54,14 @@ postgresql:
 
 edt-service:
   image:
-    tag: build-test
+    tag: develop-clean
 
 
 
 keycloak:
   realmName: DEMSTEST
-  auth: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
-  base: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
+  auth: https://test.common-sso.justice.gov.bc.ca/auth/realms/DEMSTEST
+  base: https://test.common-sso.justice.gov.bc.ca/auth
 
 database:
   autoCreate: false
@@ -83,7 +83,7 @@ frontend:
   settings:
     environmentName: test
     keycloak:
-      url: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth
+      url: https://test.common-sso.justice.gov.bc.ca/auth
       realm: "DEMSTEST"
 
 webapi:

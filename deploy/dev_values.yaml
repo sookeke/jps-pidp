@@ -42,8 +42,8 @@ database:
 
 keycloak:
   realm: DEMSPOC
-  auth: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
-  base: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+  auth: https://dev.common-sso.justice.gov.bc.ca/auth/realms/DEMSPOC
+  base: https://dev.common-sso.justice.gov.bc.ca/auth
 
 edt-service:
   image:
@@ -67,7 +67,7 @@ frontend:
   settings:
     environmentName: dev
     keycloak:
-      url: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+      url: https://dev.common-sso.justice.gov.bc.ca/auth
       realm: DEMSPOC
 
 
