@@ -1,0 +1,56 @@
+name: API (.NET 6)
+
+on:
+  push:
+    branches: [main, test, develop, Kakfa-consumer-retry]
+  pull_request:
+    branches: [main, test, develop, Kakfa-consumer-retry]
+    
+jobs:
+  # JOB to run change detection
+  check-changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+  build-backend:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./backend
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_BRANCH: "${{github.ref}}"
+      
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Extract Branch Name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Install dependencies
+        run: dotnet restore
+        working-directory: ${{env.working-directory}}
+
+      - name: Install coverlet for code coverage
+        run: dotnet tool install -g coverlet.console --version 1.7.2
+        working-directory: ${{env.working-directory}}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ${{env.working-directory}}
