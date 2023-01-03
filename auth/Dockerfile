@@ -17,6 +17,8 @@ COPY ./extensions-7.6/themes/src/main/resources/theme /opt/eap/themes/
 
 # to deploy the archive, drop it into the `standalone/deployments/` directory and it will be automatically loaded.
 COPY --from=builder /tmp/services/target/bcgov-services-1.0.0.jar /opt/eap/standalone/deployments/
+COPY configuration/standalone-openshift.xml $JBOSS_HOME/standalone/configuration/standalone-openshift.xml
+
 
 RUN chown -R jboss:root $JBOSS_HOME/themes/
 
