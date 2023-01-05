@@ -34,6 +34,33 @@ postgresql:
       scriptsConfigMap: pipd-postgres-init
 
 
+route:
+  enabled: false
+
+pidp-sso:
+  keycloak:
+    realm: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth/realms/DEMSDEV
+  auth:
+  existingSecret: pidp-sso-postgresql
+  secretKeys:
+    postgresPassword: password
+
+
+
+postgresql:
+  postgresqlDatabase: jps-pidp
+  auth:
+    postgresPassword: "postgres"
+    username: postgres
+  existingSecret: postgresql
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: jps-password
+  primary:
+    initdb:
+      scriptsConfigMap: pipd-postgres-init
+
+
 database:
   autoCreate: false
   # databaseHost: dev-patroni
