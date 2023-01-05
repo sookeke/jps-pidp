@@ -1,5 +1,6 @@
 namespace edt.service.Kafka;
 
+using System.Net;
 using Confluent.Kafka;
 using edt.service.HttpClients.Services.EdtCore;
 using edt.service.Kafka.Interfaces;
@@ -43,6 +44,7 @@ public static class ConsumerSetup
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
             SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
             SaslOauthbearerScope = config.KafkaCluster.Scope,
+            ClientId = Dns.GetHostName(),
             //RequestTimeoutMs = 60000,
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
@@ -71,6 +73,7 @@ public static class ConsumerSetup
             GroupId = config.KafkaCluster.ConsumerGroupId,
             EnableAutoCommit = true,
             AutoOffsetReset = AutoOffsetReset.Earliest,
+            ClientId = Dns.GetHostName(),
             EnableAutoOffsetStore = false,
             AutoCommitIntervalMs = 4000,
             MaxPollIntervalMs= retrySeconds * 1000,
