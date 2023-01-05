@@ -6,16 +6,43 @@ spec:
   entityOperator:
     topicOperator: {}
     userOperator: {}
+
   kafka:
+    {{- if .Values.kafka.authorization.enabled }}
+    authorization:
+      clientId: {{ .Values.kafka.authorization.clientId }}
+      delegateToKafkaAcls: true
+      type: keycloak
+      superUsers:
+        - kafka-ui-user
+        - CN=service-account-kafka-ui
+      tlsTrustedCertificates:
+        - certificate: ca.crt
+          secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-ca
+      tokenEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token
+    {{- end }}
     listeners:
-      #- name: plain
-      #  port: 9092
-      #  type: internal
-      #  tls: false
       - name: tls
         port: 9093
         type: internal
         tls: true
+      - name: kafkaadmin
+        authentication: 
+            type: oauth
+            jwksEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/certs
+            userNameClaim: preferred_username
+            maxSecondsWithoutReauthentication: 3600
+            validIssuerUri: {{ .Values.keycloak.auth }}
+            clientId: kafka-ui
+            tlsTrustedCertificates:
+              - secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-ca
+                certificate: ca.crt
+            clientSecret:
+                key: secret
+                secretName: {{ include "pidp-kafka.fullname" . }}-kafka-ui
+        port: 9095
+        tls: true
+        type: internal
       - name: external
         port: 9094
         tls: true
@@ -41,7 +68,7 @@ spec:
               certificate: ca.crt
         configuration:
           bootstrap:
-            host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-prod.apps.silver.devops.gov.bc.ca
+            host: {{ include "pidp-kafka.fullname" . }}-{{ .Values.global.licenseplate }}-{{ .Values.global.environment }}.apps.silver.devops.gov.bc.ca
           createBootstrapService: true
     storage:
       type: persistent-claim

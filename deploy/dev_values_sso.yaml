@@ -1,12 +1,16 @@
 global:
-  vanityURL: "pidp-e27db1-dev-sso.apps.gold.devops.gov.bc.ca"
+  vanityURL: "dev.common-sso.justice.gov.bc.ca"
   commit_sha: ""
   licenseplate: "e27db1"
   environment: "dev"
+  image:
+    tag: main
+
+hostname: pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca
 
 
 keycloak:
-  realm: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
+  realm: https://dev.common-sso.justice.gov.bc.ca/auth/realms/DEMSDEV
 
 
 postgresql:
@@ -14,5 +18,5 @@ postgresql:
   auth:
     username: keycloak
     database: keycloak
-    existingSecret: "pidp-dev-sso-postgres"
+    existingSecret: "pidp-sso-postgres"
 

@@ -29,12 +29,12 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       terminationGracePeriodSeconds: 75
       volumes:
-      - name: sso-x509-https-volume
+      - name: {{ include "sso.fullname" . }}-x509-https-volume
         secret:
-          secretName: sso-x509-https-secret
-      - name: sso-x509-jgroups-volume
+          secretName: {{ include "sso.fullname" . }}-x509-https-secret
+      - name: {{ include "sso.fullname" . }}-x509-jgroups-volume
         secret:
-          secretName: sso-x509-jgroups-secret
+          secretName: {{ include "sso.fullname" . }}-x509-jgroups-secret
       - name: {{ .Values.application_name }}-service-ca
         configMap:
           name: config-service-cabundle
@@ -57,8 +57,6 @@ spec:
 #              /opt/eap/bin/openshift-launch.sh
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-#            - name: SSO_HOSTNAME
-#              value: {{ .Values.sso_hostname }}
 #            - name: DB_SERVICE_PREFIX_MAPPING
 #              value: {{ .Values.application_name }}
             - name: DB_POSTGRESQL_SERVICE_HOST
@@ -122,6 +120,10 @@ spec:
                 secretKeyRef:
                   name: {{ include "sso.fullname" . }}-keycloak-secrets
                   key: keycloak-admin-password
+            - name: SSO_HOSTNAME
+              value: {{ .Values.global.hostname }}
+            - name: LOGGING_LEVEL_ORG_KEYCLOAK
+              value: WARN
           ports:
             - containerPort: 8778
               name: jolokia
@@ -165,10 +167,10 @@ spec:
 #              readOnly: true
 #              mountPath: /provisioning
             - mountPath: /etc/x509/https
-              name: sso-x509-https-volume
+              name: {{ include "sso.fullname" . }}-x509-https-volume
               readOnly: true
             - mountPath: /etc/x509/jgroups
-              name: sso-x509-jgroups-volume
+              name: {{ include "sso.fullname" . }}-x509-jgroups-volume
               readOnly: true
 #            - mountPath: /var/run/configmaps/service-ca
 #              name: service-ca

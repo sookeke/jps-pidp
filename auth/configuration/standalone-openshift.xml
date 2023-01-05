@@ -108,6 +108,12 @@
             <logger category="sun.rmi">
                 <level name="WARN"/>
             </logger>
+			<logger category="org.keycloak">
+				<level name="WARN"/>
+			</logger>
+			<logger category="org.postgresql">
+				<level name="WARN"/>
+			</logger>
             <root-logger>
                 <level name="INFO"/>
                 <handlers>
@@ -195,6 +201,7 @@
                               managed-scheduled-executor-service="java:jboss/ee/concurrency/scheduler/default"
                               managed-thread-factory="java:jboss/ee/concurrency/factory/default"/>
         </subsystem>
+		
         <subsystem xmlns="urn:jboss:domain:ee-security:1.0"/>
         <subsystem xmlns="urn:jboss:domain:ejb3:9.0">
             <session-bean>
@@ -690,7 +697,17 @@
                 <default-provider>${keycloak.x509cert.lookup.provider:default}</default-provider>
                 <provider name="default" enabled="true"/>
             </spi>
-            <!-- ##SSO_SERVER_HOSTNAME_SPI## -->
+			<!-- CUSTOM HOSTNAME SETUP -->
+			<spi name="hostname">
+				<default-provider>default</default-provider>
+				<provider name="default" enabled="true">
+					<properties>
+						<property name="url" value="https://test.common-sso.justice.gov.bc.ca"/>
+						<property name="frontendUrl" value="https://test.common-sso.justice.gov.bc.ca"/>
+						<property name="forceBackendUrlToFrontendUrl" value="false"/>
+					</properties>
+				</provider>
+			</spi>
             <!-- ##SSO_TRUSTSTORE## -->
             <!-- ##SSO_VAULT_CONFIG## -->
         </subsystem>

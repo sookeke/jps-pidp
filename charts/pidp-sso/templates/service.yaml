@@ -5,7 +5,7 @@ metadata:
     description: The web server's https port.
     service.alpha.openshift.io/dependencies: '[{"name": "{{ .Values.application_name }}-postgresql",
       "kind": "Service"}]'
-    service.alpha.openshift.io/serving-cert-secret-name: sso-x509-https-secret
+    service.alpha.openshift.io/serving-cert-secret-name: {{ include "sso.fullname" . }}-x509-https-secret
   labels:
     application: {{ .Values.application_name }}
     rhsso: 7.6.0.GA
@@ -40,7 +40,7 @@ kind: Service
 metadata:
   annotations:
     description: The JGroups ping port for clustering.
-    service.alpha.openshift.io/serving-cert-secret-name: sso-x509-jgroups-secret
+    service.alpha.openshift.io/serving-cert-secret-name: {{ include "sso.fullname" . }}-x509-jgroups-secret
   labels:
     application: {{ .Values.application_name }}
     rhsso: 7.6.0.GA

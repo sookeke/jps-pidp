@@ -1,0 +1,19 @@
+global:
+  vanityURL: "test.common-sso.justice.gov.bc.ca"
+  commit_sha: ""
+  licenseplate: "e27db1"
+  environment: "dev"
+  image:
+    tag: "latest"
+  hostname: test.common-sso.justice.gov.bc.ca
+
+keycloak:
+  realm: https://pidp-sso-e27db1-test.apps.gold.devops.gov.bc.ca/auth/realms/DEMSTEST
+
+
+postgresql:
+  enabled: true
+  auth:
+    username: keycloak
+    database: keycloak
+    existingSecret: "pidp-test-sso-postgres"
