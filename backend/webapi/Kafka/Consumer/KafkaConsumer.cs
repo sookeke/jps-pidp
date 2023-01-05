@@ -45,6 +45,8 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
     public void Dispose() => this.consumer.Dispose();
     private async Task StartConsumerLoop(CancellationToken cancellationToken)
     {
+
+        Log.Logger.Information("Start consuming from {0}", this.topic);
         this.consumer.Subscribe(this.topic);
 
         while (!cancellationToken.IsCancellationRequested)
@@ -96,6 +98,7 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             var clusterConfig = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json").Build();
+
             var tokenEndpoint = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerTokenEndpointUrl");
             var clientId = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerConsumerClientId");
             var clientSecret = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerConsumerClientSecret");
@@ -104,7 +107,6 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             clientId ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
             tokenEndpoint ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
             Log.Logger.Information("Pidp Kafka Consumer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
-
             var accessTokenClient = new HttpClient();
 
 

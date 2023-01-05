@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Pidp.Data;
 using Pidp.Kafka.Consumer.Model;
 using Pidp.Kafka.Interfaces;
+using Serilog;
 
 public class NotificationAckHandler : IKafkaHandler<string, NotificationAckModel>
 {
@@ -13,6 +14,8 @@ public class NotificationAckHandler : IKafkaHandler<string, NotificationAckModel
 
     public async Task<Task> HandleAsync(string consumerName, string key, NotificationAckModel value)
     {
+
+        Log.Logger.Information("Message received on {0} with key {1}", consumerName, key);
         //check wheather this message has been processed before   
         if (await this.context.HasBeenProcessed(key, consumerName))
         {
@@ -36,7 +39,7 @@ public class NotificationAckHandler : IKafkaHandler<string, NotificationAckModel
             }
             catch (Exception)
             {
-                await trx.RollbackAsync();
+                //await trx.RollbackAsync();
                 return Task.FromException(new InvalidOperationException());
             }
         }

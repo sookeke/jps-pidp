@@ -50,6 +50,11 @@ spec:
           env:
             - name: DB_HOST
               value: jum-database
+            - name: Seq__Url
+              valueFrom:
+                secretKeyRef:
+                  name: datalust-seq
+                  key: url
             - name: KafkaCluster__SslCaLocation
               value: /opt/kafka/certificates/server-ca.crt
             - name: KafkaCluster__SslCertificateLocation
@@ -80,7 +85,22 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: jum-api-database
-                  key: CONNECTION_STRINGS_JUM          
+                  key: CONNECTION_STRINGS_JUM         
+            - name: SchemaRegistry__Url
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-registry
+                  key: SchemaRegistry__Url
+            - name: SchemaRegistry__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-registry
+                  key: SchemaRegistry__ClientId
+            - name: SchemaRegistry__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-registry
+                  key: SchemaRegistry__ClientSecret
             - name: KafkaCluster__BootstrapServers
               valueFrom:
                 secretKeyRef:
@@ -96,8 +116,21 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-edt
                   key: KafkaCluster__ProducerTopicName
-
-
+            - name: KafkaCluster__NotificationTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__NotificationTopicName
+            - name: KafkaCluster__UserCreationTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__UserCreationTopicName
+            - name: KafkaCluster__UserModificationTopicName
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-edt
+                  key: KafkaCluster__UserModificationTopicName
             - name: KafkaCluster__SaslOauthbearerConsumerClientSecret
               valueFrom:
                 secretKeyRef:
@@ -114,19 +147,18 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-edt
                   key: KafkaCluster__SaslOauthbearerTokenEndpointUrl
-
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
-            - name: EdtCLient__Url
+            - name: EdtClient__Url
               valueFrom:
                 secretKeyRef:
                   name: edt-client
                   key: Url           
-            - name: EdtCLient__Apikey
+            - name: EdtClient__Apikey
               valueFrom:
                 secretKeyRef:
                   name: edt-client
-                  key: Apikey          
+                  key: Apikey 
           volumeMounts:
           - name: truststore
             mountPath: "/opt/kafka/certificates"
@@ -138,6 +170,8 @@ spec:
                 name: ches
             - configMapRef:
                 name: mail-settings
+            - configMapRef:
+                name: retry-policy
             - secretRef:
                 name: kafkaconfig
           ports:

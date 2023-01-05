@@ -1,11 +1,38 @@
 # PR Helm values
 global:
-  vanityURL: "pidp-e27db1-dev.apps.gold.devops.gov.bc.ca"
+  vanityURL: "dev.jpidp.justice.gov.bc.ca"
   commit_sha: ""
   licenseplate: "e27db1"
   environment: "dev"
   image:
-    tag: develop
+    tag: develop-clean
+
+route:
+  enabled: false
+
+pidp-sso:
+  keycloak:
+    realm: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth/realms/DEMSDEV
+  auth:
+  existingSecret: pidp-sso-postgresql
+  secretKeys:
+    postgresPassword: password
+
+
+
+postgresql:
+  postgresqlDatabase: jps-pidp
+  auth:
+    postgresPassword: "postgres"
+    username: postgres
+  existingSecret: postgresql
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: jps-password
+  primary:
+    initdb:
+      scriptsConfigMap: pipd-postgres-init
+
 
 route:
   enabled: false
@@ -42,12 +69,12 @@ database:
 
 keycloak:
   realm: DEMSPOC
-  auth: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
-  base: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+  auth: https://dev.common-sso.justice.gov.bc.ca/auth/realms/DEMSPOC
+  base: https://dev.common-sso.justice.gov.bc.ca/auth
 
 edt-service:
   image:
-    tag: develop
+    tag: develop-clean
 
 redis:
   enabled: false
@@ -67,7 +94,7 @@ frontend:
   settings:
     environmentName: dev
     keycloak:
-      url: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth
+      url: https://dev.common-sso.justice.gov.bc.ca/auth
       realm: DEMSPOC
 
 

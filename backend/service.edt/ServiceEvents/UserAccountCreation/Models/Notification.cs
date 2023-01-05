@@ -11,6 +11,6 @@ public class Notification
     public string? Subject { get; set; }
     public string? FirstName { get; set; }
     public string? MsgBody { get; set; }
-    public string ParyId { get; set; } = string.Empty;
+    public string PartyId { get; set; } = string.Empty;
     public string? Tag { get; set; }
 }

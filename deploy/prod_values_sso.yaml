@@ -1,0 +1,23 @@
+global:
+  vanityURL: "pidp-e27db1-prod-sso.apps.gold.devops.gov.bc.ca"
+  commit_sha: ""
+  licenseplate: "e27db1"
+  environment: "prod"
+
+
+keycloak:
+  realm: https://pidp-sso-e27db1-prod.apps.gold.devops.gov.bc.ca/auth/realms/DEMSPROD
+  #db_tx_isolation: '# TODO: must define a default value for .db_tx_isolation'
+  db_username: keycloak
+  memory_limit: 1Gi
+  sso_hostname: pidp-sso
+  sso_realm: DEMSPROD
+  volume_capacity: 1Gi
+
+postgresql:
+  enabled: true
+  auth:
+    username: keycloak
+    database: keycloak
+    existingSecret: "pidp-sso-postgres"
+

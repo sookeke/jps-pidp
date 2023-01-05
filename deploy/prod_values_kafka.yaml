@@ -1,0 +1,21 @@
+global:
+  licenseplate: '5b7aa5'
+  environment: 'prod'
+
+apicurio:
+  enabled: true
+
+keycloak:
+  realmName: DEMSPROD
+  auth: https://pidp-sso-e27db1-prod.apps.gold.devops.gov.bc.ca/auth/realms/DEMSPROD
+  base: https://pidp-sso-e27db1-prod.apps.gold.devops.gov.bc.ca/auth
+
+postgresql:
+  createSecret: true
+  auth:
+    username: "kafka"
+    database: "kafka"
+    existingSecret: ""
+    secretKeys:
+      adminPasswordKey: "admin-password"
+      userPasswordKey: "kafka-password"

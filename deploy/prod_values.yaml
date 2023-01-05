@@ -1,9 +1,14 @@
 # PR Helm values
 global:
-  vanityURL: "healthprovideridentityportal.gov.bc.ca"
+  vanityURL: "jpidp.justice.gov.bc.ca"
   commit_sha: ""
+  licenseplate: "e27db1"
+  environment: "prod"
   image:
-    tag: master
+    tag: develop-clean
+
+route:
+  enabled: false
 
 database:
   autoCreate: false
@@ -16,20 +21,30 @@ redis:
     existingSecret: redis
     existingSecretPasswordKey: database-password
 
-nginx:
-  replicaCount: 3
 
+nginx:
+  replicaCount: 2
+
+keycloak:
+  realmName: DEMSPROD
+  auth: https://common-sso.justice.gov.bc.ca/auth/realms/DEMSPROD
+  base: https://common-sso.justice.gov.bc.ca/auth
+  
 frontend:
-  replicaCount: 3
+  replicaCount: 1
   settings:
     environmentName: prod
     keycloak:
-      url: https://common-logon.hlth.gov.bc.ca/auth
+      url: https://common-sso.justice.gov.bc.ca/auth
+      realm: "DEMSPROD"
 
 webapi:
-  replicaCount: 3
+  jumClientURL: https://jum-api-e27db1-prod.apps.gold.devops.gov.bc.ca/api
+  replicaCount: 1
   aspnetcore:
-    environment: Production
+    environment: Staging
+
 
 plr-intake:
-  replicaCount: 2
+  replicaCount: 1
+

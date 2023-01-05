@@ -13,4 +13,5 @@ public interface IKafkaHandler<Tk, Tv>
     /// <param name="value">Indicates the message's value for Kafka Topic</param>
     /// <returns></returns>
     Task<Task> HandleAsync(string consumerName, Tk key, Tv value);
+    Task<Task> HandleRetryAsync(string consumerName, Tk key, Tv value, int retryCount, string topicName);
 }

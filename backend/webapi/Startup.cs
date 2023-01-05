@@ -23,12 +23,19 @@ using Pidp.Helpers.Middleware;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Pidp.Features.Organization.UserTypeService;
 using Pidp.Features.Organization.OrgUnitService;
+using Microsoft.Extensions.Configuration;
 
 public class Startup
 {
     public IConfiguration Configuration { get; }
 
-    public Startup(IConfiguration configuration) => this.Configuration = configuration;
+    public Startup(IConfiguration configuration)
+    {
+        this.Configuration = configuration;
+        StaticConfig = configuration;
+    }
+    public static IConfiguration StaticConfig { get; private set; }
+
 
     public void ConfigureServices(IServiceCollection services)
     {

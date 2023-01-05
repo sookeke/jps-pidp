@@ -7,7 +7,10 @@ using System.Text;
 using System.Text.Json;
 
 using EdtService.Extensions;
-
+using Microsoft.Extensions.ObjectPool;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System.Collections.Specialized;
+using System.Net.Mime;
 
 public enum PropertySerialization
 {
@@ -79,6 +82,14 @@ public class BaseClient
     /// <param name="data"></param>
     protected async Task<IDomainResult> PutAsync(string url, object? data = null) => await this.SendCoreAsync(HttpMethod.Put, url, data == null ? null : this.CreateStringContent(data), default);
 
+
+    /// <summary>
+    /// Performs a DELETE to the supplier URL
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    protected async Task<IDomainResult> DeleteAsync(string url) => await this.SendCoreAsync(HttpMethod.Delete, url, null, default);
+
     /// <summary>
     /// Sends an HTTP message to the API; returning:
     ///  a) a Success result, or
@@ -148,14 +159,41 @@ public class BaseClient
                 return DomainResult.Failed<T>("Response content was null");
             }
 
-            var deserializationResult = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
-            if (deserializationResult == null)
+
+            var mediaType = response.Content.Headers.ContentType?.MediaType;
+            if (mediaType == null)
             {
-                this.Logger.LogNullResponseContent();
-                return DomainResult.Failed<T>("Response content was null");
+                // log unknown media type
+                return DomainResult.Failed<T>("No media type in response");
             }
 
-            return DomainResult.Success(deserializationResult);
+            else
+            {
+
+                if (mediaType == MediaTypeNames.Application.Json)
+                {
+
+                    var deserializationResult = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+                    if (deserializationResult == null)
+                    {
+                        this.Logger.LogNullResponseContent();
+                        return DomainResult.Failed<T>("Response content was null");
+                    }
+                    else
+                    {
+                        return DomainResult.Success(deserializationResult);
+
+                    }
+
+                }
+                else
+                {
+                    var result = await response.Content.ReadAsStringAsync(cancellationToken);
+                    return (IDomainResult<T>)DomainResult.Success(result);
+                }
+
+            }
+
         }
         catch (HttpRequestException exception)
         {
@@ -175,6 +213,7 @@ public class BaseClient
         catch (JsonException exception)
         {
             this.Logger.LogBaseClientException(exception);
+
             return DomainResult.Failed<T>("Could not deserialize API response");
         }
         catch (Exception exception)

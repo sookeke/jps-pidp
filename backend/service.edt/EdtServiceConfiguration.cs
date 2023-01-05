@@ -1,4 +1,7 @@
 namespace edt.service;
+
+using System.Text.Json;
+
 public class EdtServiceConfiguration
 {
     public static bool IsProduction() => EnvironmentName == Environments.Production;
@@ -12,7 +15,11 @@ public class EdtServiceConfiguration
     public KafkaClusterConfiguration KafkaCluster { get; set; } = new();
     public KeycloakConfiguration Keycloak { get; set; } = new();
     public MailServerConfiguration MailServer { get; set; } = new();
+    public RetryPolicyConfiguration RetryPolicy { get; set; } = new();
     public EdtClientConfiguration EdtClient { get; set; } = new();
+
+    public SchemaRegistryConfiguration SchemaRegistry { get; set; } = new();
+
 
     // ------- Configuration Objects -------
 
@@ -31,6 +38,32 @@ public class EdtServiceConfiguration
         public string EdtDataStore { get; set; } = string.Empty;
     }
 
+
+    public class RetryTopicModel
+    {
+        public int RetryCount { get; set; }
+        public int DelayMinutes { get; set; }
+        public bool NotifyUser { get; set; }
+        public bool NotifyOnEachRetry { get; set; }
+        public int Order { get; set; }
+        public string TopicName { get; set; } = string.Empty;
+        public override string ToString() => JsonSerializer.Serialize(this);
+
+    }
+
+    public class SchemaRegistryConfiguration
+    {
+        public string Url { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+        public string ClientSecret { get; set; } = string.Empty;
+
+    }
+
+    public class RetryPolicyConfiguration
+    {
+        public string? DeadLetterTopic { get; set; }
+        public List<RetryTopicModel> RetryTopics { get; set; } = new List<RetryTopicModel>();
+    }
     public class ChesClientConfiguration
     {
         public bool Enabled { get; set; }
@@ -45,6 +78,8 @@ public class EdtServiceConfiguration
         public string BootstrapServers { get; set; } = string.Empty;
         public string ConsumerTopicName { get; set; } = string.Empty;
         public string ProducerTopicName { get; set; } = string.Empty;
+        public string UserModificationTopicName { get; set; } = string.Empty;
+        public string UserCreationTopicName { get; set; } = string.Empty;
         public string SaslOauthbearerTokenEndpointUrl { get; set; } = string.Empty;
         public string SaslOauthbearerProducerClientId { get; set; } = string.Empty;
         public string SaslOauthbearerProducerClientSecret { get; set; } = string.Empty;
@@ -55,6 +90,7 @@ public class EdtServiceConfiguration
         public string SslKeyLocation { get; set; } = string.Empty;
         public string Scope { get; set; } = "openid";
         public string ConsumerGroupId { get; set; } = "accessrequest-consumer-group";
+        public string RetryConsumerGroupId { get; set; } = "accessrequest-retry-consumer-group";
 
 
 

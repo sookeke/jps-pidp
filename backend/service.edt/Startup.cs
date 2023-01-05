@@ -6,6 +6,8 @@ using System.Text.Json;
 using edt.service.Data;
 using edt.service.HttpClients;
 using edt.service.Kafka;
+using edt.service.ServiceEvents.UserAccountCreation.ConsumerRetry;
+using edt.service.ServiceEvents.UserAccountCreation.Handler;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +21,14 @@ public class Startup
 {
     public IConfiguration Configuration { get; }
 
-    public Startup(IConfiguration configuration) => this.Configuration = configuration;
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+        StaticConfig = configuration;
+    }
+
+    public static IConfiguration StaticConfig { get; private set; }
+
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -27,8 +36,10 @@ public class Startup
         services
           .AddAutoMapper(typeof(Startup))
           .AddKafkaConsumer(config)
+          .AddSingleton(new RetryPolicy(config))
           .AddHttpClients(config)
-          .AddSingleton<IClock>(SystemClock.Instance);
+          .AddSingleton<IClock>(SystemClock.Instance)
+          .AddSingleton<Microsoft.Extensions.Logging.ILogger>(svc => svc.GetRequiredService<ILogger<UserProvisioningHandler>>());
 
         services.AddAuthorization(options =>
         {

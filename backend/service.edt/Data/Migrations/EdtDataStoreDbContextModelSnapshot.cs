@@ -77,6 +77,31 @@ namespace edt.service.Data.Migrations
                     b.ToTable("EmailLog", "edt");
                 });
 
+            modelBuilder.Entity("edt.service.ServiceEvents.UserAccountCreation.Models.FailedEventLog", b =>
+                {
+                    b.Property<string>("EventId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConsumerGroupId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConsumerId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Producer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EventId");
+
+                    b.ToTable("FailedEventLogs", "edt");
+                });
+
             modelBuilder.Entity("edt.service.ServiceEvents.UserAccountCreation.Models.IdempotentConsumer", b =>
                 {
                     b.Property<string>("MessageId")

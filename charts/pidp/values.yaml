@@ -46,7 +46,7 @@ nginx:
   extraVolumes:
     - name: tls-certs
       secret:
-        secretName: healthprovideridentityportal-tls
+        secretName: demsidentityportal-tls
     - name: plr-integration
       secret:
         secretName: plr-integration

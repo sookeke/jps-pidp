@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using edt.service.HttpClients.Services.EdtCore;
 using EdtService.Extensions;
 using IdentityModel.Client;
+using Serilog;
 
 public static class HttpClientSetup
 {
@@ -12,6 +13,8 @@ public static class HttpClientSetup
         services.AddHttpClient<IAccessTokenClient, AccessTokenClient>();
 
         //services.AddHttpClientWithBaseAddress<IAddressAutocompleteClient, AddressAutocompleteClient>(config.AddressAutocompleteClient.Url);
+
+        Log.Logger.Information("Using EDT enpoint {0}", config.EdtClient.Url);
 
         services.AddHttpClientWithBaseAddress<IEdtClient, EdtClient>(config.EdtClient.Url)
             .ConfigureHttpClient(c => c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", config.EdtClient.ApiKey));

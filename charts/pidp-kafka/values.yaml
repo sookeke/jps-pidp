@@ -16,7 +16,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -87,14 +87,23 @@ keycloak:
 
 postgresql:
   enabled: true
+  createSecret: true
   auth:
-    username: postgres
-    password: postgres
-    database: kafka
+    postgresPassword: ""
+    username: "kafka"
+    password: ""
+    database: "kafka"
+    existingSecret: ""
+    secretKeys:
+      adminPasswordKey: "admin-password"
+      userPasswordKey: "kafka-password"
   primary:
     podSecurityContext:
       enabled: false
     containerSecurityContext:
       enabled: false
     persistence:
-      size: 1Gi
+      size: 2Gi
+
+apicurio:
+  enabled: true
