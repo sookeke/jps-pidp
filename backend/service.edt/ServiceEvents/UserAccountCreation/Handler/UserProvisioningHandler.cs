@@ -85,8 +85,12 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                     Tag = msgKey
                 });
 
+                if ( string.IsNullOrEmpty(this.configuration.SchemaRegistry.Url))
+                {
+                    throw new EdtServiceException("Schema registry is not configured");
+                }
 
-                var producer = new SchemaAwareProducer(ConsumerSetup.GetProducerConfig(), this.userModificationProducer);
+                var producer = new SchemaAwareProducer(ConsumerSetup.GetProducerConfig(), this.userModificationProducer, this.configuration);
                 // publish to the user creation topic for others to consume
                 bool publishResultOk;
                 if (result.Event == UserModificationEvent.UserEvent.Create)

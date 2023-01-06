@@ -8,19 +8,25 @@ using edt.service.Kafka.Interfaces;
 using edt.service.Kafka.Model;
 using Serilog;
 
+/// <summary>
+/// This producer will validate against the schema registry
+/// </summary>
 public class SchemaAwareProducer
 {
     private readonly IKafkaProducer<string, UserModificationEvent> producer;
     private readonly ProducerConfig producerConfig;
     private ProducerBuilder<string, UserModificationEvent> builder;
-
+    private readonly EdtServiceConfiguration serviceConfiguration;
     public SchemaAwareProducer(
               ProducerConfig producerConfig,
-      IKafkaProducer<string, UserModificationEvent> producer
+      IKafkaProducer<string, UserModificationEvent> producer,
+       EdtServiceConfiguration serviceConfiguration
         )
     {
         this.producer = producer;
         this.producerConfig = producerConfig;
+        this.serviceConfiguration = serviceConfiguration;
+        this.builder = new ProducerBuilder<string, UserModificationEvent>(this.producerConfig);
     }
 
 
@@ -36,12 +42,12 @@ public class SchemaAwareProducer
 
         var schemaRegistryConfig = new SchemaRegistryConfig
         {
-            Url = "http://pidp-kafka-apicurioregistry-pgsql.5b7aa5-dev.router-default.apps.silver.devops.gov.bc.ca/apis/ccompat/v6",
-            BasicAuthUserInfo = "registry-client-api:hPYOGgxHb8W1Wd4BAfkrvBF93IaBHI0d"
+            Url = this.serviceConfiguration.SchemaRegistry.Url,
+            BasicAuthUserInfo = this.serviceConfiguration.SchemaRegistry.ClientId + ":" + this.serviceConfiguration.SchemaRegistry.ClientSecret
         };
 
         using var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-        this.builder = new ProducerBuilder<string, UserModificationEvent>(this.producerConfig);
+
         await Task.WhenAll(this.builder.SetAvroKeySerializer(schemaRegistry, $"{nameof(UserModificationEvent)}-key", registerAutomatically: AutomaticRegistrationBehavior.Always),
         this.builder.SetAvroValueSerializer(schemaRegistry, $"{nameof(UserModificationEvent)}-value", AutomaticRegistrationBehavior.Always));
 

@@ -47,21 +47,6 @@ spec:
           env:
             - name: PlrClient__Url
               value: http://{{ $release }}-plr-intake:8080/api
-            - name: KafkaCluster__SslCaLocation
-              value: /opt/kafka/certificates/server-ca.crt
-            - name: KafkaCluster__SslCertificateLocation
-              value: /opt/kafka/certificates/client-ca.crt
-            - name: KafkaCluster__SslKeyLocation
-              value: /opt/kafka/certificates/client.key
-            - name: KafkaCluster__SaslOauthbearerProducerClientId
-              value: "kafka-producer"
-            - name: KafkaCluster__SaslOauthbearerConsumerClientId
-              value: "kafka-consumer"
-            - name: Seq__Url
-              valueFrom:
-                secretKeyRef:
-                  name: datalust-seq
-                  key: url
             - name: JumClient__Url
               valueFrom:
                 secretKeyRef:

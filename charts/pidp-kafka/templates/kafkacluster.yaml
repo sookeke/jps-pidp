@@ -8,30 +8,41 @@ spec:
     userOperator: {}
   kafka:
     listeners:
-      #- name: plain
-      #  port: 9092
-      #  type: internal
-      #  tls: false
       - name: tls
         port: 9093
         type: internal
         tls: true
+      - name: kafkaadmin
+        port: 9095
+        tls: true
+        type: route
+        authentication:
+          type: oauth
+          enableOauthBearer: true
+          clientId: kafka-ui
+          clientSecret:
+            key: secret
+            secretName: {{ include "pidp-kafka.fullname" . }}-kafka-ui
+          validIssuerUri: {{ .Values.keycloak.auth }}
+          jwksEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/certs
+          userNameClaim: preferred_username
+          tokenEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token
+          maxSecondsWithoutReauthentication: 3600
+          tlsTrustedCertificates:
+            - secretName: {{ include "pidp-kafka.fullname" . }}-keycloak-ca
+              certificate: ca.crt
       - name: external
         port: 9094
         tls: true
         type: route
         authentication:
           type: oauth
-#          checkAudience: true
           enableOauthBearer: true
-#          checkAccessTokenType: true
-#          accessTokenIsJwt: true
           clientId: kafka-broker
           clientSecret:
             key: secret
             secretName: {{ include "pidp-kafka.fullname" . }}-broker-secret
           validIssuerUri: {{ .Values.keycloak.auth }}
-          # introspectionEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token/introspect
           jwksEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/certs
           userNameClaim: preferred_username
           tokenEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token
@@ -41,7 +52,7 @@ spec:
               certificate: ca.crt
         configuration:
           bootstrap:
-            host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-prod.apps.silver.devops.gov.bc.ca
+            host: {{ include "pidp-kafka.fullname" . }}-cluster-5b7aa5-{{ .Values.global.environment }}.apps.silver.devops.gov.bc.ca
           createBootstrapService: true
     storage:
       type: persistent-claim

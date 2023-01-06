@@ -85,7 +85,22 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: jum-api-database
-                  key: CONNECTION_STRINGS_JUM          
+                  key: CONNECTION_STRINGS_JUM         
+            - name: SchemaRegistry__Url
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-registry
+                  key: SchemaRegistry__Url
+            - name: SchemaRegistry__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-registry
+                  key: SchemaRegistry__ClientId
+            - name: SchemaRegistry__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-registry
+                  key: SchemaRegistry__ClientSecret
             - name: KafkaCluster__BootstrapServers
               valueFrom:
                 secretKeyRef:

@@ -18,6 +18,9 @@ public class EdtServiceConfiguration
     public RetryPolicyConfiguration RetryPolicy { get; set; } = new();
     public EdtClientConfiguration EdtClient { get; set; } = new();
 
+    public SchemaRegistryConfiguration SchemaRegistry { get; set; } = new();
+
+
     // ------- Configuration Objects -------
 
     public class AddressAutocompleteClientConfiguration
@@ -41,10 +44,18 @@ public class EdtServiceConfiguration
         public int RetryCount { get; set; }
         public int DelayMinutes { get; set; }
         public bool NotifyUser { get; set; }
-        public bool NotifyOnEachRetry { get; set; } 
+        public bool NotifyOnEachRetry { get; set; }
         public int Order { get; set; }
         public string TopicName { get; set; } = string.Empty;
         public override string ToString() => JsonSerializer.Serialize(this);
+
+    }
+
+    public class SchemaRegistryConfiguration
+    {
+        public string Url { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+        public string ClientSecret { get; set; } = string.Empty;
 
     }
 
