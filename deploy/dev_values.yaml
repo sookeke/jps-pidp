@@ -5,7 +5,7 @@ global:
   licenseplate: "e27db1"
   environment: "dev"
   image:
-    tag: main
+    tag: develop
 route:
   enabled: false
 
@@ -49,7 +49,6 @@ pidp-sso:
 postgresql:
   postgresqlDatabase: jps-pidp
   auth:
-    postgresPassword: "postgres"
     username: postgres
   existingSecret: postgresql
   secretKeys:
