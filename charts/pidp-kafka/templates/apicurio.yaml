@@ -9,7 +9,7 @@ spec:
       - name: AUTH_ENABLED
         value: 'true'
       - name: QUARKUS_PROFILE
-        value: prod
+        value: {{ .Values.global.environment }}
       - name: ROLES_ENABLED
         value: 'true'
       - name: REGISTRY_AUTH_OWNER_ONLY_AUTHORIZATION
@@ -25,7 +25,7 @@ spec:
       - name: ROLE_BASED_AUTHZ_ENABLED
         value: 'true'
       - name: REGISTRY_DATASOURCE_URL
-        value: jdbc:postgresql://{{ include "pidp-kafka.fullname" . }}-postgresql.5b7aa5-{{ .Values.global.environment }}.svc.cluster.local:5432/pidpdb
+        value: jdbc:postgresql://{{ include "pidp-kafka.fullname" . }}-postgresql.5b7aa5-{{ .Values.global.environment }}.svc.cluster.local:5432/kafka
       - name: REGISTRY_DATASOURCE_PASSWORD
         valueFrom:
           secretKeyRef:
@@ -34,7 +34,7 @@ spec:
       - name: REGISTRY_DATASOURCE_USERNAME
         value: kafka
     kafkasql:
-      bootstrapServers: '{{ include "pidp-kafka.fullname" . }}-cluster-bootstrap.5b7aa5-{{ .Values.global.environment }}.svc.cluster.local:9092'
+      bootstrapServers: '{{ include "pidp-kafka.fullname" . }}-cluster-bootstrap.5b7aa5-{{ .Values.global.environment }}.svc.cluster.local:9093'
     persistence: "sql"
   deployment:
     host: >-

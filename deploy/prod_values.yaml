@@ -5,7 +5,7 @@ global:
   licenseplate: "e27db1"
   environment: "prod"
   image:
-    tag: develop-clean
+    tag: main
 
 route:
   enabled: false

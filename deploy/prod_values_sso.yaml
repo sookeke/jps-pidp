@@ -1,12 +1,14 @@
 global:
-  vanityURL: "pidp-e27db1-prod-sso.apps.gold.devops.gov.bc.ca"
+  vanityURL: "common-sso.justice.gov.bc.ca"
   commit_sha: ""
   licenseplate: "e27db1"
   environment: "prod"
-
+  image:
+    tag: "main"
+  hostname: common-sso.justice.gov.bc.ca
 
 keycloak:
-  realm: https://pidp-sso-e27db1-prod.apps.gold.devops.gov.bc.ca/auth/realms/DEMSPROD
+  realm: https://common-sso.justice.gov.bc.ca/auth/realms/DEMSPROD
   #db_tx_isolation: '# TODO: must define a default value for .db_tx_isolation'
   db_username: keycloak
   memory_limit: 1Gi
@@ -19,5 +21,5 @@ postgresql:
   auth:
     username: keycloak
     database: keycloak
-    existingSecret: "pidp-sso-postgres"
+    existingSecret: "pidp-prod-sso-postgres"
 

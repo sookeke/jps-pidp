@@ -84,14 +84,16 @@ affinity: {}
 keycloak:
   realm: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
 
+kafka:
+  authorization:
+    enabled: false
+    clientId: kafka
 
 postgresql:
   enabled: true
   createSecret: true
   auth:
-    postgresPassword: ""
     username: "kafka"
-    password: ""
     database: "kafka"
     existingSecret: ""
     secretKeys:

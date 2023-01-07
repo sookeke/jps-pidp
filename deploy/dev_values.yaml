@@ -5,8 +5,7 @@ global:
   licenseplate: "e27db1"
   environment: "dev"
   image:
-    tag: develop-clean
-
+    tag: main
 route:
   enabled: false
 
@@ -68,9 +67,9 @@ database:
   # trigger
 
 keycloak:
-  realm: DEMSPOC
-  auth: https://dev.common-sso.justice.gov.bc.ca/auth/realms/DEMSPOC
-  base: https://dev.common-sso.justice.gov.bc.ca/auth
+  realm: DEMSDEV
+  auth: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth/realms/DEMSDEV
+  base: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth
 
 edt-service:
   image:
@@ -94,8 +93,8 @@ frontend:
   settings:
     environmentName: dev
     keycloak:
-      url: https://dev.common-sso.justice.gov.bc.ca/auth
-      realm: DEMSPOC
+      url: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth
+      realm: DEMSDEV
 
 
 webapi:

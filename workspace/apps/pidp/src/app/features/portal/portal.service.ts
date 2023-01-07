@@ -110,8 +110,9 @@ export class PortalService {
           };
         case AlertCode.JUM_VALIDATION_ERROR:
           return {
-            heading: 'Having trouble verifying your justin user identity?',
-            content: `Your personal Id may not match your digitial identity. Try again in 24 hours. If this problem persists, contact your organization administrator.`,
+            heading: 'Having trouble verifying your JUSTIN Username?',
+            content:
+              'The JUSTIN Username you provided may not be correct. Confirm your JUSTIN Username and try again. If this problem persists, contact DEMS user support at BCPS.Disclosure.Support@gov.bc.ca for assistance.',
           };
         case AlertCode.PENDING_REQUEST:
           return {

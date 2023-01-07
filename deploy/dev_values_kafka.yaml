@@ -1,14 +1,18 @@
 global:
   licenseplate: '5b7aa5'
-  environment: 'prod'
+  environment: 'dev'
 
 apicurio:
   enabled: true
 
+kafka:
+  authorization:
+    enabled: true
+
 keycloak:
-  realmName: DEMSPROD
-  auth: https://common-sso.justice.gov.bc.ca/auth/realms/DEMSPROD
-  base: https://common-sso.justice.gov.bc.ca/auth
+  realmName: DEMSDEV
+  auth: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth/realms/DEMSDEV
+  base: https://pidp-sso-e27db1-dev.apps.gold.devops.gov.bc.ca/auth
 
 postgresql:
   createSecret: true
