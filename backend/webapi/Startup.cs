@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Pidp.Features.Organization.UserTypeService;
 using Pidp.Features.Organization.OrgUnitService;
 using Microsoft.Extensions.Configuration;
+using Pidp.Models;
 
 public class Startup
 {
@@ -98,6 +99,12 @@ public class Startup
 
         Log.Logger.Information("### App Version:{0} ###", Assembly.GetExecutingAssembly().GetName().Version);
         Log.Logger.Information("### PIdP Configuration:{0} ###", JsonSerializer.Serialize(config));
+
+
+        if (Environment.GetEnvironmentVariable("JUSTIN_SKIP_USER_EMAIL_CHECK") is not null and "true")
+        {
+            Log.Logger.Warning("*** JUSTIN EMAIL VERIFICATION IS DISABLED ***");
+        }
 
         return config;
     }

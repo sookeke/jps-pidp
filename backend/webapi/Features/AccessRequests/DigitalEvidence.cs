@@ -143,11 +143,11 @@ public class DigitalEvidence
                 <body> 
                 <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr' width='' height='50'/><br/><br/>
     <div style='border-top: 3px solid #22BCE5'><span style = 'font-family: Arial; font-size: 10pt' >
-<br/> Hello {0},<br/><br/>We have received your on-boarding request for DEMS.<br/>
-We will notify you when your account has been created<p/>
+<br/> Hello {0},<br/><br/>Your BCPS DEMS access request has been received.<br/>
+We will notify you when your account has been created<p/>{1}<p/>
 <div style='border-top: 3px solid #22BCE5'>
                 </span></div></body></html> ",
-                    firstName);
+                    firstName, GetSupportMessage());
             return msgBody;
         }
 
@@ -227,6 +227,9 @@ We will notify you when your account has been created<p/>
             });
             return Task.FromResult(exportedEvent.Entity);
         }
+
+        private static string GetSupportMessage() => "<p/>If you require any assistance, please contact <a href = \"mailto:bcps.disclosure.support@gov.bc.ca\">bcps.disclosure.support@gov.bc.ca</a><p/><p/>Thank you,<br/>BCPS DEMS Support<p/>";
+
 
         private async Task<bool> UpdateKeycloakUser(Guid userId, IEnumerable<AssignedRegion> assignedGroup, string partId)
         {

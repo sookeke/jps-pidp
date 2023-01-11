@@ -151,49 +151,6 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
         }
     }
 
-    private static async void OauthTokenRefreshCallback(IClient client, string config)
-    {
-        try
-        {
-
-
-            var clusterConfig = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json").Build();
-
-            var tokenEndpoint = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerTokenEndpointUrl");
-            var clientId = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerConsumerClientId");
-            var clientSecret = Environment.GetEnvironmentVariable("KafkaCluster__SaslOauthbearerConsumerClientSecret");
-
-            clientSecret ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientSecret");
-            clientId ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
-            tokenEndpoint ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
-            Log.Logger.Information("EDT Kafka Consumer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
-
-            var accessTokenClient = new HttpClient();
-
-            var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
-            {
-                Address = tokenEndpoint,
-                ClientId = clientId,
-                ClientSecret = clientSecret,
-                GrantType = "client_credentials"
-            });
-            var tokenTicks = GetTokenExpirationTime(accessToken.AccessToken);
-            var subject = GetTokenSubject(accessToken.AccessToken);
-            var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
-            var timeSpan = new DateTime() - tokenDate;
-            var ms = tokenDate.ToUnixTimeMilliseconds();
-            Log.Logger.Information("Consumer got token {0}", ms);
-
-            client.OAuthBearerSetToken(accessToken.AccessToken, ms, subject);
-        }
-        catch (Exception ex)
-        {
-            Log.Logger.Error(ex.Message);
-            client.OAuthBearerSetTokenFailure(ex.ToString());
-        }
-    }
     private static long GetTokenExpirationTime(string token)
     {
         var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();

@@ -161,7 +161,7 @@ export class DocumentService {
   }
   public getDigitalEvidenceCollectionNotice(): string {
     return `
-      The personal information you provide to enrol for access to Digital Evidence Management System is collected by the British Columbia Justice Sector and Public Safety under the authority of s. 26(a) and 26(c) of
+      The personal information you provide to enroll for access to Digital Evidence Management System is collected by the British Columbia Justice Sector and Public Safety under the authority of s. 26(a) and 26(c) of
       the Freedom of Information and Protection of Privacy Act (FOIPPA) for the purpose of managing your access to, and use of, the Digital Evidence Management System. If you have any questions about the collection or use of this information, contact
       <a href="mailto:${this.config.emails.digitalEvidenceSupport}">${this.config.emails.digitalEvidenceSupport}</a>.
     `;

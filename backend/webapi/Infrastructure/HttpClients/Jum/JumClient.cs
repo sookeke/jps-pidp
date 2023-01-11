@@ -114,12 +114,30 @@ public class JumClient : BaseClient, IJumClient
         {
             //bcps user
             if (justinUser?.participantDetails?.FirstOrDefault()?.firstGivenNm == party.FirstName
-                    && justinUser?.participantDetails?.FirstOrDefault()?.surname == party.LastName
-                    && justinUser?.participantDetails?.FirstOrDefault()?.emailAddress.ToUpper(CultureInfo.CurrentCulture) == party.Email!.ToUpper(CultureInfo.CurrentCulture))
+                    && justinUser?.participantDetails?.FirstOrDefault()?.surname == party.LastName)
             {
-                return Task.FromResult(true);
+                if (Environment.GetEnvironmentVariable("JUSTIN_SKIP_USER_EMAIL_CHECK") is not null and "true")
+                {
+                    Serilog.Log.Logger.Warning("JUSTIN EMail address checking is disabled - not checking for {0}", party.Id);
+                    return Task.FromResult(true);
+                }
+                else
+                {
+                    if (justinUser?.participantDetails?.FirstOrDefault()?.emailAddress.ToUpper(CultureInfo.CurrentCulture) == party.Email!.ToUpper(CultureInfo.CurrentCulture))
+                    {
+                        return Task.FromResult(true);
+                    }
+                    else
+                    {
+                        Serilog.Log.Logger.Information("JUSTIN EMail address does not match {0} != {1}", justinUser?.participantDetails?.FirstOrDefault()?.emailAddress, party.Email);
+                        return Task.FromResult(false);
+                    }
+                }
+
             }
         }
+
+
 
         if (justinUser?.participantDetails?.FirstOrDefault()?.firstGivenNm == party.FirstName
             && justinUser?.participantDetails?.FirstOrDefault()?.surname == party.LastName

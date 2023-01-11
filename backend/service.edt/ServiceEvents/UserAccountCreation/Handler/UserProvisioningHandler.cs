@@ -95,12 +95,12 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                 bool publishResultOk;
                 if (result.Event == UserModificationEvent.UserEvent.Create)
                 {
-                    Serilog.Log.Information("Publishing EDT user creation event {0}", msgKey);
+                    Serilog.Log.Information("Publishing EDT user creation event {0} {1}", msgKey, accessRequestModel.Key);
                     publishResultOk = await producer.ProduceAsync(this.configuration.KafkaCluster.UserCreationTopicName, key: msgKey, result);
                 }
                 else
                 {
-                    Serilog.Log.Information("Publishing EDT user modification event {0}", msgKey);
+                    Serilog.Log.Information("Publishing EDT user modification event {0} {1}", msgKey, accessRequestModel.Key);
                     publishResultOk = await producer.ProduceAsync(this.configuration.KafkaCluster.UserModificationTopicName, key: msgKey, result);
                 }
 
@@ -165,12 +165,14 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
             <head>
                 <title>Digital Evidence Management System Enrollment Confirmation</title>
             </head>
-                <body> 
-                <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr' width='' height='50'/><br/><br/><div style='border-top: 3px solid #22BCE5'><span style = 'font-family: Arial; font-size: 10pt' ><br/> Hello {0},<br/>
-<br/> Your Digital Evidence Management System Access Request has been processed and account successfully created.<p/><p/>
-                You may now Login to the EDT Portal with your digital identity via Single Sign-On (SSO)<p/><p/>{1}<p/>
-<p/>Thanks <br/>The DEMS User Management Team.
-                </span></div></body></html> ",
+            <body> 
+                <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr' width='' height='50'/><br/><br/>
+                <div style='border-top: 3px solid #22BCE5'><span style = 'font-family: Arial; font-size: 10pt' >
+                <br/> Hello {0},<br/>
+                <br/>Your BCPS DEMS profile has been successfully created.<p/>
+                <p/>{1}<p/>
+                </span></div>
+            </body></html> ",
                 firstName, GetSupportMessage());
         return msgBody;
     }
@@ -183,9 +185,12 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                 <title>Digital Evidence Management System Enrollment Confirmation</title>
             </head>
                 <body> 
-                <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr' width='' height='50'/><br/><br/><div style='border-top: 3px solid red'><span style = 'font-family: Arial; font-size: 10pt' ><br/> Hello {0},<br/>
-<br/>We were unable to complete your request to access the Digital Evidence Management System.<p/><p/>
-                {1}<br/> <p/><p/>The DEMS User Management Team.
+                <img src='https://drive.google.com/uc?export=view&id=16JU6XoVz5FvFUXXWCN10JvN-9EEeuEmr' width='' height='50'/><br/><br/>
+                <div style='border-top: 3px solid red'>
+                <span style = 'font-family: Arial; font-size: 10pt' >
+                <br/> Hello {0},<br/>
+                <br/>Your BCPS DEMS profile has NOT been created.<p/><p/>
+                {1}<br/>
                 </span><p/><div style='border-top: 3px solid red'></div></body></html> ",
                 firstName, GetSupportMessage());
         return msgBody;
@@ -211,7 +216,7 @@ We will inform you if we are unable to complete your request.<p/><p/>{2}<p/>
         return msgBody;
     }
 
-    private static string GetSupportMessage() => "<p/><b>For assistance contact <a href = \"mailto:support@dems.gov.bc.ca\">support@dems.gov.bc.ca</a> or call (888)-888-8888</b><p/><i>Please do not reply to this message as this message box is not monitored. Contact support at the address above for assistance</i>";
+    private static string GetSupportMessage() => "<p/>If you require any assistance, please contact <a href = \"mailto:bcps.disclosure.support@gov.bc.ca\">bcps.disclosure.support@gov.bc.ca</a><p/><p/>Thank you,<br/>BCPS DEMS Support<p/>";
 
 
     /// <summary>
