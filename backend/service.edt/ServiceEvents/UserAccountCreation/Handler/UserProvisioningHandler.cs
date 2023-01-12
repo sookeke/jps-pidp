@@ -170,6 +170,8 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                 <div style='border-top: 3px solid #22BCE5'><span style = 'font-family: Arial; font-size: 10pt' >
                 <br/> Hello {0},<br/>
                 <br/>Your BCPS DEMS profile has been successfully created.<p/>
+                <br/><i>Your account is still being finalized and assigned cases will be available once this process completes.</i>
+                <br/>If you need immediate access to a case you do not have access to, please contact DEMS Support.
                 <p/>{1}<p/>
                 </span></div>
             </body></html> ",
