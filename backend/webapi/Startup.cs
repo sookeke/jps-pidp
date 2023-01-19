@@ -59,7 +59,7 @@ public class Startup
     .GetName().Version?.ToString() ?? "0.0.0";
 
 
-        if (config.Telemetry.CollectorUrl != null)
+        if (!string.IsNullOrEmpty(config.Telemetry.CollectorUrl))
         {
 
             Action<ResourceBuilder> configureResource = r => r.AddService(

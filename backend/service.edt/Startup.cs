@@ -46,7 +46,7 @@ public class Startup
         var config = this.InitializeConfiguration(services);
 
 
-        if (config.Telemetry.CollectorUrl != null)
+        if (!string.IsNullOrEmpty(config.Telemetry.CollectorUrl))
         {
 
             var meters = new OtelMetrics();
