@@ -54,6 +54,8 @@ spec:
                   key: url
             #- name: JumClient__Url
             #  value: {{ .Values.jumClientURL }}
+            - name: JUSTIN_SKIP_USER_EMAIL_CHECK
+              value: "true"
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspnetcore.environment }}
             - name: DB_HOST
@@ -97,7 +99,7 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
                   key: KafkaCluster__ProducerTopicName
-
+    
             - name: KafkaCluster__SaslOauthbearerConsumerClientSecret
               valueFrom:
                 secretKeyRef:
@@ -124,6 +126,16 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
                   key: KafkaCluster__NotificationTopicName
+            - name: Telemetry__CollectorUrl
+              valueFrom: 
+                secretKeyRef:
+                  name: telemetry-pidp
+                  key: Telemetry__CollectorUrl
+            - name: Telemetry__AzureConnectionString
+              valueFrom: 
+                secretKeyRef:
+                  name: telemetry-pidp
+                  key: Telemetry__AzureConnectionString
             - name: ApplicationUrl
               value: "https://{{ if $isProd }}{{else}}{{ $release }}.{{end}}{{ $domain }}"
           volumeMounts:

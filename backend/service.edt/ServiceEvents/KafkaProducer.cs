@@ -1,10 +1,15 @@
 namespace edt.service.ServiceEvents;
 
 using Confluent.Kafka;
+using edt.service.Infrastructure.Telemetry;
 using edt.service.Kafka.Interfaces;
 using EdtService.Kafka;
 using IdentityModel.Client;
+using Microsoft.Identity.Client;
+using OpenTelemetry;
+using OpenTelemetry.Context.Propagation;
 using Serilog;
+using System.Diagnostics;
 using System.Globalization;
 
 public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDisposable, IKafkaProducer<TKey, TValue> where TValue : class
@@ -12,6 +17,8 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
     private readonly IProducer<TKey, TValue> producer;
     private const string EXPIRY_CLAIM = "exp";
     private const string SUBJECT_CLAIM = "sub";
+    private static readonly ActivitySource Activity = new(TelemetryConstants.ServiceName + "-Producer");
+    private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
 
     /// <summary>
     /// for production use of sasl/oauthbearer
@@ -23,7 +30,25 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
     /// </summary>
     /// <param name="config"></param>
     public KafkaProducer(ProducerConfig config) => this.producer = new ProducerBuilder<TKey, TValue>(config).SetOAuthBearerTokenRefreshHandler(OauthTokenRefreshCallback).SetValueSerializer(new KafkaSerializer<TValue>()).Build();
-    public async Task ProduceAsync(string topic, TKey key, TValue value) => await this.producer.ProduceAsync(topic, new Message<TKey, TValue> { Key = key, Value = value });
+    public async Task ProduceAsyncDeprecated(string topic, TKey key, TValue value) => await this.producer.ProduceAsync(topic, new Message<TKey, TValue> { Key = key, Value = value });
+
+    public async Task ProduceAsync(string topic, TKey key, TValue value)
+    {
+        var message = new Message<TKey, TValue> { Key = key, Value = value };
+        var activity = Diagnostics.Producer.Start(topic, message);
+        try
+        {
+            using var currentActivity = Activity.StartActivity("edt.kafka.produce", ActivityKind.Producer);
+            currentActivity?.SetTag("kafka.topic", topic);
+            currentActivity?.SetTag("kafka.key", key);
+
+            await this.producer.ProduceAsync(topic, message);
+        } finally
+        {
+            activity?.Stop();
+        }
+    }
+
     public void Dispose()
     {
         this.producer.Flush();
@@ -49,10 +74,10 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
             clientId ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerProducerClientId");
             tokenEndpoint ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
 
-            Log.Logger.Information("Pidp Kafka Producer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
+            Log.Logger.Debug("Pidp Kafka Producer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
             var accessTokenClient = new HttpClient();
 
-            Log.Logger.Information("Producer getting token {0}", tokenEndpoint);
+            Log.Logger.Debug("Producer getting token {0}", tokenEndpoint);
 
 
             var accessToken = await accessTokenClient.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
@@ -67,7 +92,7 @@ public class KafkaProducer<TKey, TValue> : KafkaOauthTokenRefreshHandler, IDispo
             var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks);
             var timeSpan = new DateTime() - tokenDate;
             var ms = tokenDate.ToUnixTimeMilliseconds();
-            Log.Logger.Information("Producer got token {0}", ms);
+            Log.Logger.Debug("Producer got token {0}", ms);
 
             client.OAuthBearerSetToken(accessToken.AccessToken, ms, subject);
         }

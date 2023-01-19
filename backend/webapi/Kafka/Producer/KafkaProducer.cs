@@ -5,6 +5,7 @@ using Pidp.Kafka.Interfaces;
 using IdentityModel.Client;
 using System.Globalization;
 using Serilog;
+using Pidp.Infrastructure.Telemetry;
 
 public class KafkaProducer<TKey, TValue> : IDisposable, IKafkaProducer<TKey, TValue> where TValue : class
 {
@@ -13,7 +14,22 @@ public class KafkaProducer<TKey, TValue> : IDisposable, IKafkaProducer<TKey, TVa
     private const string SUBJECT_CLAIM = "sub";
 
     public KafkaProducer(ProducerConfig config) => this.producer = new ProducerBuilder<TKey, TValue>(config).SetOAuthBearerTokenRefreshHandler(OauthTokenRefreshCallback).SetValueSerializer(new KafkaSerializer<TValue>()).Build();
-    public async Task ProduceAsync(string topic, TKey key, TValue value) => await this.producer.ProduceAsync(topic, new Message<TKey, TValue> { Key = key, Value = value });
+
+    public async Task ProduceAsyncDeprecated(string topic, TKey key, TValue value) => await this.producer.ProduceAsync(topic, new Message<TKey, TValue> { Key = key, Value = value });
+
+    public async Task ProduceAsync(string topic, TKey key, TValue value)
+    {
+        var message = new Message<TKey, TValue> { Key = key, Value = value };
+        var activity = Diagnostics.Producer.Start(topic, message);
+        try
+        {
+            await this.producer.ProduceAsync(topic, message);
+        }
+        finally
+        {
+            activity?.Stop();
+        }
+    }
     public void Dispose()
     {
         this.producer.Flush();

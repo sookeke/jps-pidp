@@ -24,10 +24,23 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Pidp.Features.Organization.UserTypeService;
 using Pidp.Features.Organization.OrgUnitService;
 using Microsoft.Extensions.Configuration;
-using Pidp.Models;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry;
+using System.Diagnostics;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using Pidp.Infrastructure.Telemetry;
+using Azure.Monitor.OpenTelemetry.Exporter;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 public class Startup
 {
+
+
+
     public IConfiguration Configuration { get; }
 
     public Startup(IConfiguration configuration)
@@ -42,19 +55,72 @@ public class Startup
     {
         var config = this.InitializeConfiguration(services);
 
+        var assemblyVersion = Assembly.GetExecutingAssembly()
+    .GetName().Version?.ToString() ?? "0.0.0";
+
+
+        if (config.Telemetry.CollectorUrl != null)
+        {
+
+            Action<ResourceBuilder> configureResource = r => r.AddService(
+                 serviceName: TelemetryConstants.ServiceName,
+                 serviceVersion: Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown",
+                serviceInstanceId: Environment.MachineName);
+
+            Log.Logger.Information("Telemetry logging is enabled {0}", config.Telemetry.CollectorUrl);
+            var resource = ResourceBuilder.CreateDefault().AddService(TelemetryConstants.ServiceName);
+
+            services.AddOpenTelemetry()
+                .ConfigureResource(configureResource)
+                .WithTracing(builder =>
+                {
+                    builder.SetSampler(new AlwaysOnSampler())
+                        .AddHttpClientInstrumentation()
+                        .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
+                        .AddAspNetCoreInstrumentation();
+                    if (config.Telemetry.LogToConsole)
+                    {
+                        builder.AddConsoleExporter();
+                    }
+                    if (config.Telemetry.AzureConnectionString != null)
+                    {
+                        builder.AddAzureMonitorTraceExporter(o => o.ConnectionString = config.Telemetry.AzureConnectionString);
+                    }
+                    if (config.Telemetry.CollectorUrl != null)
+                    {
+                        builder.AddOtlpExporter(options =>
+                            {
+                                options.Endpoint = new Uri(config.Telemetry.CollectorUrl);
+                                options.Protocol = OtlpExportProtocol.HttpProtobuf;
+                            });
+                    }
+                })
+                .WithMetrics(builder =>
+                    builder.AddHttpClientInstrumentation()
+                        .AddAspNetCoreInstrumentation()).StartWithHost();
+
+
+
+
+        }
+
         services
-            .AddAutoMapper(typeof(Startup))
-            .AddHttpClients(config)
-            .AddKeycloakAuth(config)
-            .AddScoped<IEmailService, EmailService>()
-            .AddScoped<IPidpAuthorizationService, PidpAuthorizationService>()
-            .AddSingleton<IClock>(SystemClock.Instance);
+        .AddAutoMapper(typeof(Startup))
+        .AddHttpClients(config)
+        .AddKeycloakAuth(config)
+        .AddScoped<IEmailService, EmailService>()
+        .AddScoped<IPidpAuthorizationService, PidpAuthorizationService>()
+        .AddSingleton<IClock>(SystemClock.Instance);
 
         services.AddSingleton<ProblemDetailsFactory, JpidpProblemDetailsFactory>();
 
         services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new KabobCaseParameterTransformer())))
             .AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<Startup>())
-            .AddJsonOptions(options => options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb))
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            })
             .AddHybridModelBinder();
 
         services.AddDbContext<PidpDbContext>(options => options
@@ -88,17 +154,28 @@ public class Startup
             options.CustomSchemaIds(x => x.FullName);
         });
         services.AddFluentValidationRulesToSwagger();
+
+        JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
+        Log.Logger.Information("Startup configuration complete");
+
+
+
     }
 
     private PidpConfiguration InitializeConfiguration(IServiceCollection services)
     {
         var config = new PidpConfiguration();
+
         this.Configuration.Bind(config);
 
         services.AddSingleton(config);
 
         Log.Logger.Information("### App Version:{0} ###", Assembly.GetExecutingAssembly().GetName().Version);
-        Log.Logger.Information("### PIdP Configuration:{0} ###", JsonSerializer.Serialize(config));
+        Log.Logger.Information("### PIdP Configuration:{0} ###", System.Text.Json.JsonSerializer.Serialize(config));
 
 
         if (Environment.GetEnvironmentVariable("JUSTIN_SKIP_USER_EMAIL_CHECK") is not null and "true")
@@ -146,5 +223,6 @@ public class Startup
             endpoints.MapControllers();
             endpoints.MapHealthChecks("/health/liveness").AllowAnonymous();
         });
+
     }
 }

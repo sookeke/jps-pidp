@@ -1,9 +1,11 @@
 namespace edt.service.HttpClients.Services.EdtCore;
 
+using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using AutoMapper;
 using DomainResults.Common;
 using edt.service.Exceptions;
+using edt.service.Infrastructure.Telemetry;
 using edt.service.Kafka.Model;
 using edt.service.ServiceEvents.UserAccountCreation.Models;
 using Serilog;
@@ -11,14 +13,22 @@ using Serilog;
 public class EdtClient : BaseClient, IEdtClient
 {
     private readonly IMapper mapper;
+    private readonly OtelMetrics meters;
+
+
     public EdtClient(
-        HttpClient httpClient,
+        HttpClient httpClient, OtelMetrics meters,
         IMapper mapper,
         ILogger<EdtClient> logger)
-        : base(httpClient, logger) => this.mapper = mapper;
+        : base(httpClient, logger)
+    {
+        this.mapper = mapper;
+        this.meters = meters;
+    }
 
     public async Task<UserModificationEvent> CreateUser(EdtUserProvisioningModel accessRequest)
     {
+        this.meters.AddUser();
         var edtUserDto = this.mapper.Map<EdtUserProvisioningModel, EdtUserDto>(accessRequest);
         var result = await this.PostAsync($"api/v1/users", edtUserDto);
         var userModificationResponse = new UserModificationEvent
@@ -152,6 +162,8 @@ public class EdtClient : BaseClient, IEdtClient
 
     public async Task<EdtUserDto?> GetUser(string userKey)
     {
+
+        this.meters.GetUser();
         Log.Logger.Information("Checking if user key {0} already present", userKey);
         var result = await this.GetAsync<EdtUserDto?>($"api/v1/users/key:{userKey}");
 

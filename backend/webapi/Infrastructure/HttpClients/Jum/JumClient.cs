@@ -34,6 +34,8 @@ public class JumClient : BaseClient, IJumClient
 
     public async Task<JustinUser?> GetJumUserAsync(string username)
     {
+
+
         var result = await this.GetAsync<JustinUser>($"users/{username}");
 
         if (!result.IsSuccess)

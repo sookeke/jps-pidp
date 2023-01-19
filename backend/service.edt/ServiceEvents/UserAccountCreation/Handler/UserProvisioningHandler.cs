@@ -1,10 +1,13 @@
 namespace edt.service.ServiceEvents.UserAccountCreation.Handler;
 
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using edt.service.Data;
 using edt.service.Exceptions;
 using edt.service.HttpClients;
 using edt.service.HttpClients.Services.EdtCore;
+using edt.service.Infrastructure.Telemetry;
 using edt.service.Kafka;
 using edt.service.Kafka.Interfaces;
 using edt.service.Kafka.Model;
@@ -22,6 +25,8 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
     private readonly IEdtClient edtClient;
     private readonly ILogger logger;
     private readonly EdtDataStoreDbContext context;
+
+
 
     public UserProvisioningHandler(
         IKafkaProducer<string, Notification> producer,
@@ -44,6 +49,10 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
     {
 
         Serilog.Log.Logger.Information("Db {0} {1}", this.context.Database.CanConnect(), this.context.Database.GetConnectionString());
+
+        // set acitivty info
+        Activity.Current?.AddTag("digitalevidence.party.id", accessRequestModel.AccessRequestId);
+
 
         using var trx = this.context.Database.BeginTransaction();
         try
@@ -140,6 +149,9 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
 
         return Task.CompletedTask; //create specific exception handler later
     }
+
+
+    private async Task<string> CheckEdtServiceVersion() => await this.edtClient.GetVersion();
 
     private async Task<UserModificationEvent> CheckUser(EdtUserProvisioningModel value)
     {
@@ -296,13 +308,19 @@ We will inform you if we are unable to complete your request.<p/><p/>{2}<p/>
             //check wheather this message has been processed before   
             if (await this.context.HasBeenProcessed(key, consumerName))
             {
-                //await trx.RollbackAsync();
                 return Task.CompletedTask;
             }
             ///check weather edt service api is available before making any http request
             ///
             /// call version endpoint via get
             ///
+            var edtVersion = await this.CheckEdtServiceVersion();
+
+            if (edtVersion == null)
+            {
+                Serilog.Log.Logger.Error("Failed to ping EDT service");
+                return Task.FromException(new EdtServiceException("Unable to access EDT endpoint"));
+            }
 
             //check wheather edt user already exist
             var result = await this.CheckUser(value);

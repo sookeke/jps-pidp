@@ -158,7 +158,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: edt-client
-                  key: Apikey 
+                  key: Apikey
+            - name: Telemetry__CollectorUrl
+              valueFrom: 
+                secretKeyRef:
+                  name: telemetry-pidp
+                  key: Telemetry__CollectorUrl
+            - name: Telemetry__AzureConnectionString
+              valueFrom: 
+                secretKeyRef:
+                  name: telemetry-pidp
+                  key: Telemetry__AzureConnectionString
           volumeMounts:
           - name: truststore
             mountPath: "/opt/kafka/certificates"

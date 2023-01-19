@@ -1,5 +1,7 @@
 namespace Pidp.Features.AccessRequests;
 
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Globalization;
 using DomainResults.Common;
 using FluentValidation;
@@ -12,6 +14,9 @@ using Pidp.Infrastructure.HttpClients.Keycloak;
 using Pidp.Kafka.Interfaces;
 using Pidp.Models;
 using Pidp.Models.Lookups;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 
 public class DigitalEvidence
 {
@@ -75,6 +80,12 @@ public class DigitalEvidence
 
         public async Task<IDomainResult> HandleAsync(Command command)
         {
+
+            var traceId = Tracer.CurrentSpan.Context.TraceId;
+            Serilog.Log.Logger.Information("DigitalEvidence Request {0} {1}", command.ParticipantId, traceId);
+            Activity.Current?.AddTag("digitalevidence.party.id", command.PartyId);
+
+
             var dto = await this.GetPidpUser(command);
 
             if (dto.AlreadyEnroled
@@ -130,8 +141,10 @@ public class DigitalEvidence
                 await trx.RollbackAsync();
                 return DomainResult.Failed();
             }
+          
 
             return DomainResult.Success();
+
         }
 
         private static string MsgBodySubmissionReceived(string? firstName)

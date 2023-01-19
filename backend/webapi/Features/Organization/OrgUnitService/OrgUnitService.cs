@@ -8,6 +8,8 @@ using Pidp.Models.Lookups;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Microsoft.AspNetCore.Authentication;
+using System.Diagnostics;
+using Pidp.Infrastructure.Telemetry;
 
 public class OrgUnitService : IOrgUnitService
 {
@@ -25,9 +27,15 @@ public class OrgUnitService : IOrgUnitService
         var httpContext = this.httpContextAccessor.HttpContext;
         var accessToken = await httpContext!.GetTokenAsync("access_token");
 
+        using var activity = Telemetry.ActivitySource.StartActivity(TelemetryConstants.ServiceName + "-GetOrgUnitGroup");
+        activity?.AddTag("digitalevidence.party.id", partyId);
+
+
         var dto = await this.context.Parties
                 .Where(party => party.Id == partyId)
                 .SingleAsync();
+
+
 
         var getJumUser = await this.jumClient.GetJumUserByPartIdAsync(participantId, accessToken!);
         if (getJumUser != null && getJumUser.participantDetails.Count > 0 && await this.jumClient.IsJumUser(getJumUser, dto))

@@ -19,9 +19,18 @@ public class EdtServiceConfiguration
     public EdtClientConfiguration EdtClient { get; set; } = new();
 
     public SchemaRegistryConfiguration SchemaRegistry { get; set; } = new();
+    public TelemeteryConfiguration Telemetry { get; set; } = new TelemeteryConfiguration();
 
 
     // ------- Configuration Objects -------
+
+    public class TelemeteryConfiguration
+    {
+        public string CollectorUrl { get; set; } = string.Empty;
+        public string AzureConnectionString { get; set; } = string.Empty;
+        public bool LogToConsole { get; set; }
+
+    }
 
     public class AddressAutocompleteClientConfiguration
     {
