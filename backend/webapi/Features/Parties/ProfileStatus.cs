@@ -124,6 +124,9 @@ public partial class ProfileStatus
                 .FirstOrDefaultAsync()
                 : null;
 
+    
+
+
             //if (profile.CollegeCertificationEntered && profile.Ipc == null)
             if (profile.HasDeclaredLicence
                 && string.IsNullOrWhiteSpace(profile.Cpn))
@@ -132,6 +135,7 @@ public partial class ProfileStatus
                 profile.Cpn = await this.RecheckCpn(command.Id, profile.LicenceDeclaration, profile.Birthdate);
             }
 
+            // if the user is a BCPS user then we'll flag this portion as completed
             if (profile.OrganizationDetailEntered && profile.OrganizationCode == OrganizationCode.CorrectionService && orgCorrectionDetail != null)
             {
                 //get user token
@@ -173,6 +177,19 @@ public partial class ProfileStatus
             //profile.PlrRecordStatus = await this.client.GetRecordStatus(profile.Ipc);
             profile.PlrStanding = await this.client.GetStandingsDigestAsync(profile.Cpn);
             profile.User = command.User;
+
+            // if the user is BCPS then they dont need to add their party info
+            if (profile.UserIsBcps)
+            {
+                // get the party
+                var party = await this.context.Parties
+               .SingleAsync(party => party.Id == command.Id);
+
+                if (party != null)
+                {
+                    profile.Email = party.Email;
+                }
+            }
 
             var profileStatus = new Model
             {
@@ -270,7 +287,7 @@ public partial class ProfileStatus
 
         // Computed Properties
         [MemberNotNullWhen(true, nameof(Email), nameof(Phone))]
-        public bool DemographicsEntered => this.Email != null && this.Phone != null;
+        public bool DemographicsEntered => this.User.GetIdentityProvider() == ClaimValues.Idir ? this.Email != null : this.Email != null && this.Phone != null;
         [MemberNotNullWhen(true, nameof(CollegeCode), nameof(LicenceNumber))]
         public bool CollegeCertificationEntered => this.CollegeCode.HasValue && this.LicenceNumber != null;
         [MemberNotNullWhen(true, nameof(OrganizationCode), nameof(EmployeeIdentifier))]

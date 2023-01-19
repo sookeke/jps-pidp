@@ -49,16 +49,12 @@ spec:
         type: route
         authentication:
           type: oauth
-#          checkAudience: true
           enableOauthBearer: true
-#          checkAccessTokenType: true
-#          accessTokenIsJwt: true
           clientId: kafka-broker
           clientSecret:
             key: secret
             secretName: {{ include "pidp-kafka.fullname" . }}-broker-secret
           validIssuerUri: {{ .Values.keycloak.auth }}
-          # introspectionEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token/introspect
           jwksEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/certs
           userNameClaim: preferred_username
           tokenEndpointUri: {{ .Values.keycloak.auth }}/protocol/openid-connect/token

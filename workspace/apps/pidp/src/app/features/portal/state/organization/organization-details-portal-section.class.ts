@@ -71,7 +71,7 @@ export class OrganizationDetailsPortalSection implements IPortalSection {
               demographicsStatusCode === StatusCode.COMPLETED
                 ? 'Verified'
                 : 'Not Verified',
-            label: 'Justin User Status:',
+            label: 'JUSTIN User Status:',
           },
           {
             key: 'CorrectionService',

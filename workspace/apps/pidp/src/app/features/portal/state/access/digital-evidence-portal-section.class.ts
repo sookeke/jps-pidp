@@ -1,17 +1,26 @@
 import { Router } from '@angular/router';
 
+
+
 import { Observable } from 'rxjs';
+
+
 
 import { AlertType } from '@bcgov/shared/ui';
 
+
+
 import { AccessRoutes } from '@app/features/access/access.routes';
 import { ShellRoutes } from '@app/features/shell/shell.routes';
+
+
 
 import { StatusCode } from '../../enums/status-code.enum';
 import { ProfileStatus } from '../../models/profile-status.model';
 import { PortalSectionAction } from '../portal-section-action.model';
 import { PortalSectionKey } from '../portal-section-key.type';
 import { IPortalSection } from '../portal-section.model';
+
 
 export class DigitalEvidencePortalSection implements IPortalSection {
   public readonly key: PortalSectionKey;
@@ -23,8 +32,8 @@ export class DigitalEvidencePortalSection implements IPortalSection {
     private router: Router
   ) {
     this.key = 'digitalEvidence';
-    this.heading = 'Digital Evidence Management System';
-    this.description = `Enrol here for access to Digital Evidence Management System application.`;
+    this.heading = 'Digital Evidence and Disclosure Management System';
+    this.description = `Enrol here for access to Digital Evidence and Disclosure Management System application.`;
   }
 
   public get hint(): string {

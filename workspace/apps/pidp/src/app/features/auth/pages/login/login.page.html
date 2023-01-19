@@ -1,16 +1,11 @@
-<ui-dashboard-header
-  [theme]="headerConfig.theme"
-  [allowMobileToggle]="headerConfig.allowMobileToggle"></ui-dashboard-header>
+<ui-dashboard-header [theme]="headerConfig.theme" [allowMobileToggle]="headerConfig.allowMobileToggle">
+</ui-dashboard-header>
 
 <div class="container">
   <ng-container *ngIf="idpHint === IdentityProvider.BCSC; else admin">
     <div class="row">
       <div class="col-12">
-        <ui-alert
-          *ngIf="loginCancelled"
-          type="info"
-          icon="error_outline"
-          heading="Login Cancelled">
+        <ui-alert *ngIf="loginCancelled" type="info" icon="error_outline" heading="Login Cancelled">
           <ng-container uiAlertContent>
             <p>
               You have cancelled your login to the Provider Identity Portal.
@@ -18,10 +13,7 @@
             <ul>
               <li>
                 For support with the provider identity portal, contact
-                <a
-                  uiAnchor
-                  scheme="mailto"
-                  [attr.href]="providerIdentitySupportEmail"></a>
+                <a uiAnchor scheme="mailto" [attr.href]="providerIdentitySupportEmail"></a>
               </li>
               <li>
                 For support with your BC Services Card, click
@@ -36,16 +28,12 @@
       <div class="col-12 col-xl-auto">
         <div class="header">
           <div class="heading">
-            <img
-              src="/assets/images/pidp-logo-blue-small.svg"
-              alt="Provider Identity Portal Logo" />
+            <img src="/assets/images/pidp-logo-blue-small.svg" alt="Provider Identity Portal Logo" />
             <h1>Provider Identity Portal</h1>
           </div>
 
           <p>
-            A portal for court associates in
-            <strong>British Columbia</strong> to enrol for access to
-            participating court systems
+            A portal for approved individuals to enroll for access to provided systems.
           </p>
         </div>
 
@@ -53,14 +41,11 @@
           <ng-container *ngTemplateOutlet="login"></ng-container>
         </div>
 
-        <div class="hide-on-small-viewports scroll">
-          <button
-            mat-stroked-button
-            color="primary"
-            (click)="onScrollToAnchor()">
+        <!-- <div class="hide-on-small-viewports scroll">
+          <button mat-stroked-button color="primary" (click)="onScrollToAnchor()">
             View available court systems
           </button>
-        </div>
+        </div> -->
 
         <div class="support">
           <app-get-support></app-get-support>
@@ -69,11 +54,9 @@
         <div class="systems">
           <ui-page-section>
             <ui-scroll-target targetId="systems"></ui-scroll-target>
-            <ui-page-section-subheader
-              icon="assignment"
-              heading="Systems Available"></ui-page-section-subheader>
+            <ui-page-section-subheader icon="assignment" heading="Systems Available"></ui-page-section-subheader>
 
-            <ui-page-section>
+            <!-- <ui-page-section>
               <h3>Digital Evidence Management System</h3>
               <p>
                 B.C. court associates, lawyers, police and Out of Custody users
@@ -87,7 +70,7 @@
                 to enrol. You will use the app each time you access the DEMS
                 application.
               </p>
-            </ui-page-section>
+            </ui-page-section> -->
 
             <ui-page-section>
               <h3>Driver Medical Fitness Transformation Program</h3>
@@ -118,7 +101,7 @@
       <div>Login using:</div>
       <div>
         <button mat-stroked-button (click)="onLogin(IdentityProvider.OIDC)">
-          Login with the BC Services Card app
+          Login with BC Services Card
         </button>
         <small>
           Need an account?
@@ -126,13 +109,11 @@
         </small>
 
         <button mat-stroked-button (click)="onLogin(IdentityProvider.ADFS)">
-          Login with your BCPS Ikey
+          BCPS User
         </button>
 
-        <button
-          mat-stroked-button
-          (click)="onLogin(IdentityProvider.AZUREIDIR)">
-          Login with your IDIR
+        <button mat-stroked-button (click)="onLogin(IdentityProvider.AZUREIDIR)">
+          Government User
         </button>
         <br /><br />
         <!--<mat-form-field class="example-form">
@@ -159,9 +140,7 @@
   <ng-template #admin>
     <div class="row admin">
       <div class="col-12">
-        <img
-          src="/assets/images/pidp-logo-blue.svg"
-          alt="Provider Identity Portal Logo" />
+        <img src="/assets/images/pidp-logo-blue.svg" alt="Provider Identity Portal Logo" />
       </div>
       <div class="col-12">
         <button mat-flat-button color="primary" (click)="onLogin()">
