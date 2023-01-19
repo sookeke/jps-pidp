@@ -54,6 +54,7 @@ spec:
                   key: url
             #- name: JumClient__Url
             #  value: {{ .Values.jumClientURL }}
+            # Skip null emails
             - name: JUSTIN_SKIP_USER_EMAIL_CHECK
               value: "true"
             - name: ASPNETCORE_ENVIRONMENT
