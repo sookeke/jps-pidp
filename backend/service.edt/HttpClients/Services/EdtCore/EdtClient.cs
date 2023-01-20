@@ -33,17 +33,17 @@ public class EdtClient : BaseClient, IEdtClient
         var result = await this.PostAsync($"api/v1/users", edtUserDto);
         var userModificationResponse = new UserModificationEvent
         {
-            PartId = edtUserDto.Key,
-            Event = UserModificationEvent.UserEvent.Create,
-            EventTime = new DateTime(),
-            AccessRequestId = accessRequest.AccessRequestId,
-            Successful = true
+            partId = edtUserDto.Key,
+            eventType = UserModificationEvent.UserEvent.Create,
+            eventTime = DateTime.Now,
+            accessRequestId = accessRequest.AccessRequestId,
+            successful = true
         };
 
         if (!result.IsSuccess)
         {
             Log.Logger.Error("Failed to create EDT user {0}", string.Join(",", result.Errors));
-            userModificationResponse.Successful = false;
+            userModificationResponse.successful = false;
         }
 
         //add user to group
@@ -59,7 +59,7 @@ public class EdtClient : BaseClient, IEdtClient
         }
         else
         {
-            userModificationResponse.Successful = false;
+            userModificationResponse.successful = false;
         }
 
         return userModificationResponse;
@@ -127,16 +127,16 @@ public class EdtClient : BaseClient, IEdtClient
         var result = await this.PutAsync($"api/v1/users", edtUserDto);
         var userModificationResponse = new UserModificationEvent
         {
-            PartId = edtUserDto.Key,
-            Event = UserModificationEvent.UserEvent.Modify,
-            EventTime = new DateTime(),
-            AccessRequestId = accessRequest.AccessRequestId,
-            Successful = true
+            partId = edtUserDto.Key,
+            eventType = UserModificationEvent.UserEvent.Modify,
+            eventTime = DateTime.Now,
+            accessRequestId = accessRequest.AccessRequestId,
+            successful = true
     };
 
         if (!result.IsSuccess)
         {
-            userModificationResponse.Successful = false;
+            userModificationResponse.successful = false;
         }
         //add user to group
         var user = await this.GetUser(accessRequest.Key!);
@@ -145,14 +145,14 @@ public class EdtClient : BaseClient, IEdtClient
             var addGroupToUser = await this.UpdateUserAssignedGroups(user.Id!, accessRequest.AssignedRegions!, userModificationResponse);
             if (!addGroupToUser)
             {
-                userModificationResponse.Successful = false;
+                userModificationResponse.successful = false;
             }
         }
         else
         {
             var msg = $"Failed to add user {accessRequest.Id} to group {accessRequest.AssignedRegions}";
             Log.Logger.Error(msg);
-            userModificationResponse.Successful = false;
+            userModificationResponse.successful = false;
         }
 
 

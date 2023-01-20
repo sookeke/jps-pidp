@@ -1,13 +1,17 @@
 namespace edt.service.Kafka.Model;
 
+using System.Text.Json;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
 
 
 /// <summary>
 /// Represents a change to a user in relation to EDT
+/// Avro schema will automatically register with pascal names which causes issues on the
+/// consuming side. For now we'll use camelCase naming as the AVRO register will automatically take the names of the fields
+/// regardless of any json conversions.
 /// </summary>
+#pragma warning disable IDE1006 // Naming Styles
+
 public class UserModificationEvent : AuditEvent
 {
 
@@ -20,17 +24,16 @@ public class UserModificationEvent : AuditEvent
         Enable
     }
 
-    public string PartId { get; set; } = string.Empty;
+    public string partId { get; set; } = string.Empty;
 
-    [JsonConverter(typeof(StringEnumConverter))]
-    public UserEvent Event { get; set; } = UserEvent.Create;
+    public UserEvent eventType { get; set; } = UserEvent.Create;
 
-    public int AccessRequestId { get; set; }
+    public int accessRequestId { get; set; }
 
-    [JsonIgnore]
-    public bool Successful { get; set; }
+    public bool successful { get; set; }
 
     public override string ToString() => JsonConvert.SerializeObject(this);
+
 
 
 }

@@ -59,6 +59,11 @@ spec:
               value: "true"
             - name: ASPNETCORE_ENVIRONMENT
               value: {{ .Values.aspnetcore.environment }}
+            - name: Seq__Url
+              valueFrom:
+                secretKeyRef:
+                  name: datalust-seq
+                  key: url
             - name: DB_HOST
               value: pidp-postgresql
             - name: POSTGRESQL_PASSWORD

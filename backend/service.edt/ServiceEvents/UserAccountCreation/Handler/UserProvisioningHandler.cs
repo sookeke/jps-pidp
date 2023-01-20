@@ -72,7 +72,7 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
             var result = await this.CheckUser(accessRequestModel);
 
 
-            if (result.Successful)
+            if (result.successful)
             {
                 //add to tell message has been proccessed by consumer
                 await this.context.IdempotentConsumer(messageId: key, consumer: consumerName);
@@ -102,7 +102,7 @@ public class UserProvisioningHandler : IKafkaHandler<string, EdtUserProvisioning
                 var producer = new SchemaAwareProducer(ConsumerSetup.GetProducerConfig(), this.userModificationProducer, this.configuration);
                 // publish to the user creation topic for others to consume
                 bool publishResultOk;
-                if (result.Event == UserModificationEvent.UserEvent.Create)
+                if (result.eventType == UserModificationEvent.UserEvent.Create)
                 {
                     Serilog.Log.Information("Publishing EDT user creation event {0} {1}", msgKey, accessRequestModel.Key);
                     publishResultOk = await producer.ProduceAsync(this.configuration.KafkaCluster.UserCreationTopicName, key: msgKey, result);
@@ -308,6 +308,7 @@ We will inform you if we are unable to complete your request.<p/><p/>{2}<p/>
             //check wheather this message has been processed before   
             if (await this.context.HasBeenProcessed(key, consumerName))
             {
+                await trx.RollbackAsync();
                 return Task.CompletedTask;
             }
             ///check weather edt service api is available before making any http request
@@ -318,6 +319,7 @@ We will inform you if we are unable to complete your request.<p/><p/>{2}<p/>
 
             if (edtVersion == null)
             {
+                await trx.RollbackAsync();
                 Serilog.Log.Logger.Error("Failed to ping EDT service");
                 return Task.FromException(new EdtServiceException("Unable to access EDT endpoint"));
             }
@@ -331,7 +333,7 @@ We will inform you if we are unable to complete your request.<p/><p/>{2}<p/>
             //// TODO REMOVE THIS BLOCK ONCE TESTED
 
 
-            if (result.Successful)
+            if (result.successful)
             {
                 //add to tell message has been proccessed by consumer
                 await this.context.IdempotentConsumer(messageId: key, consumer: consumerName);
@@ -362,7 +364,7 @@ We will inform you if we are unable to complete your request.<p/><p/>{2}<p/>
         catch (Exception e)
         {
 
-            //await trx.RollbackAsync();
+            await trx.RollbackAsync();
             // get the last retry number
             var currentTopic = this.configuration.RetryPolicy.RetryTopics.Find(retryTopic => retryTopic.Order == value.TopicOrder);
             if (currentTopic == null)
