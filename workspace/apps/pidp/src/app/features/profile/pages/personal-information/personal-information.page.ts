@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -77,6 +77,7 @@ export class PersonalInformationPage
     this.identityProvider$.subscribe((idp) => {
       if (idp === IdentityProvider.BCPS || idp === IdentityProvider.IDIR) {
         this.formState.email.disable(); //disable this for bcps users as this must match justin email
+
       }
     });
 

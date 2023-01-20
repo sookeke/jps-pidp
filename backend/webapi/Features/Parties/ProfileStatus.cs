@@ -176,10 +176,10 @@ public partial class ProfileStatus
 
             //profile.PlrRecordStatus = await this.client.GetRecordStatus(profile.Ipc);
             profile.PlrStanding = await this.client.GetStandingsDigestAsync(profile.Cpn);
-            profile.User = command.User;
+             profile.User = command.User;
 
-            // if the user is BCPS then they dont need to add their party info
-            if (profile.UserIsBcps)
+            // if the user is not a card user then we shouldnt need more profile info
+            if (!profile.UserIsBcServicesCard )
             {
                 // get the party
                 var party = await this.context.Parties
@@ -287,7 +287,7 @@ public partial class ProfileStatus
 
         // Computed Properties
         [MemberNotNullWhen(true, nameof(Email), nameof(Phone))]
-        public bool DemographicsEntered => this.User.GetIdentityProvider() == ClaimValues.Idir ? this.Email != null : this.Email != null && this.Phone != null;
+        public bool DemographicsEntered => this.User.GetIdentityProvider() == ClaimValues.Bcps || this.User.GetIdentityProvider() == ClaimValues.Idir || this.User.GetIdentityProvider() == ClaimValues.Adfs ? this.Email != null : this.Email != null && this.Phone != null;
         [MemberNotNullWhen(true, nameof(CollegeCode), nameof(LicenceNumber))]
         public bool CollegeCertificationEntered => this.CollegeCode.HasValue && this.LicenceNumber != null;
         [MemberNotNullWhen(true, nameof(OrganizationCode), nameof(EmployeeIdentifier))]

@@ -1,12 +1,12 @@
 <div class="row" [formGroup]="form">
-  <div class="col">
-    <mat-form-field class="w-100">
+  <div class="col" *ngIf="(identityProvider$ | async) !== IdentityProvider.BCPS && (identityProvider$ | async) !== IdentityProvider.IDIR">
+    <mat-form-field class="w-100" >
       <input
         matInput
         placeholder="Phone Number"
         formControlName="phone"
         mask="(000) 000-0000"
-        [showMaskTyped]="false" />
+        [showMaskTyped]="false"  >
       <mat-error *ngIf="phone.hasError('required')">Required</mat-error>
       <mat-error *ngIf="phone.hasError('phone')">
         Must be a valid phone number

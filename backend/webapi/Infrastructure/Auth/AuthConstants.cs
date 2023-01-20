@@ -28,6 +28,8 @@ public static class ClaimValues
     public const string Idir = "idir";
     public const string Phsa = "phsa";
     public const string Bcps = "adfscert";
+    public const string Adfs = "adfs"; // test
+
 }
 
 public static class Policies

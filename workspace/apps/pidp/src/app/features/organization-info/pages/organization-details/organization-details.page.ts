@@ -112,6 +112,13 @@ export class OrganizationDetailsPage
   public onChange(data: number): void {
     this.selectedOption = data;
 
+    // justice
+    if (this.selectedOption == 1) {
+      // only one option
+      if (this.justiceSectors?.length === 1) {
+        this.formState.justiceSectorCode.setValue(this.justiceSectors[0].code);
+      }
+    }
     if (this.selectedOption == 4) {
       this.formState.correctionServiceCode.setValidators([Validators.required]);
     }
