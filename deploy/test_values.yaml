@@ -5,7 +5,7 @@ global:
   licenseplate: "e27db1"
   environment: "test"
   image:
-    tag: test
+    tag: telemetry
 
 
 route:
@@ -54,7 +54,7 @@ postgresql:
 
 edt-service:
   image:
-    tag: test
+    tag: telemetry
 
 
 
