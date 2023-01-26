@@ -56,6 +56,10 @@
     <PackageReference Include="SimplerSoftware.EntityFrameworkCore.SqlServer.NodaTime" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.5" />
+    <PackageReference Include="prometheus-net" Version="7.1.0-pre-000318-0479f53" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="7.1.0-pre-000318-0479f53" />
+    <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="7.0.0" />
+    <PackageReference Include="prometheus-net.NetFramework.AspNet" Version="7.0.0" />
   </ItemGroup>
 
 

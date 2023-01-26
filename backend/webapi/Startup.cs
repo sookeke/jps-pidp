@@ -35,6 +35,8 @@ using Pidp.Infrastructure.Telemetry;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Prometheus;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 public class Startup
 {
@@ -138,7 +140,10 @@ public class Startup
         services.AddScoped<IUserTypeService, UserTypeService>();
         services.AddScoped<IOrgUnitService, OrgUnitService>();
 
-        services.AddHealthChecks();
+
+        services.AddHealthChecks()
+                .AddCheck("liveliness", () => HealthCheckResult.Healthy())
+                .AddNpgSql(config.ConnectionStrings.PidpDatabase, tags: new[] { "services" }).ForwardToPrometheus();
 
         services.AddSwaggerGen(options =>
         {
@@ -216,13 +221,18 @@ public class Startup
         });
         app.UseRouting();
         app.UseCors("CorsPolicy");
+        app.UseMetricServer();
+        app.UseHttpMetrics();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapMetrics();
             endpoints.MapHealthChecks("/health/liveness").AllowAnonymous();
         });
+
+
 
     }
 }

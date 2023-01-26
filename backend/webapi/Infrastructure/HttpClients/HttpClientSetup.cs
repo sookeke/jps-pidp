@@ -1,5 +1,6 @@
 namespace Pidp.Infrastructure.HttpClients;
 
+using System.Net;
 using Confluent.Kafka;
 using IdentityModel.Client;
 using Pidp.Extensions;
@@ -70,6 +71,7 @@ public static class HttpClientSetup
             SaslOauthbearerTokenEndpointUrl = config.KafkaCluster.SaslOauthbearerTokenEndpointUrl,
             SaslOauthbearerMethod = SaslOauthbearerMethod.Oidc,
             SaslOauthbearerScope = config.KafkaCluster.Scope,
+            ClientId = Dns.GetHostName(),
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerProducerClientId,
@@ -89,6 +91,7 @@ public static class HttpClientSetup
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerConsumerClientId,
             SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerConsumerClientSecret,
             EnableAutoOffsetStore = false,
+            ClientId = Dns.GetHostName(),
             AutoCommitIntervalMs = 4000,
             BootstrapServers = config.KafkaCluster.BootstrapServers,
             SaslMechanism = SaslMechanism.OAuthBearer,

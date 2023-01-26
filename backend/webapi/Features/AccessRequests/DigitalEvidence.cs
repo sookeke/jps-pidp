@@ -83,6 +83,7 @@ public class DigitalEvidence
 
             var traceId = Tracer.CurrentSpan.Context.TraceId;
             Serilog.Log.Logger.Information("DigitalEvidence Request {0} {1}", command.ParticipantId, traceId);
+
             Activity.Current?.AddTag("digitalevidence.party.id", command.PartyId);
 
 

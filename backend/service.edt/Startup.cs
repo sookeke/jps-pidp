@@ -27,6 +27,7 @@ using System.Diagnostics.Metrics;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Prometheus;
 
 public class Startup
 {
@@ -114,7 +115,7 @@ public class Startup
 
         services.AddHealthChecks()
                 .AddCheck("liveliness", () => HealthCheckResult.Healthy())
-                .AddSqlServer(config.ConnectionStrings.EdtDataStore, tags: new[] { "services" });
+                .AddSqlServer(config.ConnectionStrings.EdtDataStore, tags: new[] { "services" }).ForwardToPrometheus();
 
         services.AddControllers();
         services.AddHttpClient();
@@ -211,8 +212,12 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapMetrics();
             endpoints.MapHealthChecks("/health/liveness").AllowAnonymous();
         });
+
+        app.UseMetricServer();
+        app.UseHttpMetrics();
 
     }
 }
