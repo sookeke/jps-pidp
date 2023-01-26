@@ -124,7 +124,7 @@ public class KafkaConsumer<TKey, TValue> : IKafkaConsumer<TKey, TValue> where TV
             clientSecret ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientSecret");
             clientId ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerConsumerClientId");
             tokenEndpoint ??= clusterConfig.GetValue<string>("KafkaCluster:SaslOauthbearerTokenEndpointUrl");
-            Log.Logger.Debug("EDT Kafka Consumer getting token {0} {1} {2}", tokenEndpoint, clientId, clientSecret);
+            Log.Logger.Debug("EDT Kafka Consumer getting token {0} {1} ", tokenEndpoint, clientId);
 
             var accessTokenClient = new HttpClient();
 
