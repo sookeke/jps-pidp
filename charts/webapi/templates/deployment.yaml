@@ -95,6 +95,16 @@ spec:
                 secretKeyRef:
                   name: kafkaconfig-jpidp
                   key: KafkaCluster__BootstrapServers
+            - name: KafkaCluster__SaslOauthbearerProducerClientId
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__ProducerClientId
+            - name: KafkaCluster__SaslOauthbearerConsumerClientId
+              valueFrom:
+                secretKeyRef:
+                  name: kafkaconfig-jpidp
+                  key: KafkaCluster__ConsumerClientId
             - name: KafkaCluster__ConsumerTopicName
               valueFrom:
                 secretKeyRef:
