@@ -12,8 +12,6 @@ metadata:
   name: {{ include "edt-service.fullname" . }}
   labels:
     {{- include "edt-service.labels" . | nindent 4 }}
-  prometheus.io/scrape: 'true'
-  prometheus.io/port: "9090"
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -24,6 +22,8 @@ spec:
   template:
     metadata:
       annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: "9090"
         {{- if .Values.global.commit_sha }}
         commit_sha: {{ .Values.global.commit_sha }}
         {{- end}}
