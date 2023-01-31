@@ -1,0 +1,12 @@
+apiVersion: ops.gov.bc.ca/v1alpha1
+kind: SysdigTeam
+metadata:
+  name: e27db1-sysdigteam
+spec:
+  team: 
+    description: The Sysdig Team for the JPSS Namespaces
+    users:
+    - name: leewrigh@github
+      role: ROLE_TEAM_MANAGER
+    - name: lee.wright@gov.bc.ca
+      role: ROLE_TEAM_MANAGER
