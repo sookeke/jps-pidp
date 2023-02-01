@@ -120,3 +120,6 @@ akhq:
 
 alertmanager:
   enabled: false
+
+podmonitor:
+  enabled: false
