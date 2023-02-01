@@ -17,6 +17,9 @@ kafka:
     enabled: false
   createtopics: false
 
+akhq:
+  networkPolicy:
+    enabled: false
 
 
 keycloak:
