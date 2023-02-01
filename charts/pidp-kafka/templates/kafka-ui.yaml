@@ -1,3 +1,4 @@
+{{- if .Values.kafka.kafkaui.enabled }}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -77,3 +78,4 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
+{{- end}}

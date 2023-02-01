@@ -3,8 +3,13 @@ global:
   environment: 'test'
 
 kafka:
+  createtopics: true
   authorization:
     enabled: true
+  metrics:
+    enabled: true
+  kafkaui:
+    enabled : false
 
 
 apicurio:

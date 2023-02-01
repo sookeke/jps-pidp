@@ -1,0 +1,133 @@
+{{- if .Values.kafka.createtopics }}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-retryaccessrequest-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-retryaccessrequest-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-midretryaccessrequest-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-midretryaccessrequest-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-finalaccessrequest-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-finalaccessrequest-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-deadletteraccessrequest-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-deadletteraccessrequest-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-accessrequest-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-accessrequest-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-notification-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-notification-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-notificationack-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-notificationack-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-justinemailack-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-justinemailack-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-usercreation-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-usercreation-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-usermodification-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-usermodification-topic
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-justinuserprovision-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-justinuserprovision-topic
+{{- end}}

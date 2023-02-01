@@ -1,0 +1,67 @@
+{{- if .Values.kafka.connector.enabled }}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  creationTimestamp: '2023-01-31T22:05:17Z'
+  generation: 27
+  labels:
+    strimzi.io/cluster: pidp-debezium-cluster
+spec:
+  class: com.ibm.ingestion.connect.servicenow.ServiceNowSourceConnector
+  config:
+    transforms.KeySchemaMetadata.type: org.apache.kafka.connect.transforms.SetSchemaMetadata$Key
+    value.converter.apicurio.auth.realm: Kafka
+    value.converter.apicurio.registry.find-latest: 'true'
+    timestamp.initial.query.hours.ago: 720
+    key.converter.apicurio.registry.url: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:apicurio_url}
+    servicenow.client.oauth.username: admin
+    value.converter: io.apicurio.registry.utils.converter.AvroConverter
+    transforms.ValueSchemaMetadata.schema.name: servicenow
+    value.converter.apicurio.auth.client.secret: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:apicurio_auth_client_secret}
+    tasks.max: 1
+    servicenow.client.base.uri: {{ include "servicenow.url" . }}
+    table.whitelist: x_976596_user_ch_0_user_request
+    transforms: 'KeySchemaMetadata,ValueSchemaMetadata,unwrap'
+    value.converter.apicurio.auth.service.url: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:keycloak_url}
+    value.converter.apicurio.registry.auto-register: 'true'
+    servicenow.client.oauth.clientsecret: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:servicenow_client_oauth_clientsecret}
+    transforms.unwrap.add.fields: 'op,table,lsn,source.ts_ms'
+    value.converter.apicurio.registry.global-id: io.apicurio.registry.serde.strategy.GetOrCreateIdStrategy
+    key.converter.apicurio.registry.converter.serializer: io.apicurio.registry.serde.avro.AvroKafkaSerializer
+    transforms.unwrap.delete.handling.mode: rewrite
+    key.converter.apicurio.registry.converter.deserializer: io.apicurio.registry.serde.avro.AvroKafkaDeserializer
+    transforms.ValueSchemaMetadata.type: org.apache.kafka.connect.transforms.SetSchemaMetadata$Value
+    key.converter.apicurio.auth.realm: Kafka
+    key.converter.apicurio.registry.find-latest: 'true'
+    key.converter.apicurio.registry.as-confluent: 'true'
+    value.converter.apicurio.auth.client.id: registry-client-api
+    topic.prefix: digitalevidence-user-servicenow
+    key.converter: io.apicurio.registry.utils.converter.AvroConverter
+    transforms.setValueSchema.type: org.apache.kafka.connect.transforms.SetSchemaMetadata$Value
+    table.whitelist.x_976596_user_ch_0_user_request.name: {{ include "servicenow.userRequestTable" . }}
+    key.converter.apicurio.auth.client.secret: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:apicurio_auth_client_secret}
+    transforms.KeySchemaMetadata.schema.name: servicenow
+    servicenow.client.oauth.userpassword: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:servicenow_client_oauth_userpassword}
+    servicenow.client.oauth.clientid: ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:servicenow_client_oauth_clientid}
+    key.converter.apicurio.auth.service.url: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:keycloak_url}
+    key.converter.apicurio.registry.auto-register: 'true'
+    transforms.unwrap.add.headers: db
+    value.converter.apicurio.registry.url: >-
+      ${file:/opt/kafka/external-configuration/servicenow-credentials-user-mods/servicenow-credentials.properties:apicurio_url}
+    key.converter.apicurio.registry.global-id: io.apicurio.registry.serde.strategy.GetOrCreateIdStrategy
+    value.converter.apicurio.registry.converter.serializer: io.apicurio.registry.serde.avro.AvroKafkaSerializer
+    value.converter.apicurio.registry.converter.deserializer: io.apicurio.registry.serde.avro.AvroKafkaDeserializer
+    key.converter.schemas.enable: 'true'
+    table.whitelist.x_976596_user_ch_0_user_request.identifier.field.name: sys_id
+    value.converter.apicurio.registry.as-confluent: 'true'
+    key.converter.apicurio.auth.client.id: registry-client-api
+    table.whitelist.x_976596_user_ch_0_user_request.timestamp.field.name: sys_updated_on
+    transforms.unwrap.type: io.debezium.transforms.ExtractNewRecordState
+{{- end}}

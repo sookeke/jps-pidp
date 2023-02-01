@@ -5,13 +5,27 @@ global:
 apicurio:
   enabled: true
 
+kafka:
+  topics:
+    replicas: 5
+  replicas: 5
+  authorization:
+    enabled: true
+  metrics:
+    enabled: true
+  kafkaui:
+    enabled: false
+  createtopics: false
+
+
+
 keycloak:
-  realmName: DEMSPROD
-  auth: https://common-sso.justice.gov.bc.ca/auth/realms/DEMSPROD
+  realmName: Kafka
+  auth: https://common-sso.justice.gov.bc.ca/auth/realms/Kafka
   base: https://common-sso.justice.gov.bc.ca/auth
 
 postgresql:
-  createSecret: true
+  createSecret: false
   auth:
     username: "kafka"
     database: "kafka"

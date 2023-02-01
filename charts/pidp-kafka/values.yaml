@@ -82,9 +82,14 @@ tolerations: []
 affinity: {}
 
 keycloak:
-  realm: https://sso-dev-5b7aa5-dev.apps.silver.devops.gov.bc.ca/auth/realms/DEMSPOC
+  realm: https://someurl/auth/somerealm
 
 kafka:
+  createtopics: true
+  topics:
+    replicas: 3
+  kafkaui:
+    enabled: false
   authorization:
     enabled: false
     clientId: kafka
@@ -108,4 +113,7 @@ postgresql:
       size: 2Gi
 
 apicurio:
+  enabled: true
+
+akhq:
   enabled: true
