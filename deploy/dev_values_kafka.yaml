@@ -8,6 +8,11 @@ apicurio:
 kafka:
   authorization:
     enabled: true
+  metrics:
+    enabled: true
+  kafkaui:
+    enabled: false
+
 
 keycloak:
   realmName: DEMSDEV
