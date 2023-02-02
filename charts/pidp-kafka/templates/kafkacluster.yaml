@@ -16,6 +16,12 @@ spec:
           name: {{ include "pidp-kafka.fullname" . }}-metrics
           key: kafka-metrics-config.yml
     {{- end }}
+    readinessProbe:
+      initialDelaySeconds: 120
+      timeoutSeconds: 15
+    livenessProbe:
+      initialDelaySeconds: 240
+      timeoutSeconds: 15
     {{- if .Values.kafka.authorization.enabled }}
     authorization:
       clientId: {{ .Values.kafka.authorization.clientId }}

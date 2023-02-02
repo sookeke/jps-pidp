@@ -30,7 +30,7 @@ spec:
         valueFrom:
           secretKeyRef:
             name: pidp-kafka-postgresql
-            key: password
+            key: kafka-password
       - name: REGISTRY_DATASOURCE_USERNAME
         value: kafka
     kafkasql:
