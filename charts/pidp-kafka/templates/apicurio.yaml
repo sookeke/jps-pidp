@@ -29,7 +29,7 @@ spec:
       - name: REGISTRY_DATASOURCE_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: pidp-kafka-postgresql
+            name: {{ include "pidp-kafka.fullname" . }}-postgresql
             key: kafka-password
       - name: REGISTRY_DATASOURCE_USERNAME
         value: kafka
