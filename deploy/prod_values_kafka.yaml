@@ -16,7 +16,7 @@ kafka:
     enabled: true
   kafkaui:
     enabled: false
-  createtopics: false
+  createtopics: true
 
 akhq:
   networkPolicy:
