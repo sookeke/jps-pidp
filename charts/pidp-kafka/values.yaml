@@ -102,7 +102,7 @@ postgresql:
     database: "kafka"
     existingSecret: ""
     secretKeys:
-      adminPasswordKey: "admin-password"
+      adminPasswordKey: "postgres-password"
       userPasswordKey: "kafka-password"
   primary:
     podSecurityContext:

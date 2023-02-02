@@ -17,3 +17,23 @@ spec:
     insecureEdgeTerminationPolicy: None
   wildcardPolicy: None
 {{- end}}
+---
+{{- if .Values.akhq.enabled }}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ include "pidp-kafka.fullname" . }}-akhq
+  labels:
+    {{- include "pidp-kafka.labels" . | nindent 4 }}
+spec:
+  to:
+    kind: Service
+    name: {{ include "pidp-kafka.fullname" . }}-akhq
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
+  wildcardPolicy: None
+{{- end}}
