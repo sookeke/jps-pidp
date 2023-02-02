@@ -11,6 +11,7 @@ kafka:
   replicas: 5
   authorization:
     enabled: true
+    clientId: pidp-kafka-authz
   metrics:
     enabled: true
   kafkaui:
@@ -19,7 +20,7 @@ kafka:
 
 akhq:
   networkPolicy:
-    enabled: false
+    enabled: true
 
 
 keycloak:
