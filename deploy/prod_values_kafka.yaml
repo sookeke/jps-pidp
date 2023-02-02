@@ -35,5 +35,5 @@ postgresql:
     database: "kafka"
     existingSecret: "pidp-kafka-postgresql"
     secretKeys:
-      adminPasswordKey: "admin-password"
+      adminPasswordKey: "postgres-password"
       userPasswordKey: "kafka-password"
