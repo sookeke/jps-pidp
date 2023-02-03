@@ -38,5 +38,5 @@ spec:
     persistence: "sql"
   deployment:
     host: >-
-      {{ include "pidp-kafka.fullname" . }}-apicurioregistry-pgsql.5b7aa5-{{ .Values.global.environment }}.router-default.apps.silver.devops.gov.bc.ca
+      pidp-apicurioregistry-pgsql.5b7aa5-{{ .Values.global.environment }}.router-default.apps.silver.devops.gov.bc.ca
 {{- end }}
