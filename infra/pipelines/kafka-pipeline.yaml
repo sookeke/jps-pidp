@@ -1,0 +1,85 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+spec:
+  params:
+    - name: git-url
+      type: string
+    - default: develop
+      name: git-revision
+      type: string
+    - name: git-short-sha
+      type: string
+    - default: 'image-registry.openshift-image-registry.svc:5000/5b7aa5-tools'
+      name: image-registry
+      type: string
+    - default: pidp-kafka
+      name: release_name
+      type: string
+    - default: develop
+      name: image-tag
+      type: string
+    - default: my-cluster
+      name: kafka-cluster-name
+      type: string
+    - default: 5b7aa5-prod
+      name: release_namespace
+      type: string
+    - default: v0.1.0
+      name: release_version
+      type: string
+    - default: deploy/dev_values_kafka.yaml
+      name: values_file
+      type: string
+  tasks:
+    - name: git-clone
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: subdirectory
+          value: jps-pidp
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: revision
+          value: $(params.git-revision)
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:afc5d3f9efe26c7042635d43b8ffd09d67936e3d0b6b901dc08a33e20313d361
+      taskRef:
+        kind: ClusterTask
+        name: git-clone-v0-22-0
+      workspaces:
+        - name: output
+          workspace: source
+    - name: install-upgrade
+      params:
+        - name: charts_dir
+          value: ./jps-pidp/charts/pidp-kafka
+        - name: release_version
+          value: $(params.release_version)
+        - name: release_name
+          value: $(params.release_name)
+        - name: release_namespace
+          value: $(params.release_namespace)
+        - name: overwrite_values
+          value: >-
+            global.image.tag=$(params.image-tag),global.commit_sha=$(params.git-short-sha)
+        - name: values_file
+          value: jps-pidp/$(params.values_file)
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: Task
+        name: helm-upgrade-from-source
+      workspaces:
+        - name: source
+          workspace: source
+  workspaces:
+    - name: source

@@ -1,0 +1,160 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: github-push-kafka
+  namespace: 5b7aa5-tools
+
+spec:
+  namespaceSelector: {}
+  resources:
+    kubernetesResource:
+      spec:
+        template:
+          metadata:
+            creationTimestamp: null
+          spec:
+            containers:
+              - name: ''
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 128Mi
+                  requests:
+                    cpu: 250m
+                    memory: 64Mi
+            serviceAccountName: pipeline
+  serviceAccountName: pipeline
+  triggers:
+    - bindings:
+        - kind: TriggerBinding
+          ref: github-push-binding
+        - kind: TriggerBinding
+          name: release-namespace
+          value: 5b7aa5-dev
+        - kind: TriggerBinding
+          name: release-name
+          value: pidp
+        - kind: TriggerBinding
+          name: kafka-cluster-name
+          value: pidp
+        - kind: TriggerBinding
+          name: values-file
+          value: deploy/dev_values_kafka.yaml
+      interceptors:
+        - params:
+            - name: filter
+              value: >-
+                header.match('X-GitHub-Event', 'push') &&
+                body.repository.full_name == 'sookeke/jps-pidp' && body.ref ==
+                'refs/heads/develop'
+            - name: overlays
+              value:
+                - expression: body.head_commit.id.truncate(7)
+                  key: truncated_sha
+                - expression: 'body.ref.replace(''refs/heads/'', '''')'
+                  key: branch_name
+          ref:
+            kind: ClusterInterceptor
+            name: cel
+      name: github-dev
+      template:
+        ref: github-push-trigger-template
+    - bindings:
+        - kind: TriggerBinding
+          ref: github-push-binding
+        - kind: TriggerBinding
+          name: release-namespace
+          value: e27db1-test
+        - kind: TriggerBinding
+          name: kafka-cluster-name
+          value: pidp
+        - kind: TriggerBinding
+          name: release-name
+          value: pidp
+        - kind: TriggerBinding
+          name: values-file
+          value: deploy/dev_values_kafka.yaml
+      interceptors:
+        - params:
+            - name: filter
+              value: >-
+                header.match('X-GitHub-Event', 'push') &&
+                body.repository.full_name == 'sookeke/jps-pidp' && body.ref ==
+                'refs/heads/test'
+            - name: overlays
+              value:
+                - expression: body.head_commit.id.truncate(7)
+                  key: truncated_sha
+                - expression: 'body.ref.replace(''refs/heads/'', '''')'
+                  key: branch_name
+          ref:
+            kind: ClusterInterceptor
+            name: cel
+      name: github-test
+      template:
+        ref: github-push-trigger-template
+    - bindings:
+        - kind: TriggerBinding
+          ref: github-push-binding
+        - kind: TriggerBinding
+          name: kafka-cluster-name
+          value: pidp
+        - kind: TriggerBinding
+          name: release-namespace
+          value: e27db1-test
+        - kind: TriggerBinding
+          name: release-name
+          value: test
+        - kind: TriggerBinding
+          name: values-file
+          value: deploy/test_values_kafka.yaml
+      interceptors:
+        - params:
+            - name: filter
+              value: >-
+                header.match('X-GitHub-Event', 'push') &&
+                body.repository.full_name == 'sookeke/jps-pidp' && body.ref ==
+                'refs/heads/test'
+            - name: overlays
+              value:
+                - expression: body.head_commit.id.truncate(7)
+                  key: truncated_sha
+                - expression: 'body.ref.replace(''refs/heads/'', '''')'
+                  key: branch_name
+          ref:
+            kind: ClusterInterceptor
+            name: cel
+      name: github-test
+      template:
+        ref: github-push-trigger-template
+    - bindings:
+        - kind: TriggerBinding
+          ref: github-push-binding
+        - kind: TriggerBinding
+          name: release-namespace
+          value: e27db1-prod
+        - kind: TriggerBinding
+          name: release-name
+          value: prod
+        - kind: TriggerBinding
+          name: values-file
+          value: deploy/prod_values_kafka.yaml
+      interceptors:
+        - params:
+            - name: filter
+              value: >-
+                header.match('X-GitHub-Event', 'push') &&
+                body.repository.full_name == 'sookeke/jps-pidp' && body.ref ==
+                'refs/heads/main'
+            - name: overlays
+              value:
+                - expression: body.head_commit.id.truncate(7)
+                  key: truncated_sha
+                - expression: 'body.ref.replace(''refs/heads/'', '''')'
+                  key: branch_name
+          ref:
+            kind: ClusterInterceptor
+            name: cel
+      name: github-prod
+      template:
+        ref: github-push-trigger-template
