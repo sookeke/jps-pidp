@@ -26,18 +26,6 @@ spec:
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
-  name: digitalevidence-finalaccessrequest-topic
-  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
-  labels:
-    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
-spec:
-  partitions: {{ default 3 .Values.kafka.topics.replicas }}
-  replicas: {{ default 3 .Values.kafka.topics.replicas }}
-  topicName: digitalevidence-finalaccessrequest-topic
----
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
   name: digitalevidence-deadletteraccessrequest-topic
   namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
   labels:
@@ -131,3 +119,15 @@ spec:
   replicas: {{ default 3 .Values.kafka.topics.replicas }}
   topicName: digitalevidence-justinuserprovision-topic
 {{- end}}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: digitalevidence-finalretryaccessrequest-topic
+  namespace: {{ .Values.global.licenseplate }}-{{ .Values.global.environment }}
+  labels:
+    strimzi.io/cluster: {{ include "pidp-kafka.fullname" . }}-cluster
+spec:
+  partitions: {{ default 3 .Values.kafka.topics.replicas }}
+  replicas: {{ default 3 .Values.kafka.topics.replicas }}
+  topicName: digitalevidence-finalretryaccessrequest-topic

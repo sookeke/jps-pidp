@@ -33,7 +33,7 @@ public static class ConsumerSetup
             SaslOauthbearerScope = config.KafkaCluster.Scope,
             SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https,
             SslCaLocation = config.KafkaCluster.SslCaLocation,
-            ConnectionsMaxIdleMs = 180000,
+            ConnectionsMaxIdleMs = 600000,
             SslCertificateLocation = config.KafkaCluster.SslCertificateLocation,
             SslKeyLocation = config.KafkaCluster.SslKeyLocation
         };
@@ -81,8 +81,7 @@ public static class ConsumerSetup
             SessionTimeoutMs = 30000,
             MaxPollIntervalMs= retrySeconds * 1000,
             ConnectionsMaxIdleMs = retrySeconds * 1000,
-           
-            //SessionTimeoutMs = retrySeconds * 1000,
+            HeartbeatIntervalMs = 10000,
             BootstrapServers = config.KafkaCluster.BootstrapServers,
             SaslOauthbearerClientId = config.KafkaCluster.SaslOauthbearerConsumerClientId,
             SaslOauthbearerClientSecret = config.KafkaCluster.SaslOauthbearerConsumerClientSecret,
