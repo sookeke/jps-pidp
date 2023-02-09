@@ -164,7 +164,7 @@ public class Startup
             options.OperationFilter<SecurityRequirementsOperationFilter>();
             options.CustomSchemaIds(x => x.FullName);
         });
-        services.AddFluentValidationRulesToSwagger();
+       // services.AddFluentValidationRulesToSwagger();
 
         JsonConvert.DefaultSettings = () => new JsonSerializerSettings
         {
@@ -181,7 +181,7 @@ public class Startup
         services.AddSingleton(config);
 
         Log.Logger.Information("### App Version:{0} ###", Assembly.GetExecutingAssembly().GetName().Version);
-        Log.Logger.Information("### Notification Service Configuration:{0} ###", System.Text.Json.JsonSerializer.Serialize(config));
+        Log.Logger.Debug("### Notification Service Configuration:{0} ###", System.Text.Json.JsonSerializer.Serialize(config));
 
         return config;
     }

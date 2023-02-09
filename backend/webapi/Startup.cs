@@ -180,7 +180,7 @@ public class Startup
         services.AddSingleton(config);
 
         Log.Logger.Information("### App Version:{0} ###", Assembly.GetExecutingAssembly().GetName().Version);
-        Log.Logger.Information("### PIdP Configuration:{0} ###", System.Text.Json.JsonSerializer.Serialize(config));
+        Log.Logger.De("### PIdP Configuration:{0} ###", System.Text.Json.JsonSerializer.Serialize(config));
 
 
         if (Environment.GetEnvironmentVariable("JUSTIN_SKIP_USER_EMAIL_CHECK") is not null and "true")
