@@ -83,8 +83,8 @@ spec:
           createBootstrapService: true
     storage:
       type: persistent-claim
-      size: 1Gi
-      deleteClaim: true
+      size: {{ .Values.kafka.pvcSize }}
+      deleteClaim: false
       class: netapp-file-standard
     version: 3.2.3
     replicas: {{ default 3 .Values.kafka.replicas }}
@@ -102,8 +102,8 @@ spec:
     storage:
       type: persistent-claim
       class: netapp-file-standard
-      deleteClaim: true
-      size: 1Gi
+      deleteClaim: false
+      size: {{ .Values.zookeeper.pvcSize }}
     replicas: 3
     {{- if .Values.kafka.metrics.enabled }}
     metricsConfig:

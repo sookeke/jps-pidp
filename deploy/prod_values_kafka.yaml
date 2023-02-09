@@ -5,7 +5,11 @@ global:
 apicurio:
   enabled: true
 
+zookeeper:
+  pvcSize: 2Gi
+
 kafka:
+  pvcSize: 5Gi
   topics:
     replicas: 5
   replicas: 5
