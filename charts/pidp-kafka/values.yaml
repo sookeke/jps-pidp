@@ -85,6 +85,7 @@ keycloak:
   realm: https://someurl/auth/somerealm
 
 kafka:
+  pvcSize: 1Gi
   createtopics: true
   topics:
     replicas: 3
@@ -93,6 +94,9 @@ kafka:
   authorization:
     enabled: false
     clientId: kafka
+
+zookeeper:
+  pvcSize: 1Gi
 
 postgresql:
   enabled: true
